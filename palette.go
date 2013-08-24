@@ -21,7 +21,6 @@ var (
 
   // TODO(ndunn): Pull in the bricklink colors. http://www.peeron.com/cgi-bin/invcgis/inv/colors?PagerSortDir=f&PagerSortCol=BLName&PagerSortRev=0
   
-
 	// All color RGB values from
 	// http://www.peeron.com/cgi-bin/invcgis/colorguide.cgi
 	// cat ~/Dropbox/BrickColors.txt  | awk '{print $2 " = BrickColor{name: \"" $2 "\", c:color.ARGB{R:uint8(" $7 "), G:uint8(" $8 "), B:uint8(" $9 "), A:uint8(0)}}"}' | mate
@@ -272,13 +271,5 @@ var (
 	  BrightRed,
 		BrightBlue,
 		BrightYellow,
-	})
-	KittyPalette = color.Palette([]color.Color{
-	  BrightBlue,
-	  BrightRed,
-	  BrightYellow,
-	  MedYellowishGreen,
-	  RoyalBlue,
-	  MedReddishViolet,
 	})
 )

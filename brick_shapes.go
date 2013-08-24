@@ -2,14 +2,15 @@
 package BrickMosaic
 
 type BrickPiece struct {
+  // name is the human readable name for this brick.
 	name string
-	// The LDRAW identifier for this piece
+	// id is the the LDRAW identifier for this piece.
 	id string
-	// Measured in studs
+	// width is measured in studs.
 	width int
-	// Measured in studs
+	// length is measured in studs.
 	length int
-	// In terms of plates
+	// height is measured in terms of plates - a standard brick is 3 plates high.
 	height int
 }
 

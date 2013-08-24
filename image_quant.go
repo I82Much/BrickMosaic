@@ -27,6 +27,7 @@ type BrickImage struct {
 
 // AverageColor determines the 'average' color of the subimage whose coordinates are contained in the
 // given bounds. The average is an arithmetic average in RGB color space.
+// TODO(ndunn): use a different color space
 func AverageColor(si *image.Image, bounds image.Rectangle) color.Color {
 	R, G, B, A := uint64(0), uint64(0), uint64(0), uint64(0)
 	numPixels := uint64(0)

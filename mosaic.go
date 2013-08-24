@@ -8,11 +8,13 @@ import (
 type ViewOrientation int
 
 const (
-	// Top down view, studs on top. Rows and columns refer to equal distances.
+	// StudsUp is a top down view, studs on top. Rows and columns refer to equal distances.
 	StudsUp ViewOrientation = iota
-	// View from the side - pieces build on top of each other. Rows refer to plate height, columns are standard.
+	// StudsTop indicates a view from the side - pieces build on top of each other. Rows refer to plate height, 
+	// columns are 1x1 width.
 	StudsTop
-	// View from the side - pieces built to the right of each other. Rows refer to piece width, columns are plate height.
+	// StudsRight indicates a view from the side, where the top of a piece faces to the right. Rows refer to 
+	// piece width, columns are plate height.
 	StudsRight
 )
 
@@ -31,7 +33,8 @@ func makeGrids(numRows, numCols uint, colorMap map[Location]BrickColor) map[Bric
 			grids[color] = MakeGrid(int(numRows), int(numCols))
 		}
 	}
-	// Set all of the 'to be filled' bits for each color
+	// Set all of the 'to be filled' bits for each color. Every thing else is
+	// 'empty' so it won't be filled in with this color.
 	for loc, color := range colorMap {
 		grid := grids[color]
 		grid.Set(loc.row, loc.col, ToBeFilled)
