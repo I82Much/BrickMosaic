@@ -13,7 +13,11 @@ func TestAllBricks(t *testing.T) {
   for _, p := range Plates {
     allPieces[p] = true
   }
-  if len(Pieces) != len(allPieces) {
-    t.Errorf("Pieces: got length %d expected %d", len(Pieces), len(allPieces))
+  foundPieces := make(map[BrickPiece]bool)
+  for _, b := range Pieces {
+    foundPieces[b] = true
+  }
+  if foundPieces != allPieces {
+    t.Errorf("got %v wanted %v", foundPieces, allPieces)
   }
 }
