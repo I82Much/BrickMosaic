@@ -1,0 +1,3 @@
+[submodule "github.com/ajstarks/svgo"]
+	path = github.com/ajstarks/svgo
+	url = https://github.com/i82much/svgo
