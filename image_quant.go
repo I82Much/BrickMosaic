@@ -3,7 +3,7 @@
 package BrickMosaic
 
 import (
-  "fmt"
+	"fmt"
 	"image"
 	"image/color"
 )
@@ -22,7 +22,7 @@ type BrickImage struct {
 	palette    color.Palette
 	rows, cols uint
 	// Maps each grid cell to its color
-	avgColors  map[Location]BrickColor
+	avgColors map[Location]BrickColor
 }
 
 // AverageColor determines the 'average' color of the subimage whose coordinates are contained in the
@@ -90,12 +90,12 @@ func (si *BrickImage) At(x, y int) color.Color {
 	rowHeight := h / int(si.rows)
 	gridCol := x / colWidth
 	gridRow := y / rowHeight
-	
+
 	// FIXME(ndunn): this only works with perfectly oriented pictures.
 	if uint(gridRow) >= si.rows {
-	  panic(fmt.Sprintf("Too many rows; was rendering row %d; max of %d rows", gridRow, si.rows))
+		panic(fmt.Sprintf("Too many rows; was rendering row %d; max of %d rows", gridRow, si.rows))
 	}
-	
+
 	// Grid line 
 	if x%colWidth == 0 || y%rowHeight == 0 {
 		return Red
@@ -108,10 +108,10 @@ func NewBrickImage(img image.Image, rows, cols int, palette color.Palette) image
 	brickImage := &BrickImage{img, palette, uint(rows), uint(cols), make(map[Location]BrickColor)}
 	// Initialize the color map
 	for row := 0; row < rows; row++ {
-	  for col := 0; col < cols; col++ {
-	    _ = brickImage.ColorAt(row, col)
-	  }
+		for col := 0; col < cols; col++ {
+			_ = brickImage.ColorAt(row, col)
+		}
 	}
-	
+
 	return brickImage
 }

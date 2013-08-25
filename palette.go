@@ -1,8 +1,8 @@
 package BrickMosaic
 
 import (
-//  "fmt"
-//	"image"
+	//  "fmt"
+	//	"image"
 	"image/color"
 )
 
@@ -19,8 +19,8 @@ func (c BrickColor) RGBA() (r, g, b, a uint32) {
 var (
 	Red = color.RGBA{uint8(200), 0, 0, 0}
 
-  // TODO(ndunn): Pull in the bricklink colors. http://www.peeron.com/cgi-bin/invcgis/inv/colors?PagerSortDir=f&PagerSortCol=BLName&PagerSortRev=0
-  
+	// TODO(ndunn): Pull in the bricklink colors. http://www.peeron.com/cgi-bin/invcgis/inv/colors?PagerSortDir=f&PagerSortCol=BLName&PagerSortRev=0
+
 	// All color RGB values from
 	// http://www.peeron.com/cgi-bin/invcgis/colorguide.cgi
 	// cat ~/Dropbox/BrickColors.txt  | awk '{print $2 " = BrickColor{name: \"" $2 "\", c:color.ARGB{R:uint8(" $7 "), G:uint8(" $8 "), B:uint8(" $9 "), A:uint8(0)}}"}' | mate
@@ -259,16 +259,16 @@ var (
 		DarkGrey,
 	})
 	GrayPlusPalette = color.Palette([]color.Color{
-	  White,
-	  Grey,
-	  Black,
-	  DarkGrey,
-	  LightGrey,
-	  DarkStoneGrey,
-	  EarthGreen,
-	  DarkStoneGrey,
-	  LightStoneGrey,
-	  BrightRed,
+		White,
+		Grey,
+		Black,
+		DarkGrey,
+		LightGrey,
+		DarkStoneGrey,
+		EarthGreen,
+		DarkStoneGrey,
+		LightStoneGrey,
+		BrightRed,
 		BrightBlue,
 		BrightYellow,
 	})

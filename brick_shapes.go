@@ -2,7 +2,7 @@
 package BrickMosaic
 
 type BrickPiece struct {
-  // name is the human readable name for this brick.
+	// name is the human readable name for this brick.
 	name string
 	// id is the the LDRAW identifier for this piece.
 	id string
@@ -116,25 +116,25 @@ var (
 		height: 1,
 	}
 	Bricks = []BrickPiece{
-	  TwoByFour,
+		TwoByFour,
 		TwoByThree,
 		TwoByTwo,
-		
+
 		OneByFour,
 		OneByThree,
 		OneByTwo,
 		OneByOne,
 	}
 	Plates = []BrickPiece{
-	  OneByTenPlate,
-	  OneByEightPlate,
-	  OneBySixPlate,
+		OneByTenPlate,
+		OneByEightPlate,
+		OneBySixPlate,
 		OneByFourPlate,
 		OneByThreePlate,
-		OneByTwoPlate,	  
+		OneByTwoPlate,
 		OneByOnePlate,
 	}
-	Pieces = allPieces()//append(make([]BrickPiece, 0), Bricks..., Plates...)
+	Pieces = allPieces() //append(make([]BrickPiece, 0), Bricks..., Plates...)
 )
 
 func allPieces() []BrickPiece {

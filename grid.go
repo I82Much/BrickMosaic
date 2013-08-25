@@ -23,12 +23,12 @@ import (
 type State int
 
 const (
-  // Empty indicates that nothing is in the grid location, nor should there be.
-	Empty      State = iota
+	// Empty indicates that nothing is in the grid location, nor should there be.
+	Empty State = iota
 	// ToBeFilled indicates that there is nothing currently in the grid location, but there should be.
 	ToBeFilled State = Empty + 1
 	// Filled indicates that there is already something in the grid location.
-	Filled     State = ToBeFilled + 1
+	Filled State = ToBeFilled + 1
 )
 
 // Grid is an abstract representation of the mosaic to assemble.
@@ -40,8 +40,8 @@ type Grid struct {
 // GridSolution encapsulates the original requested grid to solve, as well as the solution to that grid,
 // mapping location to the brick that goes there.
 type GridSolution struct {
-  Original Grid
-  Pieces map[Location]Piece
+	Original Grid
+	Pieces   map[Location]Piece
 }
 
 // MakeGrid initializes an empty grid of size numRows by numCols.
@@ -130,13 +130,13 @@ func (g *Grid) PieceFits(piece Piece, loc Location) bool {
 }
 
 func (g *Grid) Clone() Grid {
-  grid := MakeGrid(g.numRows, g.numCols)
-  for row := 0; row < grid.numRows; row++ {
-    for col := 0; col < grid.numCols; col++ {
-      grid.state[row][col] = g.state[row][col]
-    }
-  }
-  return grid
+	grid := MakeGrid(g.numRows, g.numCols)
+	for row := 0; row < grid.numRows; row++ {
+		for col := 0; col < grid.numCols; col++ {
+			grid.state[row][col] = g.state[row][col]
+		}
+	}
+	return grid
 }
 
 // Solve attempts to solve the grid by filling in the missing pieces.
@@ -145,15 +145,15 @@ func (g *Grid) Clone() Grid {
 // list (i.e.. least expensive). If the given pieces cannot exactly
 // match the missing pieces, returns a non nil error
 func (g *Grid) Solve(pieces []Piece) (GridSolution, error) {
-  originalGrid := g.Clone()
+	originalGrid := g.Clone()
 	locs := make(map[Location]Piece)
 	// Use a simple greedy strategy where we work
 	// top to bottom, left to right
 	for col := 0; col < g.numCols; col++ {
 		for row := 0; row < g.numRows; row++ {
-	
-	//for row := 0; row < g.numRows; row++ {
-	//	for col := 0; col < g.numCols; col++ {
+
+			//for row := 0; row < g.numRows; row++ {
+			//	for col := 0; col < g.numCols; col++ {
 			loc := Location{row, col}
 			if g.Get(row, col) == ToBeFilled {
 				for _, p := range pieces {
@@ -178,59 +178,59 @@ func (g *Grid) Solve(pieces []Piece) (GridSolution, error) {
 
 // String returns a string representation of the grid, suitable for display in a terminal.
 func (g Grid) String() string {
-  result := "[\n"
-  for _, row := range g.state {
-    // Remove spaces
-    result += strings.Replace(fmt.Sprintf("%v\n", row), " ", "", -1)
-  }
-  result += "\n]"
-  return result
+	result := "[\n"
+	for _, row := range g.state {
+		// Remove spaces
+		result += strings.Replace(fmt.Sprintf("%v\n", row), " ", "", -1)
+	}
+	result += "\n]"
+	return result
 }
 
 // TODO(ndunn): Remove, not very necessary given the mosaic rendering in svg
 func (solution GridSolution) String() string {
-  // TODO(ndunn): support more than 52 pieces
-  alphabet := strings.Split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
-  pieces := make([][]string, solution.Original.numRows)
-  for row := 0; row < solution.Original.numRows; row++ {
-    pieces[row] = make([]string, solution.Original.numCols)
-    for col := 0; col < solution.Original.numCols; col++ {
-      pieces[row][col] = "_"
-    }
-  }
+	// TODO(ndunn): support more than 52 pieces
+	alphabet := strings.Split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
+	pieces := make([][]string, solution.Original.numRows)
+	for row := 0; row < solution.Original.numRows; row++ {
+		pieces[row] = make([]string, solution.Original.numCols)
+		for col := 0; col < solution.Original.numCols; col++ {
+			pieces[row][col] = "_"
+		}
+	}
 
-  pieceIndex := -1
-  // Figure out which pieces fill up which spaces in the grid
-  for loc, piece := range solution.Pieces {
-    pieceIndex++
-    pieceIndex = pieceIndex % len(pieces)
-    pieceLetter := alphabet[pieceIndex]
-    // The locations of the extent are relative to upper left hand corner of the piece
-    for _, relLoc := range piece.Extent() {
-  		absLoc := relLoc.Add(loc)
-  		pieces[absLoc.row][absLoc.col] = pieceLetter
-    }
-  }
-  
-  result := "  ["
-  // column headers
-  for i := 0; i < solution.Original.numCols; i ++{
-    if i % 3 == 0 {
-      result += "|"
-    } else {
-      result += " "
-    }
-  }
-  result += "\n"
-  
-  for i, row := range pieces {
-    // Remove spaces
-    if i % 4 == 0 {
-      result += fmt.Sprintf("%2d", i + 1) + strings.Replace(fmt.Sprintf("%v\n", row), " ", "", -1)
-    } else {
-      result += "  " + strings.Replace(fmt.Sprintf("%v\n", row), " ", "", -1)
-    }
-  }
-  result += "\n]"
-  return result
+	pieceIndex := -1
+	// Figure out which pieces fill up which spaces in the grid
+	for loc, piece := range solution.Pieces {
+		pieceIndex++
+		pieceIndex = pieceIndex % len(pieces)
+		pieceLetter := alphabet[pieceIndex]
+		// The locations of the extent are relative to upper left hand corner of the piece
+		for _, relLoc := range piece.Extent() {
+			absLoc := relLoc.Add(loc)
+			pieces[absLoc.row][absLoc.col] = pieceLetter
+		}
+	}
+
+	result := "  ["
+	// column headers
+	for i := 0; i < solution.Original.numCols; i++ {
+		if i%3 == 0 {
+			result += "|"
+		} else {
+			result += " "
+		}
+	}
+	result += "\n"
+
+	for i, row := range pieces {
+		// Remove spaces
+		if i%4 == 0 {
+			result += fmt.Sprintf("%2d", i+1) + strings.Replace(fmt.Sprintf("%v\n", row), " ", "", -1)
+		} else {
+			result += "  " + strings.Replace(fmt.Sprintf("%v\n", row), " ", "", -1)
+		}
+	}
+	result += "\n]"
+	return result
 }

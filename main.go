@@ -9,7 +9,7 @@ import (
 	//"image/png"
 	"os"
 	//"strings"
-	
+
 	"github.com/I82Much/BrickMosaic"
 )
 
@@ -23,10 +23,10 @@ var (
 func main() {
 	flag.Parse()
 	if *inputPath == "" {
-	  panic("Must set --path, path to the input file")
+		panic("Must set --path, path to the input file")
 	}
 	if *outputPath == "" {
-	  panic("Must set --output_path, path to the output file")
+		panic("Must set --output_path, path to the output file")
 	}
 
 	path := *inputPath
@@ -47,28 +47,27 @@ func main() {
 	if err != nil {
 		panic("Couldn't create output file")
 	}
-  // close the output file on exit and check for its returned error
-  defer func() {
-    if err := outputFile.Close(); err != nil {
-      panic(err)
-    }
-  } ()
-  
-  //palette := BrickMosaic.GrayPlusPalette
-  palette := BrickMosaic.FullPalette
+	// close the output file on exit and check for its returned error
+	defer func() {
+		if err := outputFile.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+	//palette := BrickMosaic.GrayPlusPalette
+	palette := BrickMosaic.FullPalette
 	legoImg := BrickMosaic.NewBrickImage(img, *rows, *cols, palette)
 	orientation := BrickMosaic.StudsRight
-	
+
 	pieces := BrickMosaic.Pieces
 	//pieces := BrickMosaic.Bricks
-  //pieces = append(pieces, BrickMosaic.OneByTenPlate)
+	//pieces = append(pieces, BrickMosaic.OneByTenPlate)
 	studsRightPieces := BrickMosaic.PiecesForOrientation(orientation, pieces)
-  fmt.Printf("pieces %v", studsRightPieces)
+	fmt.Printf("pieces %v", studsRightPieces)
 
 	mosaic := BrickMosaic.MakeMosaic(legoImg.(*BrickMosaic.BrickImage), orientation, studsRightPieces)
 	fmt.Printf("%v\n", mosaic)
-  	
-	
+
 	inventory := BrickMosaic.MakeInventory()
 	for color, grid := range mosaic.Grids() {
 		fmt.Printf("%v\n", color)
@@ -78,7 +77,7 @@ func main() {
 		fmt.Printf("%d pieces", len(solution.Pieces))
 		piecesNeeded := make(map[BrickMosaic.BrickPiece]int)
 		for _, piece := range solution.Pieces {
-		  mosaicPiece := piece.(BrickMosaic.MosaicPiece)
+			mosaicPiece := piece.(BrickMosaic.MosaicPiece)
 			piecesNeeded[mosaicPiece.Brick]++
 			inventory.Add(color, mosaicPiece)
 		}
@@ -87,8 +86,7 @@ func main() {
 	}
 	fmt.Printf("%v", inventory.DescendingUsage())
 
-
-  if _, err := outputFile.Write(BrickMosaic.MakeSvgInstructions(mosaic)); err != nil {
-    panic(err)
-  }
+	if _, err := outputFile.Write(BrickMosaic.MakeSvgInstructions(mosaic)); err != nil {
+		panic(err)
+	}
 }
