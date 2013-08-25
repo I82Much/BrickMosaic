@@ -4,6 +4,7 @@ import (
   "bytes"
   "fmt"
   "strings"
+  
   "github.com/ajstarks/svgo"
 )
 
