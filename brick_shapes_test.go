@@ -1,6 +1,7 @@
 package BrickMosaic
 
 import (
+  "reflect"
   "testing"
 )
 
@@ -17,7 +18,10 @@ func TestAllBricks(t *testing.T) {
   for _, b := range Pieces {
     foundPieces[b] = true
   }
-  if foundPieces != allPieces {
+  if len(foundPieces) != len(allPieces) {
+    t.Errorf("got %d pieces wanted %d pieces", len(foundPieces), len(allPieces))
+  }
+  if !reflect.DeepEqual(foundPieces, allPieces) {
     t.Errorf("got %v wanted %v", foundPieces, allPieces)
   }
 }

@@ -134,7 +134,7 @@ var (
 		OneByTwoPlate,	  
 		OneByOnePlate,
 	}
-	Pieces = allPieces()
+	Pieces = allPieces()//append(make([]BrickPiece, 0), Bricks..., Plates...)
 )
 
 func allPieces() []BrickPiece {
