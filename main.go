@@ -1,4 +1,5 @@
 // main runs the mosaic program.
+// +build !appengine
 package main
 
 import (
