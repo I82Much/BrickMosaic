@@ -11,9 +11,8 @@ Get the svg library:
 Get the mosaic library:
     go get github.com/I82Much/BrickMosaic
 
-go install github.com/user/hello
 Build the library:
-    go build
+    go build github.com/I82Much/BrickMosaic
 
 Run the binary:
     go run main.go --rows=40 --cols=100 --path=/path/to/image.jpg --output_path=/path/to/destination.svg
