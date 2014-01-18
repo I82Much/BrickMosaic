@@ -23,7 +23,7 @@ type Mosaic struct {
 	img         *BrickImage
 	colorGrid   map[palette.BrickColor]grid.Grid
 	orientation ViewOrientation
-	solutions   map[palette.BrickColor]grid.GridSolution
+	solutions   map[palette.BrickColor]grid.Solution
 }
 
 func makeGrids(numRows, numCols uint, colorMap map[grid.Location]palette.BrickColor) map[palette.BrickColor]grid.Grid {
@@ -45,7 +45,7 @@ func makeGrids(numRows, numCols uint, colorMap map[grid.Location]palette.BrickCo
 
 func MakeMosaic(img *BrickImage, orientation ViewOrientation, pieces []grid.Piece) Mosaic {
 	grids := makeGrids(img.rows, img.cols, img.avgColors)
-	solutions := make(map[palette.BrickColor]grid.GridSolution)
+	solutions := make(map[palette.BrickColor]grid.Solution)
 	for color, grid := range grids {
 		solution, _ := grid.Solve(pieces)
 		solutions[color] = solution
@@ -62,6 +62,6 @@ func (m *Mosaic) Grids() map[palette.BrickColor]grid.Grid {
 	return m.colorGrid
 }
 
-func (m *Mosaic) Solutions() map[palette.BrickColor]grid.GridSolution {
+func (m *Mosaic) Solutions() map[palette.BrickColor]grid.Solution {
 	return m.solutions
 }

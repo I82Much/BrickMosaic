@@ -47,9 +47,9 @@ type Grid struct {
 	state            [][]State
 }
 
-// GridSolution encapsulates the original requested grid to solve, as well as the solution to that grid,
+// Solution encapsulates the original requested grid to solve, as well as the solution to that grid,
 // mapping location to the brick that goes there.
-type GridSolution struct {
+type Solution struct {
 	Original Grid
 	Pieces   map[Location]Piece
 }
@@ -159,7 +159,7 @@ func (g *Grid) Clone() Grid {
 // They should be sorted accordingly, with the best entry first in the
 // list (i.e.. least expensive). If the given pieces cannot exactly
 // match the missing pieces, returns a non nil error
-func (g *Grid) Solve(pieces []Piece) (GridSolution, error) {
+func (g *Grid) Solve(pieces []Piece) (Solution, error) {
 	originalGrid := g.Clone()
 	locs := make(map[Location]Piece)
 	// Use a simple greedy strategy where we work
@@ -186,9 +186,9 @@ func (g *Grid) Solve(pieces []Piece) (GridSolution, error) {
 		}
 	}
 	if g.Any(ToBeFilled) {
-		return GridSolution{originalGrid, locs}, fmt.Errorf("Following locations must still be filled: %v", g.Find(ToBeFilled))
+		return Solution{originalGrid, locs}, fmt.Errorf("Following locations must still be filled: %v", g.Find(ToBeFilled))
 	}
-	return GridSolution{originalGrid, locs}, nil
+	return Solution{originalGrid, locs}, nil
 }
 
 // String returns a string representation of the grid, suitable for display in a terminal.
@@ -203,7 +203,7 @@ func (g Grid) String() string {
 }
 
 // TODO(ndunn): Remove, not very necessary given the mosaic rendering in svg
-func (solution GridSolution) String() string {
+func (solution Solution) String() string {
 	// TODO(ndunn): support more than 52 pieces
 	alphabet := strings.Split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
 	pieces := make([][]string, solution.Original.numRows)
