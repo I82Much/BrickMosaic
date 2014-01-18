@@ -125,5 +125,28 @@ func TestSolve(t *testing.T) {
 			t.Errorf("for %q wanted %v got %v", test.name, test.want, got.Pieces)
 		}
 	}
+}
 
+func TestClone(t *testing.T) {
+  various := MakeGrid(5, 6)
+	various.state[4][3] = ToBeFilled
+	various.state[3][2] = Filled
+	
+	cloned := various.Clone()
+	if &cloned == &various {
+	  t.Errorf("cloned value shares same pointer address")
+	}
+	
+	if !reflect.DeepEqual(various, cloned) {
+	  t.Errorf("cloned value was not correctly cloned")
+	}
+	various.state[0][0] = Filled
+	if cloned.state[0][0] != Empty {
+	  t.Errorf("somehow changing original value modifies cloned state")
+	}
+	cloned.state[4][3] = Empty
+	if various.state[4][3] != ToBeFilled {
+	  t.Errorf("somehow changing cloned value modifies cloned state")
+	}
+  
 }

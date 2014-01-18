@@ -108,10 +108,15 @@ func (g *Grid) Any(s State) bool {
 	return false
 }
 
+// outOfBounds determines if the given row/col is out of bounds (not a valid index into the data structure).
+func (g *Grid) outOfBounds(row, col int) bool {
+  return row < 0 || row >= g.numRows || col < 0 || col >= g.numCols
+}
+
 // Get returns the state at row, col in the given grid. If the given
 // row, col arguments are out of bouns, the method returns Empty.
 func (g *Grid) Get(row, col int) State {
-	if row < 0 || row >= g.numRows || col < 0 || col >= g.numCols {
+	if g.outOfBounds(row, col) {
 		return Empty
 	}
 	return g.state[row][col]
@@ -120,7 +125,7 @@ func (g *Grid) Get(row, col int) State {
 // Set sets the state at the given (row, column) pair in the grid. If it's out of
 // bounds, this does nothing.
 func (g *Grid) Set(row, col int, state State) {
-	if row < 0 || row >= g.numRows || col < 0 || col >= g.numCols {
+	if g.outOfBounds(row, col) {
 		return
 	}
 	g.state[row][col] = state
@@ -141,6 +146,7 @@ func (g *Grid) PieceFits(piece Piece, loc Location) bool {
 	return true
 }
 
+// Clone returns a copy of the grid.
 func (g *Grid) Clone() Grid {
 	grid := New(g.numRows, g.numCols)
 	for row := 0; row < grid.numRows; row++ {
