@@ -4,7 +4,7 @@ package BrickMosaic
 type BrickPiece struct {
 	// name is the human readable name for this brick.
 	name string
-	// id is the the LDRAW identifier for this piece.
+	// id is the the LDRAW identifier for this BrickPiece.
 	id string
 	// width is measured in studs.
 	width int
@@ -15,6 +15,7 @@ type BrickPiece struct {
 }
 
 var (
+  // OneByFour represents a 1 x 4 brick. See http://lego.wikia.com/wiki/Part_3010.
 	OneByFour = BrickPiece{
 		name:   "1x4 brick",
 		id:     "3010",
@@ -22,6 +23,7 @@ var (
 		length: 4,
 		height: 3,
 	}
+	// OneByThree represents a 1 x 3 brick. See http://lego.wikia.com/wiki/Part_3622.
 	OneByThree = BrickPiece{
 		name:   "1x3 brick",
 		id:     "3622",
@@ -29,6 +31,7 @@ var (
 		length: 3,
 		height: 3,
 	}
+	// OneByTwo represents a 1 x 2 brick. See http://lego.wikia.com/wiki/Part_3004.
 	OneByTwo = BrickPiece{
 		name:   "1x2 brick",
 		id:     "3004",
@@ -36,6 +39,7 @@ var (
 		length: 2,
 		height: 3,
 	}
+	// OneByOne represents a 1 x 1 brick. See http://lego.wikia.com/wiki/Part_3005.
 	OneByOne = BrickPiece{
 		name:   "1x1 brick",
 		id:     "3005",
@@ -43,6 +47,7 @@ var (
 		length: 1,
 		height: 3,
 	}
+	// TwoByFour represents a 2 x 4 brick. See http://lego.wikia.com/wiki/Part_3001.
 	TwoByFour = BrickPiece{
 		name:   "2x4 brick",
 		id:     "3001",
@@ -50,6 +55,7 @@ var (
 		length: 4,
 		height: 3,
 	}
+	// TwoByThree represents a 2 x 3 brick. See http://lego.wikia.com/wiki/Part_3002.
 	TwoByThree = BrickPiece{
 		name:   "2x3 brick",
 		id:     "3002",
@@ -57,6 +63,7 @@ var (
 		length: 3,
 		height: 3,
 	}
+	// TwoByTwo represents a 2 x 2 brick. See http://lego.wikia.com/wiki/Part_3003.
 	TwoByTwo = BrickPiece{
 		name:   "2x2 brick",
 		id:     "3003",
@@ -66,6 +73,8 @@ var (
 	}
 
 	// Plates
+	
+	// OneByPlate represents a 1 x 1 plate. See http://lego.wikia.com/wiki/Part_3024.
 	OneByOnePlate = BrickPiece{
 		name:   "1x1 plate",
 		id:     "3024",
@@ -73,6 +82,7 @@ var (
 		length: 1,
 		height: 1,
 	}
+	// OneByTwoPlate represents a 1 x 2 plate. See http://lego.wikia.com/wiki/Part_3023.
 	OneByTwoPlate = BrickPiece{
 		name:   "1x2 plate",
 		id:     "3023",
@@ -80,6 +90,7 @@ var (
 		length: 2,
 		height: 1,
 	}
+	// OneByThreePlate represents a 1 x 3 plate. See http://lego.wikia.com/wiki/Part_3623.
 	OneByThreePlate = BrickPiece{
 		name:   "1x3 plate",
 		id:     "3623",
@@ -87,6 +98,7 @@ var (
 		length: 3,
 		height: 1,
 	}
+	// OneByFourPlate represents a 1 x 4 plate. See http://lego.wikia.com/wiki/Part_3710.
 	OneByFourPlate = BrickPiece{
 		name:   "1x4 plate",
 		id:     "3710",
@@ -94,6 +106,7 @@ var (
 		length: 4,
 		height: 1,
 	}
+	// OneBySixPlate represents a 1 x 6 plate. See http://lego.wikia.com/wiki/Part_3666.
 	OneBySixPlate = BrickPiece{
 		name:   "1x6 plate",
 		id:     "3666",
@@ -101,6 +114,7 @@ var (
 		length: 6,
 		height: 1,
 	}
+  // OneByEightPlate represents a 1 x 8 plate. See http://brickowl.com/catalog/lego-plate-1-x-8-3460.
 	OneByEightPlate = BrickPiece{
 		name:   "1x8 plate",
 		id:     "3460",
@@ -108,6 +122,7 @@ var (
 		length: 8,
 		height: 1,
 	}
+	// OneByTenPlate represents a 1 x 10 plate. See http://brickowl.com/catalog/lego-plate-1-x-10-4477.
 	OneByTenPlate = BrickPiece{
 		name:   "1x10 plate",
 		id:     "4477",
@@ -115,6 +130,8 @@ var (
 		length: 10,
 		height: 1,
 	}
+	// Bricks represents a slice of all of the bricks (full height, not plates). They are listed in descending
+	// order of area.
 	Bricks = []BrickPiece{
 		TwoByFour,
 		TwoByThree,
@@ -125,6 +142,9 @@ var (
 		OneByTwo,
 		OneByOne,
 	}
+	
+	// Plates represents a slice of all of the standard plates (thinner than bricks). They are listed in
+	// descending order of area.
 	Plates = []BrickPiece{
 		OneByTenPlate,
 		OneByEightPlate,
@@ -134,10 +154,13 @@ var (
 		OneByTwoPlate,
 		OneByOnePlate,
 	}
-	Pieces = allPieces() //append(make([]BrickPiece, 0), Bricks..., Plates...)
+	
+	// BrickPieces represents a slice of all of the standard BrickPieces; the concatenation of Bricks and Plates.
+	BrickPieces = allBrickPieces()
 )
 
-func allPieces() []BrickPiece {
+
+func allBrickPieces() []BrickPiece {
 	result := make([]BrickPiece, len(Bricks)+len(Plates))
 	copy(result, Bricks)
 	copy(result[len(Bricks):], Plates)
