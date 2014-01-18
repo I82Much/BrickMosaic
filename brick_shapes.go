@@ -5,7 +5,7 @@ import (
   "github.com/I82Much/BrickMosaic/grid"
 )
 
-// BrickPiece represents a single piece
+// BrickPiece represents a prototypical piece, not bound to any specific orientation or color.
 type BrickPiece struct {
 	// name is the human readable name for this brick.
 	name string

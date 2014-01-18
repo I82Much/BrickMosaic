@@ -3,7 +3,54 @@ package BrickMosaic
 import (
 	"github.com/I82Much/BrickMosaic/palette"
 	"github.com/I82Much/BrickMosaic/grid"
+//	"github.com/I82Much/BrickMosaic/image"
 )
+
+// Ideal is the idealized grid of how the mosaic should look. Basically a 2d grid of color.
+type Ideal interface  {
+	Orientation() ViewOrientation
+	NumRows() int
+	NumCols() int
+	Color(row, col int) palette.BrickColor
+}
+
+// PlacedBrick represents a physical brick placed within the mosaic, at a certain location,
+// with a certain color, orientation, and shape.
+type PlacedBrick struct {
+	// Unique identifier for this brick within the mosaic
+	Id int
+	// Upper left corner of the piece
+	Origin grid.Location
+	// The relative locations of how big this brick is. Add to origin to get absolute
+	// location
+	Extent []grid.Location
+	// What color is this brick?
+	Color palette.BrickColor
+	// Characteristics of the brick - 2x4, etc
+	Shape BrickPiece 
+	// Orientation represents how the brick is placed in the mosaic
+	Orientation ViewOrientation 
+}
+
+
+// Plan represents how to build the mosaic. The resulting plan may not match the
+// ideal DesiredMosaic perfectly; for instance, an implementation might decide
+// to depart slightly from the desired colors if it leads to enhanced rigidity
+// in the structure.
+type Plan interface {
+	Orig() Ideal
+	Pieces() []PlacedBrick
+	Piece(row, col int) PlacedBrick
+	Inventory() Inventory
+}
+
+// Creator is the interface by which we convert DesiredMosaic objects into a plan
+// for building it. As discussed in Plan, different Creators might build Plans
+// that do not perfectly match the DesiredMosaic.
+type Creator interface {
+	Create(i Ideal) Plan
+}
+
 
 // ViewOrientation represents the orientation of each brick in the mosaic.
 type ViewOrientation int
@@ -19,8 +66,9 @@ const (
 	StudsRight
 )
 
+/*
 type Mosaic struct {
-	img         *BrickImage
+	img         *image.BrickImage
 	colorGrid   map[palette.BrickColor]grid.Grid
 	orientation ViewOrientation
 	solutions   map[palette.BrickColor]grid.Solution
@@ -43,7 +91,7 @@ func makeGrids(numRows, numCols uint, colorMap map[grid.Location]palette.BrickCo
 	return grids
 }
 
-func MakeMosaic(img *BrickImage, orientation ViewOrientation, pieces []grid.Piece) Mosaic {
+func MakeMosaic(img *image.BrickImage, orientation ViewOrientation, pieces []grid.Piece) Mosaic {
 	grids := makeGrids(img.rows, img.cols, img.avgColors)
 	solutions := make(map[palette.BrickColor]grid.Solution)
 	for color, grid := range grids {
@@ -65,3 +113,4 @@ func (m *Mosaic) Grids() map[palette.BrickColor]grid.Grid {
 func (m *Mosaic) Solutions() map[palette.BrickColor]grid.Solution {
 	return m.solutions
 }
+*/
