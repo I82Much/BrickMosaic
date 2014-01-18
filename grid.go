@@ -13,7 +13,7 @@
 //
 // The grid is indexed such that [0][0] is the upper left corner and [numRows-1][numColumns-1] is the
 // lower right corner.
-package grid
+package BrickMosaic
 
 import (
 	"fmt"

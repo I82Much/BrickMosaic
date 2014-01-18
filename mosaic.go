@@ -1,8 +1,8 @@
 package BrickMosaic
 
 import (
-	"github.com/I82Much/BrickMosaic/palette"
-	"github.com/I82Much/BrickMosaic/grid"
+//	"github.com/I82Much/BrickMosaic/palette"
+	//"github.com/I82Much/BrickMosaic/grid"
 //	"github.com/I82Much/BrickMosaic/image"
 )
 
@@ -11,7 +11,7 @@ type Ideal interface  {
 	Orientation() ViewOrientation
 	NumRows() int
 	NumCols() int
-	Color(row, col int) palette.BrickColor
+	Color(row, col int) BrickColor
 }
 
 // PlacedBrick represents a physical brick placed within the mosaic, at a certain location,
@@ -20,12 +20,12 @@ type PlacedBrick struct {
 	// Unique identifier for this brick within the mosaic
 	Id int
 	// Upper left corner of the piece
-	Origin grid.Location
+	Origin Location
 	// The relative locations of how big this brick is. Add to origin to get absolute
 	// location
-	Extent []grid.Location
+	Extent []Location
 	// What color is this brick?
-	Color palette.BrickColor
+	Color BrickColor
 	// Characteristics of the brick - 2x4, etc
 	Shape BrickPiece 
 	// Orientation represents how the brick is placed in the mosaic
@@ -69,13 +69,13 @@ const (
 /*
 type Mosaic struct {
 	img         *image.BrickImage
-	colorGrid   map[palette.BrickColor]grid.Grid
+	colorGrid   map[BrickColor]grid.Grid
 	orientation ViewOrientation
-	solutions   map[palette.BrickColor]grid.Solution
+	solutions   map[BrickColor]grid.Solution
 }
 
-func makeGrids(numRows, numCols uint, colorMap map[grid.Location]palette.BrickColor) map[palette.BrickColor]grid.Grid {
-	grids := make(map[palette.BrickColor]grid.Grid)
+func makeGrids(numRows, numCols uint, colorMap map[grid.Location]BrickColor) map[BrickColor]grid.Grid {
+	grids := make(map[BrickColor]grid.Grid)
 	for _, color := range colorMap {
 		// New color - initialize the grid
 		if _, ok := grids[color]; !ok {
@@ -93,7 +93,7 @@ func makeGrids(numRows, numCols uint, colorMap map[grid.Location]palette.BrickCo
 
 func MakeMosaic(img *image.BrickImage, orientation ViewOrientation, pieces []grid.Piece) Mosaic {
 	grids := makeGrids(img.rows, img.cols, img.avgColors)
-	solutions := make(map[palette.BrickColor]grid.Solution)
+	solutions := make(map[BrickColor]grid.Solution)
 	for color, grid := range grids {
 		solution, _ := grid.Solve(pieces)
 		solutions[color] = solution
@@ -106,11 +106,11 @@ func MakeMosaic(img *image.BrickImage, orientation ViewOrientation, pieces []gri
 	}
 }
 
-func (m *Mosaic) Grids() map[palette.BrickColor]grid.Grid {
+func (m *Mosaic) Grids() map[BrickColor]grid.Grid {
 	return m.colorGrid
 }
 
-func (m *Mosaic) Solutions() map[palette.BrickColor]grid.Solution {
+func (m *Mosaic) Solutions() map[BrickColor]grid.Solution {
 	return m.solutions
 }
 */

@@ -1,4 +1,4 @@
-package BrickMosaic
+package render
 
 import (
 	"bytes"

@@ -1,4 +1,4 @@
-package grid
+package BrickMosaic
 
 // Piece is the virtual representation of a physical brick. By abstracting out the orientation of the
 // brick in real world space, it allows us to use the same algorithm for creating mosaics (solving grids)

@@ -3,8 +3,6 @@ package BrickMosaic
 import (
 	"reflect"
 	"testing"
-
-  "github.com/I82Much/BrickMosaic/grid"
 )
 
 // Make sure all bricks are accounted for
@@ -31,7 +29,7 @@ func TestAllBricks(t *testing.T) {
 type pieceLocWant struct {
 	name  string
 	piece BrickPiece
-	want  grid.Piece
+	want  Piece
 }
 
 func TestStudsUpPiece(t *testing.T) {
@@ -39,17 +37,17 @@ func TestStudsUpPiece(t *testing.T) {
 		{
 			"1x1",
 			OneByOne,
-			grid.RectPiece{1, 1},
+			RectPiece{1, 1},
 		},
 		{
 			"2x4",
 			TwoByFour,
-			grid.RectPiece{2, 4},
+			RectPiece{2, 4},
 		},
 		{
 			"1x4 plate",
 			OneByFourPlate,
-			grid.RectPiece{1, 4},
+			RectPiece{1, 4},
 		},
 	} {
 		if got := StudsUpPiece(test.piece); !reflect.DeepEqual(got.Extent(), test.want.Extent()) {
@@ -64,19 +62,19 @@ func TestStudsTopPiece(t *testing.T) {
 			"1x1",
 			OneByOne,
 			// 3 plates high, 1 across
-			grid.RectPiece{3, 1},
+			RectPiece{3, 1},
 		},
 		{
 			"2x4",
 			TwoByFour,
 			// 3 plates high, 4 across
-			grid.RectPiece{3, 4},
+			RectPiece{3, 4},
 		},
 		{
 			"1x4 plate",
 			OneByFourPlate,
 			// 1 plate high, 4 across
-			grid.RectPiece{1, 4},
+			RectPiece{1, 4},
 		},
 	} {
 		if got := StudsTopPiece(test.piece); !reflect.DeepEqual(got.Extent(), test.want.Extent()) {
@@ -92,19 +90,19 @@ func TestStudsRightPiece(t *testing.T) {
 			"1x1",
 			OneByOne,
 			// 1 brick high, 3 plates long
-			grid.RectPiece{1, 3},
+			RectPiece{1, 3},
 		},
 		{
 			"2x4",
 			TwoByFour,
 			// 4 bricks high, 3 plates long
-			grid.RectPiece{4, 3},
+			RectPiece{4, 3},
 		},
 		{
 			"1x4 plate",
 			OneByFourPlate,
 			// 4 bricks high, 1 plate long
-			grid.RectPiece{4, 1},
+			RectPiece{4, 1},
 		},
 	} {
 		if got := StudsRightPiece(test.piece); !reflect.DeepEqual(got.Extent(), test.want.Extent()) {
