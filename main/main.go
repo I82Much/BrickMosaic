@@ -12,7 +12,6 @@ import (
 	//"strings"
 
 	"github.com/I82Much/BrickMosaic"
-_	"github.com/I82Much/BrickMosaic/grid/grid"
 )
 
 var (
