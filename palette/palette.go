@@ -1,8 +1,8 @@
-package BrickMosaic
+// Package palette represents the colors of LEGO bricks. It defines sets of colors that will be used
+// as the palette for creating the final mosaic (any color not in the palette will be ignored).
+package palette
 
 import (
-	//  "fmt"
-	//	"image"
 	"image/color"
 )
 

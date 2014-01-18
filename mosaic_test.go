@@ -3,13 +3,15 @@ package BrickMosaic
 import (
 	"reflect"
 	"testing"
+
+	"github.com/I82Much/BrickMosaic/palette"
 )
 
 type gridTest struct {
 	name             string
-	input            map[Location]BrickColor
+	input            map[Location]palette.BrickColor
 	numRows, numCols uint
-	want             map[BrickColor]Grid
+	want             map[palette.BrickColor]Grid
 }
 
 func TestMakeGrids(t *testing.T) {
@@ -22,30 +24,30 @@ func TestMakeGrids(t *testing.T) {
 	for _, test := range []gridTest{
 		{
 			"Empty",
-			make(map[Location]BrickColor),
+			make(map[Location]palette.BrickColor),
 			0, 0,
-			make(map[BrickColor]Grid),
+			make(map[palette.BrickColor]Grid),
 		},
 		{
 			"One Color - 1x1",
-			map[Location]BrickColor{
-				Location{0, 0}: White,
+			map[Location]palette.BrickColor{
+				Location{0, 0}: palette.White,
 			},
 			1, 1,
-			map[BrickColor]Grid{
-				White: MakeFilledGrid(1, 1, ToBeFilled),
+			map[palette.BrickColor]Grid{
+				palette.White: MakeFilledGrid(1, 1, ToBeFilled),
 			},
 		},
 		{
 			"Two colors",
-			map[Location]BrickColor{
-				Location{0, 0}: White,
-				Location{0, 1}: Black,
+			map[Location]palette.BrickColor{
+				Location{0, 0}: palette.White,
+				Location{0, 1}: palette.Black,
 			},
 			1, 2,
-			map[BrickColor]Grid{
-				White: whiteGrid,
-				Black: blackGrid,
+			map[palette.BrickColor]Grid{
+				palette.White: whiteGrid,
+				palette.Black: blackGrid,
 			},
 		},
 	} {

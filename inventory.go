@@ -1,9 +1,13 @@
 package BrickMosaic
 
-import "sort"
+import (
+	"sort"
+
+	"github.com/I82Much/BrickMosaic/palette"
+)
 
 type Inventory struct {
-	pieces map[BrickColor][]MosaicPiece
+	pieces map[palette.BrickColor][]MosaicPiece
 }
 
 type Usage struct {
@@ -13,7 +17,7 @@ type Usage struct {
 }
 
 type ColorUsage struct {
-	color BrickColor
+	color palette.BrickColor
 	usage Usage
 }
 
@@ -31,11 +35,11 @@ func (c ColorUsages) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
 
-func (inventory Inventory) mosaicPiecesForColor(c BrickColor) []MosaicPiece {
+func (inventory Inventory) mosaicPiecesForColor(c palette.BrickColor) []MosaicPiece {
 	return inventory.pieces[c]
 }
 
-func (inventory Inventory) PiecesForColor(c BrickColor) []BrickPiece {
+func (inventory Inventory) PiecesForColor(c palette.BrickColor) []BrickPiece {
 	mosaics := inventory.mosaicPiecesForColor(c)
 	coloredPieces := make([]BrickPiece, 0)
 	for _, p := range mosaics {
@@ -44,8 +48,8 @@ func (inventory Inventory) PiecesForColor(c BrickColor) []BrickPiece {
 	return coloredPieces
 }
 
-func (inventory Inventory) UsageForColorMap() map[BrickColor]Usage {
-	usageMap := make(map[BrickColor]Usage)
+func (inventory Inventory) UsageForColorMap() map[palette.BrickColor]Usage {
+	usageMap := make(map[palette.BrickColor]Usage)
 	for color := range inventory.pieces {
 		coloredPieces := inventory.mosaicPiecesForColor(color)
 		area := 0
@@ -71,9 +75,9 @@ func (inventory Inventory) DescendingUsage() []ColorUsage {
 }
 
 func MakeInventory() Inventory {
-	return Inventory{make(map[BrickColor][]MosaicPiece)}
+	return Inventory{make(map[palette.BrickColor][]MosaicPiece)}
 }
 
-func (inventory *Inventory) Add(c BrickColor, p MosaicPiece) {
+func (inventory *Inventory) Add(c palette.BrickColor, p MosaicPiece) {
 	inventory.pieces[c] = append(inventory.pieces[c], p)
 }

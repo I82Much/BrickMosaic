@@ -11,7 +11,7 @@ import (
 	"os"
 	//"strings"
 
-	BrickMosaic "github.com/I82Much/BrickMosaic"
+	"github.com/I82Much/BrickMosaic"
 )
 
 var (

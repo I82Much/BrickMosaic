@@ -1,7 +1,12 @@
 package BrickMosaic
 
+import (
+	"github.com/I82Much/BrickMosaic/palette"
+)
+
 // ViewOrientation represents the orientation of each brick in the mosaic.
 type ViewOrientation int
+
 const (
 	// StudsUp is a top down view, studs on top. Rows and columns refer to equal distances.
 	StudsUp ViewOrientation = iota
@@ -15,13 +20,13 @@ const (
 
 type Mosaic struct {
 	img         *BrickImage
-	colorGrid   map[BrickColor]Grid
+	colorGrid   map[palette.BrickColor]Grid
 	orientation ViewOrientation
-	solutions   map[BrickColor]GridSolution
+	solutions   map[palette.BrickColor]GridSolution
 }
 
-func makeGrids(numRows, numCols uint, colorMap map[Location]BrickColor) map[BrickColor]Grid {
-	grids := make(map[BrickColor]Grid)
+func makeGrids(numRows, numCols uint, colorMap map[Location]palette.BrickColor) map[palette.BrickColor]Grid {
+	grids := make(map[palette.BrickColor]Grid)
 	for _, color := range colorMap {
 		// New color - initialize the grid
 		if _, ok := grids[color]; !ok {
@@ -39,7 +44,7 @@ func makeGrids(numRows, numCols uint, colorMap map[Location]BrickColor) map[Bric
 
 func MakeMosaic(img *BrickImage, orientation ViewOrientation, pieces []Piece) Mosaic {
 	grids := makeGrids(img.rows, img.cols, img.avgColors)
-	solutions := make(map[BrickColor]GridSolution)
+	solutions := make(map[palette.BrickColor]GridSolution)
 	for color, grid := range grids {
 		solution, _ := grid.Solve(pieces)
 		solutions[color] = solution
@@ -52,10 +57,10 @@ func MakeMosaic(img *BrickImage, orientation ViewOrientation, pieces []Piece) Mo
 	}
 }
 
-func (m *Mosaic) Grids() map[BrickColor]Grid {
+func (m *Mosaic) Grids() map[palette.BrickColor]Grid {
 	return m.colorGrid
 }
 
-func (m *Mosaic) Solutions() map[BrickColor]GridSolution {
+func (m *Mosaic) Solutions() map[palette.BrickColor]GridSolution {
 	return m.solutions
 }

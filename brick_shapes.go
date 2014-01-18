@@ -15,7 +15,7 @@ type BrickPiece struct {
 }
 
 var (
-  // OneByFour represents a 1 x 4 brick. See http://lego.wikia.com/wiki/Part_3010.
+	// OneByFour represents a 1 x 4 brick. See http://lego.wikia.com/wiki/Part_3010.
 	OneByFour = BrickPiece{
 		name:   "1x4 brick",
 		id:     "3010",
@@ -73,7 +73,7 @@ var (
 	}
 
 	// Plates
-	
+
 	// OneByPlate represents a 1 x 1 plate. See http://lego.wikia.com/wiki/Part_3024.
 	OneByOnePlate = BrickPiece{
 		name:   "1x1 plate",
@@ -114,7 +114,7 @@ var (
 		length: 6,
 		height: 1,
 	}
-  // OneByEightPlate represents a 1 x 8 plate. See http://brickowl.com/catalog/lego-plate-1-x-8-3460.
+	// OneByEightPlate represents a 1 x 8 plate. See http://brickowl.com/catalog/lego-plate-1-x-8-3460.
 	OneByEightPlate = BrickPiece{
 		name:   "1x8 plate",
 		id:     "3460",
@@ -142,7 +142,7 @@ var (
 		OneByTwo,
 		OneByOne,
 	}
-	
+
 	// Plates represents a slice of all of the standard plates (thinner than bricks). They are listed in
 	// descending order of area.
 	Plates = []BrickPiece{
@@ -154,11 +154,10 @@ var (
 		OneByTwoPlate,
 		OneByOnePlate,
 	}
-	
-	// BrickPieces represents a slice of all of the standard BrickPieces; the concatenation of Bricks and Plates.
-	BrickPieces = allBrickPieces()
-)
 
+	// Pieces represents a slice of all of the standard BrickPieces; the concatenation of Bricks and Plates.
+	Pieces = allBrickPieces()
+)
 
 func allBrickPieces() []BrickPiece {
 	result := make([]BrickPiece, len(Bricks)+len(Plates))
