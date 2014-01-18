@@ -11,6 +11,7 @@ Get the svg library:
 Get the mosaic library:
     go get github.com/I82Much/BrickMosaic
 
+go install github.com/user/hello
 Build the library:
     go build
 

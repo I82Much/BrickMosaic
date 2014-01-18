@@ -1,12 +1,7 @@
 package BrickMosaic
 
-import (
-/*  "image"
-"image/color"*/
-)
-
+// ViewOrientation represents the orientation of each brick in the mosaic.
 type ViewOrientation int
-
 const (
 	// StudsUp is a top down view, studs on top. Rows and columns refer to equal distances.
 	StudsUp ViewOrientation = iota
