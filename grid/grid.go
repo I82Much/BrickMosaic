@@ -12,12 +12,22 @@
 //
 // The grid is indexed such that [0][0] is the upper left corner and [numRows-1][numColumns-1] is the
 // lower right corner.
-package BrickMosaic
+package grid
 
 import (
 	"fmt"
 	"strings"
 )
+
+// Location represents one cell in the grid.
+type Location struct {
+	Row, Col int
+}
+
+// Add adds one location to another (vector addition).
+func (loc Location) Add(loc2 Location) Location {
+	return Location{loc.Row + loc2.Row, loc.Col + loc2.Col}
+}
 
 // State is an enum representing the state of a location in the grid.
 type State int
@@ -117,12 +127,14 @@ func (g *Grid) Set(row, col int, state State) {
 }
 
 // PieceFits determines if the given piece can fit at the desired location
-// in the grid, where loc is the upper left hand corner of the piece.
+// in the grid, where loc is the upper left hand corner of the piece. Note that
+// orientation is already baked into the Extent() of the piece, which is why it is
+// not an argument to this method.
 func (g *Grid) PieceFits(piece Piece, loc Location) bool {
 	relativeLocations := piece.Extent()
 	for _, relLoc := range relativeLocations {
 		absLoc := relLoc.Add(loc)
-		if gridEntry := g.Get(absLoc.row, absLoc.col); gridEntry != ToBeFilled {
+		if gridEntry := g.Get(absLoc.Row, absLoc.Col); gridEntry != ToBeFilled {
 			return false
 		}
 	}
@@ -138,6 +150,9 @@ func (g *Grid) Clone() Grid {
 	}
 	return grid
 }
+
+// TODO(ndunn): this is the piece that should be an interface
+
 
 // Solve attempts to solve the grid by filling in the missing pieces.
 // The pieces are considered in the order defined in the pieces list.
@@ -163,7 +178,7 @@ func (g *Grid) Solve(pieces []Piece) (GridSolution, error) {
 						locs[loc] = p
 						for _, pieceLoc := range p.Extent() {
 							absLoc := loc.Add(pieceLoc)
-							g.state[absLoc.row][absLoc.col] = Filled
+							g.state[absLoc.Row][absLoc.Col] = Filled
 						}
 					}
 				}
@@ -208,7 +223,7 @@ func (solution GridSolution) String() string {
 		// The locations of the extent are relative to upper left hand corner of the piece
 		for _, relLoc := range piece.Extent() {
 			absLoc := relLoc.Add(loc)
-			pieces[absLoc.row][absLoc.col] = pieceLetter
+			pieces[absLoc.Row][absLoc.Col] = pieceLetter
 		}
 	}
 

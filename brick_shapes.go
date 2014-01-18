@@ -1,6 +1,10 @@
 // TODO(ndunn): move to a more appropriate package
 package BrickMosaic
 
+import (
+  "github.com/I82Much/BrickMosaic/grid"
+)
+
 type BrickPiece struct {
 	// name is the human readable name for this brick.
 	name string
@@ -163,6 +167,65 @@ func allBrickPieces() []BrickPiece {
 	result := make([]BrickPiece, len(Bricks)+len(Plates))
 	copy(result, Bricks)
 	copy(result[len(Bricks):], Plates)
+	return result
+}
+
+// TODO(ndunn): support non-rectangular shapes
+// TODO(ndunn): color?
+type MosaicPiece struct {
+	Brick BrickPiece
+	// In whatever orientation the mosaic is facing. e.g. a 2x4 brick when viewed above has size 2x4.
+	// When viewed from the side, it has size 3x4 (3 plates high, 4 bricks wide)
+	locs []grid.Location
+}
+
+func (r MosaicPiece) Extent() []grid.Location {
+	return r.locs
+}
+
+func StudsUpPiece(piece BrickPiece) MosaicPiece {
+	// Studs up, so rows = width, cols = length
+	r := grid.RectPiece{piece.width, piece.length}
+	return MosaicPiece{
+		piece,
+		r.Extent(),
+	}
+}
+
+func StudsTopPiece(piece BrickPiece) MosaicPiece {
+	// Studs to the top on side, so rows = height, cols = length
+	r := grid.RectPiece{piece.height, piece.length}
+	return MosaicPiece{
+		piece,
+		r.Extent(),
+	}
+}
+
+func StudsRightPiece(piece BrickPiece) MosaicPiece {
+	// Studs to the right on its side, so rows = length, cols = height
+	r := grid.RectPiece{piece.length, piece.height}
+	return MosaicPiece{
+		piece,
+		r.Extent(),
+	}
+}
+
+func PiecesForOrientation(o ViewOrientation, pieces []BrickPiece) []grid.Piece {
+	result := make([]grid.Piece, len(pieces))
+	switch o {
+	case StudsUp:
+		for i, p := range pieces {
+			result[i] = StudsUpPiece(p)
+		}
+	case StudsTop:
+		for i, p := range pieces {
+			result[i] = StudsTopPiece(p)
+		}
+	case StudsRight:
+		for i, p := range pieces {
+			result[i] = StudsRightPiece(p)
+		}
+	}
 	return result
 }
 

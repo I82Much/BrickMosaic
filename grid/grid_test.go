@@ -1,4 +1,4 @@
-package BrickMosaic
+package grid
 
 import (
 	"reflect"

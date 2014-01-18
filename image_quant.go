@@ -8,15 +8,9 @@ import (
 	"image/color"
 
 	brickpalette "github.com/I82Much/BrickMosaic/palette"
+	"github.com/I82Much/BrickMosaic/grid"
 )
 
-type Location struct {
-	row, col int
-}
-
-func (loc Location) Add(loc2 Location) Location {
-	return Location{loc.row + loc2.row, loc.col + loc2.col}
-}
 
 // TODO(ndunn): top down vs side on
 type BrickImage struct {
@@ -24,7 +18,7 @@ type BrickImage struct {
 	palette    color.Palette
 	rows, cols uint
 	// Maps each grid cell to its color
-	avgColors map[Location]brickpalette.BrickColor
+	avgColors map[grid.Location]brickpalette.BrickColor
 }
 
 // AverageColor determines the 'average' color of the subimage whose coordinates are contained in the
@@ -63,7 +57,7 @@ func (si *BrickImage) Bounds() image.Rectangle {
 // ColorAt returns the best palette.BrickColor for the given row/column
 // in the image based on the palette this image was instantiated with.
 func (si *BrickImage) ColorAt(row, col int) brickpalette.BrickColor {
-	loc := Location{row, col}
+	loc := grid.Location{row, col}
 	if c, ok := si.avgColors[loc]; ok {
 		return c
 	}
@@ -106,7 +100,7 @@ func (si *BrickImage) At(x, y int) color.Color {
 }
 
 func NewBrickImage(img image.Image, rows, cols int, palette color.Palette) image.Image {
-	brickImage := &BrickImage{img, palette, uint(rows), uint(cols), make(map[Location]brickpalette.BrickColor)}
+	brickImage := &BrickImage{img, palette, uint(rows), uint(cols), make(map[grid.Location]brickpalette.BrickColor)}
 	// Initialize the color map
 	for row := 0; row < rows; row++ {
 		for col := 0; col < cols; col++ {

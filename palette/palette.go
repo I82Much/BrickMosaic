@@ -6,6 +6,7 @@ import (
 	"image/color"
 )
 
+// BrickColor represents the color of a LEGO brick. It implements the color.Color interface via delegation.
 type BrickColor struct {
 	id   int
 	name string

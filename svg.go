@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/ajstarks/svgo"
+  "github.com/I82Much/BrickMosaic/grid"
 )
 
 func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
@@ -25,24 +26,24 @@ func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
 }
 
 // Upper left origin
-func BoundingBox(p Piece, origin Location) (minRow, minCol, maxRow, maxCol int) {
+func BoundingBox(p grid.Piece, origin grid.Location) (minRow, minCol, maxRow, maxCol int) {
 	minRow = 9999999
 	minCol = 99999999
 	maxRow = -99999999
 	maxCol = -99999999
 	for _, loc := range p.Extent() {
 		translated := origin.Add(loc)
-		if translated.row < minRow {
-			minRow = translated.row
+		if translated.Row < minRow {
+			minRow = translated.Row
 		}
-		if translated.row > maxRow {
-			maxRow = translated.row
+		if translated.Row > maxRow {
+			maxRow = translated.Row
 		}
-		if translated.col < minCol {
-			minCol = translated.col
+		if translated.Col < minCol {
+			minCol = translated.Col
 		}
-		if translated.col > maxCol {
-			maxCol = translated.col
+		if translated.Col > maxCol {
+			maxCol = translated.Col
 		}
 	}
 	return
@@ -62,8 +63,8 @@ func DrawMosaic(m Mosaic, canvas *svg.SVG) {
 		for origin, piece := range solution.Pieces {
 			for _, loc := range piece.Extent() {
 				translated := origin.Add(loc)
-				startX := translated.col * brickWidth
-				startY := translated.row * brickHeight
+				startX := translated.Col * brickWidth
+				startY := translated.Row * brickHeight
 				// In range 0, 65535; need to convert to 0-255
 				r, g, b, _ := color.RGBA()
 				colorStr := canvas.RGB(int(r/255), int(g/255), int(b/255))
