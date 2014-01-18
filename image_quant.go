@@ -11,8 +11,6 @@ import (
 	"github.com/I82Much/BrickMosaic/grid"
 )
 
-
-// TODO(ndunn): top down vs side on
 type BrickImage struct {
 	img        image.Image
 	palette    color.Palette

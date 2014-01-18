@@ -1,11 +1,12 @@
-// grid.go encapsulates a 2d array of coordinates and their state as we build the mosaic. Its coordinates
-// are divorced from actual physical coordinates. For instance, we treat all mosaics as the same grid
+// package grid represents a 2d array of coordinates and their state as we build the mosaic. Its coordinates
+// are divorced from the physical coordinate system. For instance, we treat all mosaics as the same grid
 // coordinate system, regardless of whether we are building them top down, or from the top down, or from
 // left to right. This grid abstracts away the physical dimensions of the bricks and allows us to concentrate
-// on the core algorithm.
+// on the core algorithm. This is handled via the Piece interface defined in piece.go.
 //
-// In each orientation, a column is equal to the smallest width piece, and a row is equal to the smallest height
-// piece. For instance, if we are looking top down at a mosaic, each row and column is of equal size.
+// In each orientation, a column of the grid has width equal to the smallest width piece, and a 
+// row is as high as the smallest height piece. 
+// For instance, if we are looking top down at a mosaic, each row and column is of equal size.
 // If we are building a studs up mosaic, the row is equal in height to a single plate, and the column
 // would be equal to the width of a single 1x1. If we are building a studs right mosaic, the row is
 // equal to the width of a single 1x1 and the column would be equal to the height of a plate.
