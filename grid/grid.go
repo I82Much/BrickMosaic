@@ -54,8 +54,8 @@ type GridSolution struct {
 	Pieces   map[Location]Piece
 }
 
-// MakeGrid initializes an empty grid of size numRows by numCols.
-func MakeGrid(numRows, numCols int) Grid {
+// New returns an empty grid of size numRows by numCols.
+func New(numRows, numCols int) Grid {
 	grid := make([][]State, numRows)
 	for i := 0; i < numRows; i++ {
 		grid[i] = make([]State, numCols)
@@ -65,10 +65,10 @@ func MakeGrid(numRows, numCols int) Grid {
 	}
 }
 
-// MakeFilledGrid is a convenience function for creating
+// WithState is a convenience function for creating
 // a grid whose contents are entirely filled with state s.
-func MakeFilledGrid(numRows, numCols int, s State) Grid {
-	grid := MakeGrid(numRows, numCols)
+func WithState(numRows, numCols int, s State) Grid {
+	grid := New(numRows, numCols)
 	grid.Fill(s)
 	return grid
 }
@@ -142,7 +142,7 @@ func (g *Grid) PieceFits(piece Piece, loc Location) bool {
 }
 
 func (g *Grid) Clone() Grid {
-	grid := MakeGrid(g.numRows, g.numCols)
+	grid := New(g.numRows, g.numCols)
 	for row := 0; row < grid.numRows; row++ {
 		for col := 0; col < grid.numCols; col++ {
 			grid.state[row][col] = g.state[row][col]

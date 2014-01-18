@@ -18,8 +18,8 @@ type gridTest struct {
 
 func TestMakeGrids(t *testing.T) {
 	// Two color test - one row, two columns. First color is white, second is black
-	whiteGrid := grid.MakeGrid(1, 2)
-	blackGrid := grid.MakeGrid(1, 2)
+	whiteGrid := grid.New(1, 2)
+	blackGrid := grid.New(1, 2)
 	whiteGrid.Set(0, 0, grid.ToBeFilled)
 	blackGrid.Set(0, 1, grid.ToBeFilled)
 
@@ -37,7 +37,7 @@ func TestMakeGrids(t *testing.T) {
 			},
 			1, 1,
 			map[palette.BrickColor]grid.Grid{
-				palette.White: grid.MakeFilledGrid(1, 1, grid.ToBeFilled),
+				palette.White: grid.WithState(1, 1, grid.ToBeFilled),
 			},
 		},
 		{

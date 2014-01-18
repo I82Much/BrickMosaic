@@ -31,7 +31,7 @@ func makeGrids(numRows, numCols uint, colorMap map[grid.Location]palette.BrickCo
 	for _, color := range colorMap {
 		// New color - initialize the grid
 		if _, ok := grids[color]; !ok {
-			grids[color] = grid.MakeGrid(int(numRows), int(numCols))
+			grids[color] = grid.New(int(numRows), int(numCols))
 		}
 	}
 	// Set all of the 'to be filled' bits for each color. Every thing else is
