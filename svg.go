@@ -1,12 +1,11 @@
-package render
-
+package BrickMosaic
+/*
 import (
 	"bytes"
 	"fmt"
 	"strings"
 
 	"github.com/ajstarks/svgo"
-  "github.com/I82Much/BrickMosaic/grid"
 )
 
 func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
@@ -26,7 +25,7 @@ func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
 }
 
 // Upper left origin
-func BoundingBox(p grid.Piece, origin grid.Location) (minRow, minCol, maxRow, maxCol int) {
+func BoundingBox(p Piece, origin Location) (minRow, minCol, maxRow, maxCol int) {
 	minRow = 9999999
 	minCol = 99999999
 	maxRow = -99999999
@@ -145,3 +144,4 @@ func MakeSvgInstructions(m Mosaic) []byte {
 	canvas.End()
 	return buf.Bytes()
 }
+*/
