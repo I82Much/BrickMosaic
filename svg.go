@@ -1,12 +1,18 @@
 package BrickMosaic
-/*
+
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/ajstarks/svgo"
 )
+
+type SVGRenderer struct {
+  w io.Writer
+  canvas *svg.SVG
+}
 
 func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
 	// Change aspect ratio
@@ -48,19 +54,24 @@ func BoundingBox(p Piece, origin Location) (minRow, minCol, maxRow, maxCol int) 
 	return
 }
 
-func DrawMosaic(m Mosaic, canvas *svg.SVG) {
-	brickWidth, brickHeight := GetDimensionsForBlock(m.orientation)
-	imageWidth := brickWidth * int(m.img.cols)
-	imageHeight := brickHeight * int(m.img.rows)
+
+func DoRender(p Plan, canvas *svg.SVG) {
+	brickWidth, brickHeight := GetDimensionsForBlock(p.Orig().Orientation())
+	imageWidth := brickWidth * p.Orig().NumCols()
+	imageHeight := brickHeight * p.Orig().NumRows()
 
 	canvas.Gid("blocks")
+	bricksByColor := make(map[BrickColor][]PlacedBrick)
+	for _, b := range p.Pieces() {
+	  bricksByColor[b.Color] = append(bricksByColor[b.Color], b)
+	}
 	//Draw the blocks of color
 	// Draw outlines around each piece
-	for color, solution := range m.Solutions() {
+	for color, bricks := range bricksByColor {
 		canvas.Gid(fmt.Sprintf("blocks-%v", color))
-
-		for origin, piece := range solution.Pieces {
-			for _, loc := range piece.Extent() {
+    for _, piece := range bricks {
+      origin := piece.Origin
+			for _, loc := range piece.Extent {
 				translated := origin.Add(loc)
 				startX := translated.Col * brickWidth
 				startY := translated.Row * brickHeight
@@ -74,6 +85,7 @@ func DrawMosaic(m Mosaic, canvas *svg.SVG) {
 	}
 	canvas.Gend()
 
+/*
 	canvas.Gid("block_outlines")
 	// Draw outlines around each piece
 	for _, solution := range m.Solutions() {
@@ -96,13 +108,14 @@ func DrawMosaic(m Mosaic, canvas *svg.SVG) {
 			canvas.Rect(startX, startY, width, height, style)
 		}
 	}
-	canvas.Gend()
+	canvas.Gend()*/
 
+  // FIXME(ndunn): this only works for studs right mosaic.
 	canvas.Gid("gridlines")
 	majorOpacity := 0.5
 	minorOpacity := 0.2
 	// Draw the grid lines
-	for row := 0; row < int(m.img.rows)+1; row++ {
+	for row := 0; row < p.Orig().NumRows()+1; row++ {
 		y := int(row * brickHeight)
 		// Every 4th row (corresponding to length of 2x4), draw it darker.
 		alpha := minorOpacity
@@ -116,7 +129,7 @@ func DrawMosaic(m Mosaic, canvas *svg.SVG) {
 	}
 
 	// Vertical grid lines
-	for col := 0; col < int(m.img.cols)+1; col++ {
+	for col := 0; col < p.Orig().NumCols()+1; col++ {
 		x := int(col * brickWidth)
 		// Every 3rd column (corresponding to 3 stacked plates), draw it darker.
 		alpha := minorOpacity
@@ -130,6 +143,27 @@ func DrawMosaic(m Mosaic, canvas *svg.SVG) {
 
 }
 
+func (r SVGRenderer) Render(p Plan) {
+  DoRender(p, r.canvas)
+}
+
+func NewSVGRenderer(p Plan) SVGRenderer {
+  var buf bytes.Buffer
+	canvas := svg.New(&buf)
+
+	blockWidth, blockHeight := GetDimensionsForBlock(p.Orig().Orientation())
+	width := blockWidth * int(p.Orig().NumCols())
+	height := blockHeight * int(p.Orig().NumRows())
+
+	canvas.Start(width, height)
+	canvas.Title("Grid")
+	//DrawMosaic(m, canvas)
+	return SVGRenderer{&buf, canvas}
+	//canvas.End()
+	//return buf.Bytes()
+}
+
+/*
 func MakeSvgInstructions(m Mosaic) []byte {
 	var buf bytes.Buffer
 	canvas := svg.New(&buf)
