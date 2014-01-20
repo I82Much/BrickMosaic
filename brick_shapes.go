@@ -208,7 +208,7 @@ func StudsRightPiece(piece BrickPiece) MosaicPiece {
 }
 
 func PiecesForOrientation(o ViewOrientation, pieces []BrickPiece) []MosaicPiece {
-	result := make([]Piece, len(pieces))
+	result := make([]MosaicPiece, len(pieces))
 	switch o {
 	case StudsUp:
 		for i, p := range pieces {

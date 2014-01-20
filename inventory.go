@@ -2,8 +2,6 @@ package BrickMosaic
 
 import (
 	"sort"
-
-	//"github.com/I82Much/BrickMosaic/palette"
 )
 
 type Inventory struct {

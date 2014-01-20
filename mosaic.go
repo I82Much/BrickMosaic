@@ -88,6 +88,8 @@ func (g *gridBasedPlan) Piece(row, col int) PlacedBrick {
   return g.placedBricks[Location{row, col}]
 }
 
+func (g *gridBasedPlan) Inventory() 
+
 func CreateGridMosaic(m Ideal) Plan {
   grids := makeGrids(m)
   
@@ -96,7 +98,7 @@ func CreateGridMosaic(m Ideal) Plan {
 	solutions := make(map[BrickColor]Solution)
 	placedBricks := make(map[Location]PlacedBrick)
 	for color, grid := range grids {
-		solution, _ := grid.Solve(pieces)
+		solution, _ := grid.Solve(allPieces)
 		solutions[color] = solution
 		
 		// Now we know where each piece goes. Create PlacedBrick representations of the pieces.
@@ -118,9 +120,9 @@ func CreateGridMosaic(m Ideal) Plan {
   	}
 	}
 	return gridBasedPlan{
-		img,
+		m,
 		grids,
-		orientation,
+		m.Orientation(),
 		solutions,
 		placedBricks,
 	}
