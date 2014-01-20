@@ -54,14 +54,14 @@ func TestGet(t *testing.T) {
 		row, col int
 		want     State
 	}
-	various := New(5, 6)
+	various := NewGrid(5, 6)
 	various.state[4][3] = ToBeFilled
 	various.state[3][2] = Filled
 	for _, test := range []getTest{
-		{"empty", New(0, 0), 0, 0, Empty},
-		{"negative row", New(0, 0), -1, 0, Empty},
-		{"negative col", New(0, 0), 0, -1, Empty},
-		{"out of bounds", New(5, 5), -1, 45, Empty},
+		{"empty", NewGrid(0, 0), 0, 0, Empty},
+		{"negative row", NewGrid(0, 0), -1, 0, Empty},
+		{"negative col", NewGrid(0, 0), 0, -1, Empty},
+		{"out of bounds", NewGrid(5, 5), -1, 45, Empty},
 		{"to be filled", various, 4, 3, ToBeFilled},
 		{"filled", various, 3, 2, Filled},
 	} {
@@ -83,7 +83,7 @@ func TestPieceFits(t *testing.T) {
 	twoByTwo := RectPiece{2, 2}
 	twoByFour := RectPiece{2, 4}
 
-	various := New(5, 6)
+	various := NewGrid(5, 6)
 	various.state[4][3] = ToBeFilled
 	various.state[3][2] = Filled
 	for _, test := range []fitTest{
@@ -170,7 +170,7 @@ func TestSolve(t *testing.T) {
 }
 
 func TestClone(t *testing.T) {
-  various := New(5, 6)
+  various := NewGrid(5, 6)
 	various.state[4][3] = ToBeFilled
 	various.state[3][2] = Filled
 	

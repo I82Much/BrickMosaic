@@ -66,31 +66,82 @@ const (
 	StudsRight
 )
 
-/*
-type Mosaic struct {
-	img         *image.BrickImage
-	colorGrid   map[BrickColor]grid.Grid
+// Create is the interface by which we convert Ideal mosaics into a plan
+// for building it. As discussed in Plan, different Creators might build Plans
+// that do not perfectly match the DesiredMosaic.
+type Create func(i Ideal) Plan
+
+// gridBasedPlan is a basic implementation of the Plan interface
+type gridBasedPlan struct {
+	img         Ideal
+	colorGrid   map[BrickColor]Grid
 	orientation ViewOrientation
-	solutions   map[BrickColor]grid.Solution
+	solutions   map[BrickColor]Solution
 }
 
-func makeGrids(numRows, numCols uint, colorMap map[grid.Location]BrickColor) map[BrickColor]grid.Grid {
-	grids := make(map[BrickColor]grid.Grid)
-	for _, color := range colorMap {
-		// New color - initialize the grid
-		if _, ok := grids[color]; !ok {
-			grids[color] = grid.New(int(numRows), int(numCols))
-		}
-	}
-	// Set all of the 'to be filled' bits for each color. Every thing else is
-	// 'empty' so it won't be filled in with this color.
-	for loc, color := range colorMap {
-		g := grids[color]
-		g.Set(loc.Row, loc.Col, grid.ToBeFilled)
-	}
+/*
+func (g* gridBasedPlan) Orig() Ideal {
+  return g.img
+}
+
+func (g* gridBasedPlan) Pieces() []PlacedBrick {
+
+}
+
+func (g *gridBasedPlan) Piece(row, col int) PlacedBrick {
+  
+}
+*/
+
+/*Plan interface {
+	Orig() Ideal
+	Pieces() []PlacedBrick
+	Piece(row, col int) PlacedBrick
+	Inventory() Inventory
+}*/
+
+//func CreateGridMosaic() {}
+
+// makeGrids is the core piece of the algorithm. For each color in the ideal image, we create a grid whose
+// 'TO_BE_FILLED' cells are set to the places in the ideal location for that color. In other words, say we have
+// a square image whose upper left quadrant is red, upper right is blue, lower left is black, lower right
+// is gray.
+// Red grid would be
+// 1 1 0 0
+// 0 0 0 0
+//
+// Blue is
+// 0 0 1 1
+// 0 0 0 0
+//
+// Black is
+// 0 0 0 0
+// 1 1 0 0
+//
+// Gray is
+// 0 0 0 0
+// 0 0 1 1
+//
+// Where the 0's indicate Empty and 1 represents ToBeFilled.
+func makeGrids(i Ideal) map[BrickColor]Grid {
+  grids := make(map[BrickColor]Grid)
+  for row := 0; row < i.NumRows(); row++ {
+    for col := 0; col < i.NumCols(); col++ {
+      color := i.Color(row, col)
+      // New color - initialize the grid
+  		if _, ok := grids[color]; !ok {
+  			grids[color] = NewGrid(i.NumRows(), i.NumCols())
+  		}
+  		colorGrid := grids[color]
+  		// Set all of the 'to be filled' bits. Every thing else is 'empty' so
+  		// it won't be filled.
+  		colorGrid.Set(row, col, ToBeFilled)
+    }
+  }
 	return grids
 }
 
+/*
 func MakeMosaic(img *image.BrickImage, orientation ViewOrientation, pieces []grid.Piece) Mosaic {
 	grids := makeGrids(img.rows, img.cols, img.avgColors)
 	solutions := make(map[BrickColor]grid.Solution)

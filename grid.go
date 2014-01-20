@@ -55,8 +55,8 @@ type Solution struct {
 	Pieces   map[Location]Piece
 }
 
-// New returns an empty grid of size numRows by numCols.
-func New(numRows, numCols int) Grid {
+// NewGrid returns an empty grid of size numRows by numCols.
+func NewGrid(numRows, numCols int) Grid {
 	grid := make([][]State, numRows)
 	for i := 0; i < numRows; i++ {
 		grid[i] = make([]State, numCols)
@@ -69,7 +69,7 @@ func New(numRows, numCols int) Grid {
 // WithState is a convenience function for creating
 // a grid whose contents are entirely filled with state s.
 func WithState(numRows, numCols int, s State) Grid {
-	grid := New(numRows, numCols)
+	grid := NewGrid(numRows, numCols)
 	grid.Fill(s)
 	return grid
 }
@@ -149,7 +149,7 @@ func (g *Grid) PieceFits(piece Piece, loc Location) bool {
 
 // Clone returns a copy of the grid.
 func (g *Grid) Clone() Grid {
-	grid := New(g.numRows, g.numCols)
+	grid := NewGrid(g.numRows, g.numCols)
 	for row := 0; row < grid.numRows; row++ {
 		for col := 0; col < grid.numCols; col++ {
 			grid.state[row][col] = g.state[row][col]
