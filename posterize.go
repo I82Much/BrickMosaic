@@ -16,20 +16,10 @@ import (
 )
 
 // Posterizer is the interface for converting from images into DesiredMosaic objects.
-type Posterizer interface {
-	Posterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal
-}
+type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal
 
-// eucDistPosterizer uses the euclidean distance of colors in RGB space to match the desired palette.
-type eucDistPosterizer struct {}
-
-func (_ eucDistPosterizer) Posterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
+func EucPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
   return NewBrickImage(img, rows, cols, p, o)
-}
-
-// NewPosterizer returns an implementation of the Posterizer interface.
-func NewPosterizer() Posterizer {
-  return eucDistPosterizer{}
 }
 
 // BrickImage is an implementation of DesiredMosaic interface. It also implements the image.Image interface
@@ -91,11 +81,13 @@ func (si *BrickImage) Color(row, col int) BrickColor {
 	h := si.img.Bounds().Max.Y - si.img.Bounds().Min.Y
 	colWidth := w / int(si.cols)
 	rowHeight := h / int(si.rows)
-
+	
 	x1 := col * colWidth
 	x2 := (col + 1) * colWidth
 	y1 := row * rowHeight
 	y2 := (row + 1) * rowHeight
+	
+	fmt.Printf("w: %d h: %d colWidth %d rowHeight %d (%d, %d), (%d, %d)", w, h, colWidth, rowHeight, x1, y1, x2, y2)
 
 	bounds := image.Rect(x1, y1, x2, y2)
 	avgColor := AverageColor(&si.img, bounds)
