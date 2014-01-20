@@ -1,9 +1,7 @@
 // main runs the mosaic program.
-// +build !appengine
 package main
 
 import (
-  /*
 	"flag"
 	"fmt"
 	"image"
@@ -11,21 +9,17 @@ import (
 	//"image/png"
 	"os"
 	//"strings"
-*/
 	"github.com/I82Much/BrickMosaic"
 )
 
-/*
 var (
 	rows       = flag.Int("rows", 10, "number of rows")
 	cols       = flag.Int("cols", 25, "number of columns")
 	inputPath  = flag.String("path", "", "path to input file")
 	outputPath = flag.String("output_path", "", "path to output svg file")
 )
-*/
 
 func main() {
-  /*
 	flag.Parse()
 	if *inputPath == "" {
 		panic("Must set --path, path to the input file")
@@ -45,7 +39,6 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("Couldn't decode file %v: %v", path, err))
 	}
-
 	fmt.Printf("Image format %v\n", format)
 
 	outputFile, err := os.Create(*outputPath)
@@ -93,7 +86,5 @@ func main() {
 
 	if _, err := outputFile.Write(BrickMosaic.MakeSvgInstructions(mosaic)); err != nil {
 		panic(err)
-	}*/
-	
-	
+	}
 }
