@@ -1,7 +1,7 @@
 BrickMosaic
 ===========
 
-A program for converting images into Lego mosaics
+A program for converting images into LEGO mosaics.
 
 # Installation
 Get the svg library:

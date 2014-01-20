@@ -5,5 +5,5 @@ package BrickMosaic
 // might render the plan as an SVG file embedded in a webpage, or print it to standard out,
 // or render it as LDRAW instructions.
 type Renderer interface {
-  Render(p Plan)
+  Render(p Plan) string
 }

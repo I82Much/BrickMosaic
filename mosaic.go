@@ -1,11 +1,4 @@
 package BrickMosaic
-
-import (
-//	"github.com/I82Much/BrickMosaic/palette"
-	//"github.com/I82Much/BrickMosaic/grid"
-//	"github.com/I82Much/BrickMosaic/image"
-)
-
 // Ideal is the idealized grid of how the mosaic should look. Basically a 2d grid of color.
 type Ideal interface  {
 	Orientation() ViewOrientation

@@ -4,6 +4,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	
 	"image"
 	_ "image/jpeg"
 	//"image/png"
@@ -15,12 +16,24 @@ import (
 var (
 	rows       = flag.Int("rows", 10, "number of rows")
 	cols       = flag.Int("cols", 25, "number of columns")
+	orientation = flag.String("orientation", "STUDS_UP", "how the grid should be oriented. Either STUDS_RIGHT, STUDS_UP, or STUDS_TOP")
 	inputPath  = flag.String("path", "", "path to input file")
 	outputPath = flag.String("output_path", "", "path to output svg file")
+
+	orientationMap = map[string]BrickMosaic.ViewOrientation {
+	  "STUDS_RIGHT": BrickMosaic.StudsRight,
+	  "STUDS_UP": BrickMosaic.StudsUp,
+	  "STUDS_TOP": BrickMosaic.StudsTop,
+	}
 )
 
+
 func main() {
+  // Flag handling; fail fast if anything is amiss
 	flag.Parse()
+	if _, ok := orientationMap[*orientation]; !ok {
+	  panic("Must set --orientation to one of STUDS_RIGHT, STUDS_UP, or STUDS_TOP")
+	}
 	if *inputPath == "" {
 		panic("Must set --path, path to the input file")
 	}
@@ -52,39 +65,19 @@ func main() {
 		}
 	}()
 
+  // TODO(ndunn): Expose the Palette as a command line option
 	//palette := BrickMosaic.GrayPlusPalette
 	palette := BrickMosaic.FullPalette
-	legoImg := BrickMosaic.NewBrickImage(img, *rows, *cols, palette)
-	orientation := BrickMosaic.StudsRight
-
-	pieces := BrickMosaic.Pieces
-	//pieces := BrickMosaic.Bricks
-	//pieces = append(pieces, BrickMosaic.OneByTenPlate)
-	studsRightPieces := BrickMosaic.PiecesForOrientation(orientation, pieces)
-	fmt.Printf("pieces %v", studsRightPieces)
-
-	mosaic := BrickMosaic.MakeMosaic(legoImg.(*BrickMosaic.BrickImage), orientation, studsRightPieces)
-	fmt.Printf("%v\n", mosaic)
-
-	inventory := BrickMosaic.MakeInventory()
-	for color, grid := range mosaic.Grids() {
-		fmt.Printf("%v\n", color)
-		fmt.Printf("%v\n", grid)
-		solution, _ := grid.Solve(studsRightPieces)
-
-		fmt.Printf("%d pieces", len(solution.Pieces))
-		piecesNeeded := make(map[BrickMosaic.BrickPiece]int)
-		for _, piece := range solution.Pieces {
-			mosaicPiece := piece.(BrickMosaic.MosaicPiece)
-			piecesNeeded[mosaicPiece.Brick]++
-			inventory.Add(color, mosaicPiece)
-		}
-		fmt.Printf("%v\n", piecesNeeded)
-		fmt.Printf("%v\n", solution)
-	}
+	viewOrientation := orientationMap[*orientation]
+	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
+	ideal := BrickMosaic.EucPosterize(img, palette, *rows, *cols, viewOrientation)
+  // How are we going to build this mosaic?
+  plan := BrickMosaic.CreateGridMosaic(ideal)
+	inventory := plan.Inventory()
 	fmt.Printf("%v", inventory.DescendingUsage())
-
-	if _, err := outputFile.Write(BrickMosaic.MakeSvgInstructions(mosaic)); err != nil {
+	
+	renderer := BrickMosaic.SVGRenderer{}
+	if _, err := outputFile.Write([]byte(renderer.Render(plan))); err != nil {
 		panic(err)
 	}
 }

@@ -3,16 +3,12 @@ package BrickMosaic
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/ajstarks/svgo"
 )
 
-type SVGRenderer struct {
-  w io.Writer
-  canvas *svg.SVG
-}
+type SVGRenderer struct {}
 
 func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
 	// Change aspect ratio
@@ -143,39 +139,15 @@ func DoRender(p Plan, canvas *svg.SVG) {
 
 }
 
-func (r SVGRenderer) Render(p Plan) {
-  DoRender(p, r.canvas)
-}
-
-func NewSVGRenderer(p Plan) SVGRenderer {
+func (r SVGRenderer) Render(p Plan) string {
   var buf bytes.Buffer
 	canvas := svg.New(&buf)
-
 	blockWidth, blockHeight := GetDimensionsForBlock(p.Orig().Orientation())
-	width := blockWidth * int(p.Orig().NumCols())
-	height := blockHeight * int(p.Orig().NumRows())
-
+	width := blockWidth * p.Orig().NumCols()
+	height := blockHeight * p.Orig().NumRows()
 	canvas.Start(width, height)
 	canvas.Title("Grid")
-	//DrawMosaic(m, canvas)
-	return SVGRenderer{&buf, canvas}
-	//canvas.End()
-	//return buf.Bytes()
-}
-
-/*
-func MakeSvgInstructions(m Mosaic) []byte {
-	var buf bytes.Buffer
-	canvas := svg.New(&buf)
-
-	blockWidth, blockHeight := GetDimensionsForBlock(m.orientation)
-	width := blockWidth * int(m.img.cols)
-	height := blockHeight * int(m.img.rows)
-
-	canvas.Start(width, height)
-	canvas.Title("Grid")
-	DrawMosaic(m, canvas)
+  DoRender(p, canvas)
 	canvas.End()
-	return buf.Bytes()
+	return buf.String()
 }
-*/
