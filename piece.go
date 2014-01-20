@@ -66,6 +66,7 @@ type Piece interface {
 // By is the type of a "less" function that defines the ordering of its Piece pieces
 type By func(p1, p2 *Piece) bool
 
+// RectPiece represents a rectangular piece.
 type RectPiece struct {
 	NumRows int
 	NumCols int

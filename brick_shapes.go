@@ -131,6 +131,7 @@ var (
 		length: 10,
 		height: 1,
 	}
+	
 	// Bricks represents a slice of all of the bricks (full height, not plates). They are listed in descending
 	// order of area.
 	Bricks = []BrickPiece{
@@ -167,8 +168,8 @@ func allBrickPieces() []BrickPiece {
 	return result
 }
 
-// TODO(ndunn): support non-rectangular shapes
-// TODO(ndunn): color?
+// MosaicPiece represents a given physical brick in a certain orientation, which determines its extent
+// in the 2d grid.
 type MosaicPiece struct {
 	Brick BrickPiece
 	// In whatever orientation the mosaic is facing. e.g. a 2x4 brick when viewed above has size 2x4.
