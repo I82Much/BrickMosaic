@@ -1,3 +1,6 @@
+//
+// Inventory is a convenience helper for determining how many pieces of which color are used in the model.
+// This makes it easier to actually procure the pieces necessary to build the physical version of the model.
 package BrickMosaic
 
 import (
@@ -5,13 +8,11 @@ import (
 )
 
 type Inventory struct {
-	pieces map[BrickColor][]MosaicPiece
+	pieces map[BrickColor][]BrickPiece
 }
 
 type Usage struct {
 	NumPieces int
-	// Area in terms of units used in the mosaic.
-	Area int
 }
 
 type ColorUsage struct {
@@ -26,39 +27,21 @@ func (c ColorUsages) Len() int {
 }
 
 func (c ColorUsages) Less(i, j int) bool {
-	return c[i].usage.Area < c[j].usage.Area
+	return c[i].usage.NumPieces < c[j].usage.NumPieces
 }
 
 func (c ColorUsages) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
 
-func (inventory Inventory) mosaicPiecesForColor(c BrickColor) []MosaicPiece {
-	return inventory.pieces[c]
-}
-
-func (inventory Inventory) PiecesForColor(c BrickColor) []BrickPiece {
-	mosaics := inventory.mosaicPiecesForColor(c)
-	coloredPieces := make([]BrickPiece, 0)
-	for _, p := range mosaics {
-		coloredPieces = append(coloredPieces, p.Brick)
-	}
-	return coloredPieces
+func (inv Inventory) PiecesForColor(c BrickColor) []BrickPiece {
+	return inv.pieces[c]
 }
 
 func (inventory Inventory) UsageForColorMap() map[BrickColor]Usage {
 	usageMap := make(map[BrickColor]Usage)
-	for color := range inventory.pieces {
-		coloredPieces := inventory.mosaicPiecesForColor(color)
-		area := 0
-		for _, piece := range coloredPieces {
-			area += len(piece.locs)
-		}
-		// At this point we've calculated the area and number of bricks.
-		usageMap[color] = Usage{
-			NumPieces: len(coloredPieces),
-			Area:      area,
-		}
+	for color, pieces := range inventory.pieces {
+	  usageMap[color] = Usage{len(pieces)}
 	}
 	return usageMap
 }
@@ -73,9 +56,9 @@ func (inventory Inventory) DescendingUsage() []ColorUsage {
 }
 
 func MakeInventory() Inventory {
-	return Inventory{make(map[BrickColor][]MosaicPiece)}
+	return Inventory{make(map[BrickColor][]BrickPiece)}
 }
 
-func (inventory *Inventory) Add(c BrickColor, p MosaicPiece) {
+func (inventory *Inventory) Add(c BrickColor, p BrickPiece) {
 	inventory.pieces[c] = append(inventory.pieces[c], p)
 }

@@ -88,17 +88,28 @@ func (g *gridBasedPlan) Piece(row, col int) PlacedBrick {
   return g.placedBricks[Location{row, col}]
 }
 
-func (g *gridBasedPlan) Inventory() 
+func (g *gridBasedPlan) Inventory() Inventory {
+  i := MakeInventory()
+  for _, p := range g.Pieces() {
+    i.Add(p.Color, p.Shape)
+  }
+  return i
+}
 
 func CreateGridMosaic(m Ideal) Plan {
   grids := makeGrids(m)
   
   // TODO(ndunn): how do I inject which pieces are allowed?
   allPieces := PiecesForOrientation(m.Orientation(), allBrickPieces())
+  // cast all pieces to Piece rather than MosaicPiece
+  rawPieces := make([]Piece, len(allPieces))
+  for i, d := range allPieces {
+    rawPieces[i] = d
+  }
 	solutions := make(map[BrickColor]Solution)
 	placedBricks := make(map[Location]PlacedBrick)
 	for color, grid := range grids {
-		solution, _ := grid.Solve(allPieces)
+		solution, _ := grid.Solve(rawPieces)
 		solutions[color] = solution
 		
 		// Now we know where each piece goes. Create PlacedBrick representations of the pieces.
@@ -106,7 +117,7 @@ func CreateGridMosaic(m Ideal) Plan {
   	for loc, piece := range solution.Pieces {
   	  // We know that each entry is not just a Piece but a MosaicPiece
   	  // TODO(ndunn): do we really need BrickPiece, Piece, MosaicPiece, and PlacedBrick?
-  	  mp := loc.(MosaicPiece)
+  	  mp := piece.(MosaicPiece)
   	  pb := PlacedBrick {
       	Id: counter,
       	Origin: loc,
@@ -119,7 +130,7 @@ func CreateGridMosaic(m Ideal) Plan {
   	  counter++
   	}
 	}
-	return gridBasedPlan{
+	return &gridBasedPlan{
 		m,
 		grids,
 		m.Orientation(),
