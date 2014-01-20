@@ -8,7 +8,7 @@ import (
 )
 
 type Inventory struct {
-	pieces map[BrickColor][]BrickPiece
+	pieces map[BrickColor][]Brick
 }
 
 type Usage struct {
@@ -34,7 +34,7 @@ func (c ColorUsages) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
 
-func (inv Inventory) PiecesForColor(c BrickColor) []BrickPiece {
+func (inv Inventory) PiecesForColor(c BrickColor) []Brick {
 	return inv.pieces[c]
 }
 
@@ -56,9 +56,9 @@ func (inventory Inventory) DescendingUsage() []ColorUsage {
 }
 
 func MakeInventory() Inventory {
-	return Inventory{make(map[BrickColor][]BrickPiece)}
+	return Inventory{make(map[BrickColor][]Brick)}
 }
 
-func (inventory *Inventory) Add(c BrickColor, p BrickPiece) {
+func (inventory *Inventory) Add(c BrickColor, p Brick) {
 	inventory.pieces[c] = append(inventory.pieces[c], p)
 }

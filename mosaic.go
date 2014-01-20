@@ -27,7 +27,7 @@ type PlacedBrick struct {
 	// What color is this brick?
 	Color BrickColor
 	// Characteristics of the brick - 2x4, etc
-	Shape BrickPiece 
+	Shape Brick 
 	// Orientation represents how the brick is placed in the mosaic
 	Orientation ViewOrientation 
 }
@@ -100,7 +100,7 @@ func CreateGridMosaic(m Ideal) Plan {
   grids := makeGrids(m)
   
   // TODO(ndunn): how do I inject which pieces are allowed?
-  allPieces := PiecesForOrientation(m.Orientation(), allBrickPieces())
+  allPieces := PiecesForOrientation(m.Orientation(), allBricks())
   // cast all pieces to Piece rather than MosaicPiece
   rawPieces := make([]Piece, len(allPieces))
   for i, d := range allPieces {
@@ -116,7 +116,7 @@ func CreateGridMosaic(m Ideal) Plan {
 		counter := 0
   	for loc, piece := range solution.Pieces {
   	  // We know that each entry is not just a Piece but a MosaicPiece
-  	  // TODO(ndunn): do we really need BrickPiece, Piece, MosaicPiece, and PlacedBrick?
+  	  // TODO(ndunn): do we really need Brick, Piece, MosaicPiece, and PlacedBrick?
   	  mp := piece.(MosaicPiece)
   	  pb := PlacedBrick {
       	Id: counter,

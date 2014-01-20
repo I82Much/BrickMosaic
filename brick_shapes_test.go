@@ -7,14 +7,14 @@ import (
 
 // Make sure all bricks are accounted for
 func TestAllBricks(t *testing.T) {
-	allPieces := make(map[BrickPiece]bool)
+	allPieces := make(map[Brick]bool)
 	for _, b := range Bricks {
 		allPieces[b] = true
 	}
 	for _, p := range Plates {
 		allPieces[p] = true
 	}
-	foundPieces := make(map[BrickPiece]bool)
+	foundPieces := make(map[Brick]bool)
 	for _, b := range Pieces {
 		foundPieces[b] = true
 	}
@@ -28,7 +28,7 @@ func TestAllBricks(t *testing.T) {
 
 type pieceLocWant struct {
 	name  string
-	piece BrickPiece
+	piece Brick
 	want  Piece
 }
 
