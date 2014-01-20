@@ -73,8 +73,8 @@ func main() {
 	ideal := BrickMosaic.EucPosterize(img, palette, *rows, *cols, viewOrientation)
   // How are we going to build this mosaic?
   plan := BrickMosaic.CreateGridMosaic(ideal)
-	inventory := plan.Inventory()
-	fmt.Printf("%v", inventory.DescendingUsage())
+	//inventory := plan.Inventory()
+	//fmt.Printf("%v", inventory.DescendingUsage())
 	
 	renderer := BrickMosaic.SVGRenderer{}
 	if _, err := outputFile.Write([]byte(renderer.Render(plan))); err != nil {

@@ -16,13 +16,17 @@ type PlacedBrick struct {
 	Origin Location
 	// The relative locations of how big this brick is. Add to origin to get absolute
 	// location
-	Extent []Location
+	Locs []Location
 	// What color is this brick?
 	Color BrickColor
 	// Characteristics of the brick - 2x4, etc
 	Shape Brick 
 	// Orientation represents how the brick is placed in the mosaic
 	Orientation ViewOrientation 
+}
+
+func (p PlacedBrick) Extent() []Location{
+  return p.Locs
 }
 
 // ViewOrientation represents the orientation of each brick in the mosaic.
@@ -114,7 +118,7 @@ func CreateGridMosaic(m Ideal) Plan {
   	  pb := PlacedBrick {
       	Id: counter,
       	Origin: loc,
-      	Extent: mp.Extent(),
+      	Locs: mp.Extent(),
       	Color: color,
       	Shape: mp.Brick,
       	Orientation: m.Orientation(),

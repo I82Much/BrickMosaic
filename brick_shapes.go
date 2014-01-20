@@ -172,6 +172,7 @@ func allBricks() []Brick {
 // in the 2d grid.
 type MosaicPiece struct {
 	Brick Brick
+	r RectPiece
 	// In whatever orientation the mosaic is facing. e.g. a 2x4 brick when viewed above has size 2x4.
 	// When viewed from the side, it has size 3x4 (3 plates high, 4 bricks wide)
 	locs []Location
@@ -186,6 +187,7 @@ func StudsUpPiece(piece Brick) MosaicPiece {
 	r := RectPiece{piece.width, piece.length}
 	return MosaicPiece{
 		piece,
+		r,
 		r.Extent(),
 	}
 }
@@ -195,6 +197,7 @@ func StudsTopPiece(piece Brick) MosaicPiece {
 	r := RectPiece{piece.height, piece.length}
 	return MosaicPiece{
 		piece,
+		r,
 		r.Extent(),
 	}
 }
@@ -204,6 +207,7 @@ func StudsRightPiece(piece Brick) MosaicPiece {
 	r := RectPiece{piece.length, piece.height}
 	return MosaicPiece{
 		piece,
+		r,
 		r.Extent(),
 	}
 }

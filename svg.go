@@ -50,6 +50,24 @@ func BoundingBox(p Piece, origin Location) (minRow, minCol, maxRow, maxCol int) 
 	return
 }
 
+// How should the grid be spaced in the different orientations? We darken every X row and every Y
+// column to indicate where the canonical piece would fit. This helps builders keep on track if they
+// use the corresponding pieces to lay out the 
+func canonicalSpacing(o ViewOrientation) (rows, cols int) {
+  var p MosaicPiece
+  switch o {
+    case StudsRight:
+      p = StudsRightPiece(TwoByFour)
+    case StudsTop:
+      p = StudsTopPiece(TwoByFour)
+    case StudsUp:
+      p = StudsUpPiece(TwoByFour)
+    default:
+      panic(fmt.Sprintf("unknown orientation: %v", o))
+  }
+  return p.r.NumRows, p.r.NumCols
+}
+
 
 func DoRender(p Plan, canvas *svg.SVG) {
 	brickWidth, brickHeight := GetDimensionsForBlock(p.Orig().Orientation())
@@ -67,7 +85,7 @@ func DoRender(p Plan, canvas *svg.SVG) {
 		canvas.Gid(fmt.Sprintf("blocks-%v", color))
     for _, piece := range bricks {
       origin := piece.Origin
-			for _, loc := range piece.Extent {
+			for _, loc := range piece.Extent() {
 				translated := origin.Add(loc)
 				startX := translated.Col * brickWidth
 				startY := translated.Row * brickHeight
@@ -81,41 +99,41 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	}
 	canvas.Gend()
 
-/*
 	canvas.Gid("block_outlines")
 	// Draw outlines around each piece
-	for _, solution := range m.Solutions() {
-		for loc, piece := range solution.Pieces {
-			minRow, minCol, maxRow, maxCol := BoundingBox(piece, loc)
+	for _, piece := range p.Pieces() {
+	  loc := piece.Origin
+		minRow, minCol, maxRow, maxCol := BoundingBox(piece, loc)
 
-			// Offset by one because we draw to where it ends. e.g. if it takes up only one
-			// row or column, we still need to draw it as if it went into right before the
-			// next row or column.
-			startX := minCol * brickWidth
-			endX := (maxCol + 1) * brickWidth
+		// Offset by one because we draw to where it ends. e.g. if it takes up only one
+		// row or column, we still need to draw it as if it went into right before the
+		// next row or column.
+		startX := minCol * brickWidth
+		endX := (maxCol + 1) * brickWidth
 
-			startY := minRow * brickHeight
-			endY := (maxRow + 1) * brickHeight
+		startY := minRow * brickHeight
+		endY := (maxRow + 1) * brickHeight
 
-			width := endX - startX
-			height := endY - startY
+		width := endX - startX
+		height := endY - startY
 
-			style := "fill='none' stroke='gray'"
-			canvas.Rect(startX, startY, width, height, style)
-		}
+		style := "fill='none' stroke='gray'"
+		canvas.Rect(startX, startY, width, height, style)
 	}
-	canvas.Gend()*/
+	canvas.Gend()
 
   // FIXME(ndunn): this only works for studs right mosaic.
 	canvas.Gid("gridlines")
 	majorOpacity := 0.5
 	minorOpacity := 0.2
-	// Draw the grid lines
+	
+	// Draw the grid lines, with darker lines around 'canonical' piece in this orientation.
+	darkRow, darkCol := canonicalSpacing(p.Orig().Orientation())
 	for row := 0; row < p.Orig().NumRows()+1; row++ {
 		y := int(row * brickHeight)
 		// Every 4th row (corresponding to length of 2x4), draw it darker.
 		alpha := minorOpacity
-		if row > 0 && row%4 == 0 {
+		if row > 0 && row%darkRow == 0 {
 			alpha = majorOpacity
 		}
 		style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
@@ -129,7 +147,7 @@ func DoRender(p Plan, canvas *svg.SVG) {
 		x := int(col * brickWidth)
 		// Every 3rd column (corresponding to 3 stacked plates), draw it darker.
 		alpha := minorOpacity
-		if col > 0 && col%3 == 0 {
+		if col > 0 && col%darkCol == 0 {
 			alpha = majorOpacity
 		}
 		style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
