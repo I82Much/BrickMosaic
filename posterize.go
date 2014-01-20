@@ -1,23 +1,46 @@
 // Package image is responsible for manipulating input images into a format that is
 // compatible with the brick colors we have. For instance, it converts from an image
 // of potentially millions of colors into a much smaller color palette.
-package image
+//
+// According to Wikipedia:
+//   "Posterization of an image entails conversion of a continuous gradation of tone to several regions of fewer tones, with abrupt changes from one tone to another." (http://en.wikipedia.org/wiki/Posterization, retrieved 2014/01/19)
+//
+// This package is responsible for converting from raw images to the Ideal.
+package BrickMosaic
 
 import (
 	"fmt"
 	"image"
 	"image/color"
 
-	brickpalette "github.com/I82Much/BrickMosaic/palette"
-	"github.com/I82Much/BrickMosaic/grid"
 )
 
+// Posterizer is the interface for converting from images into DesiredMosaic objects.
+type Posterizer interface {
+	Posterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal
+}
+
+// eucDistPosterizer uses the euclidean distance of colors in RGB space to match the desired palette.
+type eucDistPosterizer struct {}
+
+func (_ eucDistPosterizer) Posterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
+  return NewBrickImage(img, rows, cols, p, o)
+}
+
+// NewPosterizer returns an implementation of the Posterizer interface.
+func NewPosterizer() Posterizer {
+  return eucDistPosterizer{}
+}
+
+// BrickImage is an implementation of DesiredMosaic interface. It also implements the image.Image interface
+// so that it can be rendered for debugging purposes.
 type BrickImage struct {
 	img        image.Image
 	palette    color.Palette
-	rows, cols uint
+	rows, cols int
 	// Maps each grid cell to its color
-	avgColors map[grid.Location]brickpalette.BrickColor
+	avgColors map[Location]BrickColor
+	orientation ViewOrientation
 }
 
 // AverageColor determines the 'average' color of the subimage whose coordinates are contained in the
@@ -45,18 +68,22 @@ func AverageColor(si *image.Image, bounds image.Rectangle) color.Color {
 	return color.RGBA{uint8(R), uint8(G), uint8(B), uint8(A)}
 }
 
-func (si *BrickImage) ColorModel() color.Model {
-	return si.img.ColorModel()
+func (si *BrickImage) NumRows() int {
+  return si.rows
 }
 
-func (si *BrickImage) Bounds() image.Rectangle {
-	return si.img.Bounds()
+func (si *BrickImage) NumCols() int {
+  return si.cols
 }
 
-// ColorAt returns the best palette.BrickColor for the given row/column
+func (si *BrickImage) Orientation() ViewOrientation {
+  return si.orientation
+}
+
+// Color returns the best palette.BrickColor for the given row/column
 // in the image based on the palette this image was instantiated with.
-func (si *BrickImage) ColorAt(row, col int) brickpalette.BrickColor {
-	loc := grid.Location{row, col}
+func (si *BrickImage) Color(row, col int) BrickColor {
+	loc := Location{row, col}
 	if c, ok := si.avgColors[loc]; ok {
 		return c
 	}
@@ -72,9 +99,20 @@ func (si *BrickImage) ColorAt(row, col int) brickpalette.BrickColor {
 
 	bounds := image.Rect(x1, y1, x2, y2)
 	avgColor := AverageColor(&si.img, bounds)
-	bestMatch := si.palette.Convert(avgColor).(brickpalette.BrickColor)
+	bestMatch := si.palette.Convert(avgColor).(BrickColor)
 	si.avgColors[loc] = bestMatch
 	return bestMatch
+}
+
+func (si *BrickImage) ColorModel() color.Model {
+	return si.img.ColorModel()
+}
+
+
+// image.Image implementation follows
+
+func (si *BrickImage) Bounds() image.Rectangle {
+	return si.img.Bounds()
 }
 
 // At returns what color should be rendered at this x, y coordinate.
@@ -87,25 +125,24 @@ func (si *BrickImage) At(x, y int) color.Color {
 	gridRow := y / rowHeight
 
 	// FIXME(ndunn): this only works with perfectly oriented pictures.
-	if uint(gridRow) >= si.rows {
+	if gridRow >= si.rows {
 		panic(fmt.Sprintf("Too many rows; was rendering row %d; max of %d rows", gridRow, si.rows))
 	}
 
 	// Grid line 
 	if x%colWidth == 0 || y%rowHeight == 0 {
-		return brickpalette.Red
+		return Red
 	}
-	return si.ColorAt(gridRow, gridCol)
+	return si.Color(gridRow, gridCol)
 }
 
-func NewBrickImage(img image.Image, rows, cols int, palette color.Palette) image.Image {
-	brickImage := &BrickImage{img, palette, uint(rows), uint(cols), make(map[grid.Location]brickpalette.BrickColor)}
+func NewBrickImage(img image.Image, rows, cols int, palette color.Palette, o ViewOrientation) *BrickImage {
+	brickImage := &BrickImage{img, palette, rows, cols, make(map[Location]BrickColor), o}
 	// Initialize the color map
 	for row := 0; row < rows; row++ {
 		for col := 0; col < cols; col++ {
-			_ = brickImage.ColorAt(row, col)
+			_ = brickImage.Color(row, col)
 		}
 	}
-
 	return brickImage
 }
