@@ -32,26 +32,6 @@ type PlacedBrick struct {
 	Orientation ViewOrientation 
 }
 
-
-// Plan represents how to build the mosaic. The resulting plan may not match the
-// ideal DesiredMosaic perfectly; for instance, an implementation might decide
-// to depart slightly from the desired colors if it leads to enhanced rigidity
-// in the structure.
-type Plan interface {
-	Orig() Ideal
-	Pieces() []PlacedBrick
-	Piece(row, col int) PlacedBrick
-	Inventory() Inventory
-}
-
-// Creator is the interface by which we convert DesiredMosaic objects into a plan
-// for building it. As discussed in Plan, different Creators might build Plans
-// that do not perfectly match the DesiredMosaic.
-type Creator interface {
-	Create(i Ideal) Plan
-}
-
-
 // ViewOrientation represents the orientation of each brick in the mosaic.
 type ViewOrientation int
 
@@ -66,6 +46,18 @@ const (
 	StudsRight
 )
 
+// Plan represents how to build the mosaic. The resulting plan may not match the
+// ideal DesiredMosaic perfectly; for instance, an implementation might decide
+// to depart slightly from the desired colors if it leads to enhanced rigidity
+// in the structure.
+type Plan interface {
+	Orig() Ideal
+	Pieces() []PlacedBrick
+	Piece(row, col int) PlacedBrick
+	Inventory() Inventory
+}
+
+
 // Create is the interface by which we convert Ideal mosaics into a plan
 // for building it. As discussed in Plan, different Creators might build Plans
 // that do not perfectly match the DesiredMosaic.
@@ -77,30 +69,62 @@ type gridBasedPlan struct {
 	colorGrid   map[BrickColor]Grid
 	orientation ViewOrientation
 	solutions   map[BrickColor]Solution
+	placedBricks map[Location]PlacedBrick
 }
 
-/*
 func (g* gridBasedPlan) Orig() Ideal {
   return g.img
 }
 
 func (g* gridBasedPlan) Pieces() []PlacedBrick {
-
+  var bricks []PlacedBrick
+  for _, b := range g.placedBricks {
+    bricks = append(bricks, b)
+  }
+  return bricks
 }
 
 func (g *gridBasedPlan) Piece(row, col int) PlacedBrick {
-  
+  return g.placedBricks[Location{row, col}]
 }
-*/
 
-/*Plan interface {
-	Orig() Ideal
-	Pieces() []PlacedBrick
-	Piece(row, col int) PlacedBrick
-	Inventory() Inventory
-}*/
-
-//func CreateGridMosaic() {}
+func CreateGridMosaic(m Ideal) Plan {
+  grids := makeGrids(m)
+  
+  // TODO(ndunn): how do I inject which pieces are allowed?
+  allPieces := PiecesForOrientation(m.Orientation(), allBrickPieces())
+	solutions := make(map[BrickColor]Solution)
+	placedBricks := make(map[Location]PlacedBrick)
+	for color, grid := range grids {
+		solution, _ := grid.Solve(pieces)
+		solutions[color] = solution
+		
+		// Now we know where each piece goes. Create PlacedBrick representations of the pieces.
+		counter := 0
+  	for loc, piece := range solution.Pieces {
+  	  // We know that each entry is not just a Piece but a MosaicPiece
+  	  // TODO(ndunn): do we really need BrickPiece, Piece, MosaicPiece, and PlacedBrick?
+  	  mp := loc.(MosaicPiece)
+  	  pb := PlacedBrick {
+      	Id: counter,
+      	Origin: loc,
+      	Extent: mp.Extent(),
+      	Color: color,
+      	Shape: mp.Brick,
+      	Orientation: m.Orientation(),
+  	  }
+  	  placedBricks[loc] = pb
+  	  counter++
+  	}
+	}
+	return gridBasedPlan{
+		img,
+		grids,
+		orientation,
+		solutions,
+		placedBricks,
+	}
+}
 
 // makeGrids is the core piece of the algorithm. For each color in the ideal image, we create a grid whose
 // 'TO_BE_FILLED' cells are set to the places in the ideal location for that color. In other words, say we have
@@ -140,28 +164,3 @@ func makeGrids(i Ideal) map[BrickColor]Grid {
   }
 	return grids
 }
-
-/*
-func MakeMosaic(img *image.BrickImage, orientation ViewOrientation, pieces []grid.Piece) Mosaic {
-	grids := makeGrids(img.rows, img.cols, img.avgColors)
-	solutions := make(map[BrickColor]grid.Solution)
-	for color, grid := range grids {
-		solution, _ := grid.Solve(pieces)
-		solutions[color] = solution
-	}
-	return Mosaic{
-		img,
-		grids,
-		orientation,
-		solutions,
-	}
-}
-
-func (m *Mosaic) Grids() map[BrickColor]grid.Grid {
-	return m.colorGrid
-}
-
-func (m *Mosaic) Solutions() map[BrickColor]grid.Solution {
-	return m.solutions
-}
-*/
