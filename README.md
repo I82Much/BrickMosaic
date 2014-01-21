@@ -42,6 +42,6 @@ Studs Out:
 [Darth Vader finished]:https://lh5.googleusercontent.com/-mCzaiPeMcjc/UhzHhp9VYBI/AAAAAAAAQCo/mMZ3RbQDcp8/w620-h615-no/IMG_7020_cropped.jpg
 [Darth Vader in progress]:https://lh3.googleusercontent.com/-6NUdcIC2hbc/UhzHgZZqPdI/AAAAAAAAQCY/SBcVMYzJPfg/w820-h615-no/IMG_6188.JPG
 [Iron Man Original]:http://marvelwallpapers10.net/wp-content/uploads/images/3a/ironman-2.jpg
-[Iron Man Studs Up]:https://rawgithub.com/I82Much/BrickMosaic/master/examples/iron_man_STUDS_TOP.svg
+[Iron Man Studs Top]:https://rawgithub.com/I82Much/BrickMosaic/master/examples/iron_man_STUDS_TOP.svg
 [Iron Man Studs Right]:https://rawgithub.com/I82Much/BrickMosaic/master/examples/iron_man_STUDS_RIGHT.svg
 [Iron Man Studs Out]:https://rawgithub.com/I82Much/BrickMosaic/master/examples/iron_man_STUDS_OUT.svg
