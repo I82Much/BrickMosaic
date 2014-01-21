@@ -131,7 +131,7 @@ var (
 		length: 10,
 		height: 1,
 	}
-	
+
 	// Bricks represents a slice of all of the bricks (full height, not plates). They are listed in descending
 	// order of area.
 	Bricks = []Brick{
@@ -172,7 +172,7 @@ func allBricks() []Brick {
 // in the 2d grid.
 type MosaicPiece struct {
 	Brick Brick
-	r RectPiece
+	r     RectPiece
 	// In whatever orientation the mosaic is facing. e.g. a 2x4 brick when viewed above has size 2x4.
 	// When viewed from the side, it has size 3x4 (3 plates high, 4 bricks wide)
 	locs []Location
@@ -230,4 +230,3 @@ func PiecesForOrientation(o ViewOrientation, pieces []Brick) []MosaicPiece {
 	}
 	return result
 }
-

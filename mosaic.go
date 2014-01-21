@@ -1,6 +1,7 @@
 package BrickMosaic
+
 // Ideal is the idealized grid of how the mosaic should look. Basically a 2d grid of color.
-type Ideal interface  {
+type Ideal interface {
 	Orientation() ViewOrientation
 	NumRows() int
 	NumCols() int
@@ -20,13 +21,13 @@ type PlacedBrick struct {
 	// What color is this brick?
 	Color BrickColor
 	// Characteristics of the brick - 2x4, etc
-	Shape Brick 
+	Shape Brick
 	// Orientation represents how the brick is placed in the mosaic
-	Orientation ViewOrientation 
+	Orientation ViewOrientation
 }
 
-func (p PlacedBrick) Extent() []Location{
-  return p.Locs
+func (p PlacedBrick) Extent() []Location {
+	return p.Locs
 }
 
 // ViewOrientation represents the orientation of each brick in the mosaic.
@@ -35,10 +36,10 @@ type ViewOrientation int
 const (
 	// StudsUp is a top down view, studs on top. Rows and columns refer to equal distances.
 	StudsUp ViewOrientation = iota
-	// StudsTop indicates a view from the side - pieces build on top of each other. Rows refer to plate height, 
+	// StudsTop indicates a view from the side - pieces build on top of each other. Rows refer to plate height,
 	// columns are 1x1 width.
 	StudsTop
-	// StudsRight indicates a view from the side, where the top of a piece faces to the right. Rows refer to 
+	// StudsRight indicates a view from the side, where the top of a piece faces to the right. Rows refer to
 	// piece width, columns are plate height.
 	StudsRight
 )
@@ -54,7 +55,6 @@ type Plan interface {
 	Inventory() Inventory
 }
 
-
 // Create is the interface by which we convert Ideal mosaics into a plan
 // for building it. As discussed in Plan, different Creators might build Plans
 // that do not perfectly match the DesiredMosaic.
@@ -62,70 +62,70 @@ type Create func(i Ideal) Plan
 
 // gridBasedPlan is a basic implementation of the Plan interface
 type gridBasedPlan struct {
-	img         Ideal
-	colorGrid   map[BrickColor]Grid
-	orientation ViewOrientation
-	solutions   map[BrickColor]Solution
+	img          Ideal
+	colorGrid    map[BrickColor]Grid
+	orientation  ViewOrientation
+	solutions    map[BrickColor]Solution
 	placedBricks map[Location]PlacedBrick
 }
 
-func (g* gridBasedPlan) Orig() Ideal {
-  return g.img
+func (g *gridBasedPlan) Orig() Ideal {
+	return g.img
 }
 
-func (g* gridBasedPlan) Pieces() []PlacedBrick {
-  var bricks []PlacedBrick
-  for _, b := range g.placedBricks {
-    bricks = append(bricks, b)
-  }
-  return bricks
+func (g *gridBasedPlan) Pieces() []PlacedBrick {
+	var bricks []PlacedBrick
+	for _, b := range g.placedBricks {
+		bricks = append(bricks, b)
+	}
+	return bricks
 }
 
 func (g *gridBasedPlan) Piece(row, col int) PlacedBrick {
-  return g.placedBricks[Location{row, col}]
+	return g.placedBricks[Location{row, col}]
 }
 
 func (g *gridBasedPlan) Inventory() Inventory {
-  i := MakeInventory()
-  for _, p := range g.Pieces() {
-    i.Add(p.Color, p.Shape)
-  }
-  return i
+	i := MakeInventory()
+	for _, p := range g.Pieces() {
+		i.Add(p.Color, p.Shape)
+	}
+	return i
 }
 
 func CreateGridMosaic(m Ideal) Plan {
-  grids := makeGrids(m)
-  
-  // TODO(ndunn): how do I inject which pieces are allowed?
-  allPieces := PiecesForOrientation(m.Orientation(), allBricks())
-  // cast all pieces to Piece rather than MosaicPiece
-  rawPieces := make([]Piece, len(allPieces))
-  for i, d := range allPieces {
-    rawPieces[i] = d
-  }
+	grids := makeGrids(m)
+
+	// TODO(ndunn): how do I inject which pieces are allowed?
+	allPieces := PiecesForOrientation(m.Orientation(), allBricks())
+	// cast all pieces to Piece rather than MosaicPiece
+	rawPieces := make([]Piece, len(allPieces))
+	for i, d := range allPieces {
+		rawPieces[i] = d
+	}
 	solutions := make(map[BrickColor]Solution)
 	placedBricks := make(map[Location]PlacedBrick)
 	for color, grid := range grids {
 		solution, _ := grid.Solve(rawPieces)
 		solutions[color] = solution
-		
+
 		// Now we know where each piece goes. Create PlacedBrick representations of the pieces.
 		counter := 0
-  	for loc, piece := range solution.Pieces {
-  	  // We know that each entry is not just a Piece but a MosaicPiece
-  	  // TODO(ndunn): do we really need Brick, Piece, MosaicPiece, and PlacedBrick?
-  	  mp := piece.(MosaicPiece)
-  	  pb := PlacedBrick {
-      	Id: counter,
-      	Origin: loc,
-      	Locs: mp.Extent(),
-      	Color: color,
-      	Shape: mp.Brick,
-      	Orientation: m.Orientation(),
-  	  }
-  	  placedBricks[loc] = pb
-  	  counter++
-  	}
+		for loc, piece := range solution.Pieces {
+			// We know that each entry is not just a Piece but a MosaicPiece
+			// TODO(ndunn): do we really need Brick, Piece, MosaicPiece, and PlacedBrick?
+			mp := piece.(MosaicPiece)
+			pb := PlacedBrick{
+				Id:          counter,
+				Origin:      loc,
+				Locs:        mp.Extent(),
+				Color:       color,
+				Shape:       mp.Brick,
+				Orientation: m.Orientation(),
+			}
+			placedBricks[loc] = pb
+			counter++
+		}
 	}
 	return &gridBasedPlan{
 		m,
@@ -158,19 +158,19 @@ func CreateGridMosaic(m Ideal) Plan {
 //
 // Where the 0's indicate Empty and 1 represents ToBeFilled.
 func makeGrids(i Ideal) map[BrickColor]Grid {
-  grids := make(map[BrickColor]Grid)
-  for row := 0; row < i.NumRows(); row++ {
-    for col := 0; col < i.NumCols(); col++ {
-      color := i.Color(row, col)
-      // New color - initialize the grid
-  		if _, ok := grids[color]; !ok {
-  			grids[color] = NewGrid(i.NumRows(), i.NumCols())
-  		}
-  		colorGrid := grids[color]
-  		// Set all of the 'to be filled' bits. Every thing else is 'empty' so
-  		// it won't be filled.
-  		colorGrid.Set(row, col, ToBeFilled)
-    }
-  }
+	grids := make(map[BrickColor]Grid)
+	for row := 0; row < i.NumRows(); row++ {
+		for col := 0; col < i.NumCols(); col++ {
+			color := i.Color(row, col)
+			// New color - initialize the grid
+			if _, ok := grids[color]; !ok {
+				grids[color] = NewGrid(i.NumRows(), i.NumCols())
+			}
+			colorGrid := grids[color]
+			// Set all of the 'to be filled' bits. Every thing else is 'empty' so
+			// it won't be filled.
+			colorGrid.Set(row, col, ToBeFilled)
+		}
+	}
 	return grids
 }

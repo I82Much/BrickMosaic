@@ -6,44 +6,44 @@ import (
 )
 
 func TestAddDoesNotModify(t *testing.T) {
-  a := Location{1, 5}
-  b := Location{5, 6}
-  a.Add(b)
-  if a.Row != 1 || a.Col != 5 {
-    t.Errorf("a was modified by addition. Expected {1, 5}, got %v", a)
-  }
+	a := Location{1, 5}
+	b := Location{5, 6}
+	a.Add(b)
+	if a.Row != 1 || a.Col != 5 {
+		t.Errorf("a was modified by addition. Expected {1, 5}, got %v", a)
+	}
 }
 
 func TestAdd(t *testing.T) {
-  tests := []struct {
-    loc1, loc2 Location
-    want Location
-  } {
-    {
-      loc1: Location{0, 0}, 
-      loc2: Location{1, 5},
-      want: Location{1, 5},
-    },
-    {
-      loc1: Location{0, 0}, 
-      loc2: Location{0, 0},
-      want: Location{0, 0},
-    },
-    {
-      loc1: Location{1, 2}, 
-      loc2: Location{4, 5},
-      want: Location{5, 7},
-    },
-  }
-  for _, test := range tests {
-    if got := test.loc1.Add(test.loc2); !reflect.DeepEqual(got, test.want) {
-      t.Errorf("%v + %v; wanted %v got %v", test.loc1, test.loc2, test.want, got)
-    }
-    // Addition should be commutative
-    if got := test.loc2.Add(test.loc1); !reflect.DeepEqual(got, test.want) {
-      t.Errorf("%v + %v; wanted %v got %v", test.loc2, test.loc1, test.want, got)
-    }
-  }
+	tests := []struct {
+		loc1, loc2 Location
+		want       Location
+	}{
+		{
+			loc1: Location{0, 0},
+			loc2: Location{1, 5},
+			want: Location{1, 5},
+		},
+		{
+			loc1: Location{0, 0},
+			loc2: Location{0, 0},
+			want: Location{0, 0},
+		},
+		{
+			loc1: Location{1, 2},
+			loc2: Location{4, 5},
+			want: Location{5, 7},
+		},
+	}
+	for _, test := range tests {
+		if got := test.loc1.Add(test.loc2); !reflect.DeepEqual(got, test.want) {
+			t.Errorf("%v + %v; wanted %v got %v", test.loc1, test.loc2, test.want, got)
+		}
+		// Addition should be commutative
+		if got := test.loc2.Add(test.loc1); !reflect.DeepEqual(got, test.want) {
+			t.Errorf("%v + %v; wanted %v got %v", test.loc2, test.loc1, test.want, got)
+		}
+	}
 
 }
 
@@ -170,25 +170,25 @@ func TestSolve(t *testing.T) {
 }
 
 func TestClone(t *testing.T) {
-  various := NewGrid(5, 6)
+	various := NewGrid(5, 6)
 	various.state[4][3] = ToBeFilled
 	various.state[3][2] = Filled
-	
+
 	cloned := various.Clone()
 	if &cloned == &various {
-	  t.Errorf("cloned value shares same pointer address")
+		t.Errorf("cloned value shares same pointer address")
 	}
-	
+
 	if !reflect.DeepEqual(various, cloned) {
-	  t.Errorf("cloned value was not correctly cloned")
+		t.Errorf("cloned value was not correctly cloned")
 	}
 	various.state[0][0] = Filled
 	if cloned.state[0][0] != Empty {
-	  t.Errorf("somehow changing original value modifies cloned state")
+		t.Errorf("somehow changing original value modifies cloned state")
 	}
 	cloned.state[4][3] = Empty
 	if various.state[4][3] != ToBeFilled {
-	  t.Errorf("somehow changing cloned value modifies cloned state")
+		t.Errorf("somehow changing cloned value modifies cloned state")
 	}
-  
+
 }

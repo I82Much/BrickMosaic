@@ -12,14 +12,13 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-
 )
 
 // Posterizer is the interface for converting from images into DesiredMosaic objects.
 type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal
 
 func EucPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
-  return NewBrickImage(img, rows, cols, p, o)
+	return NewBrickImage(img, rows, cols, p, o)
 }
 
 // BrickImage is an implementation of DesiredMosaic interface. It also implements the image.Image interface
@@ -29,7 +28,7 @@ type BrickImage struct {
 	palette    color.Palette
 	rows, cols int
 	// Maps each grid cell to its color
-	avgColors map[Location]BrickColor
+	avgColors   map[Location]BrickColor
 	orientation ViewOrientation
 }
 
@@ -59,15 +58,15 @@ func AverageColor(si *image.Image, bounds image.Rectangle) color.Color {
 }
 
 func (si *BrickImage) NumRows() int {
-  return si.rows
+	return si.rows
 }
 
 func (si *BrickImage) NumCols() int {
-  return si.cols
+	return si.cols
 }
 
 func (si *BrickImage) Orientation() ViewOrientation {
-  return si.orientation
+	return si.orientation
 }
 
 // Color returns the best palette.BrickColor for the given row/column
@@ -81,12 +80,12 @@ func (si *BrickImage) Color(row, col int) BrickColor {
 	h := si.img.Bounds().Max.Y - si.img.Bounds().Min.Y
 	colWidth := w / int(si.cols)
 	rowHeight := h / int(si.rows)
-	
+
 	x1 := col * colWidth
 	x2 := (col + 1) * colWidth
 	y1 := row * rowHeight
 	y2 := (row + 1) * rowHeight
-	
+
 	bounds := image.Rect(x1, y1, x2, y2)
 	avgColor := AverageColor(&si.img, bounds)
 	bestMatch := si.palette.Convert(avgColor).(BrickColor)
@@ -97,7 +96,6 @@ func (si *BrickImage) Color(row, col int) BrickColor {
 func (si *BrickImage) ColorModel() color.Model {
 	return si.img.ColorModel()
 }
-
 
 // image.Image implementation follows
 
@@ -119,7 +117,7 @@ func (si *BrickImage) At(x, y int) color.Color {
 		panic(fmt.Sprintf("Too many rows; was rendering row %d; max of %d rows", gridRow, si.rows))
 	}
 
-	// Grid line 
+	// Grid line
 	if x%colWidth == 0 || y%rowHeight == 0 {
 		return Red
 	}

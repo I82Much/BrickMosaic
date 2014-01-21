@@ -273,4 +273,34 @@ var (
 		BrightBlue,
 		BrightYellow,
 	})
+	GrayScalePalette = color.Palette([]color.Color{
+		White,
+		Black,
+		DarkGrey,
+		LightGrey,
+		DarkStoneGrey,
+	})
+	Primary = color.Palette([]color.Color{
+		BrightYellow,
+		BrightRed,
+		BrightBlue,
+	})
+	nameMap map[string]BrickColor = buildNameMap()
 )
+
+func buildNameMap() map[string]BrickColor {
+	nameMap := make(map[string]BrickColor)
+	for _, color := range FullPalette {
+		brickColor := color.(BrickColor)
+		nameMap[brickColor.name] = brickColor
+	}
+	return nameMap
+}
+
+// ColorForName returns the BrickColor whos name matches n, or nil.
+func ColorForName(n string) *BrickColor {
+	if c, ok := nameMap[n]; ok {
+		return &c
+	}
+	return nil
+}

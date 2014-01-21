@@ -4,8 +4,8 @@
 // left to right. This grid abstracts away the physical dimensions of the bricks and allows us to concentrate
 // on the core algorithm. This is handled via the Piece interface defined in piece.go.
 //
-// In each orientation, a column of the grid has width equal to the smallest width piece, and a 
-// row is as high as the smallest height piece. 
+// In each orientation, a column of the grid has width equal to the smallest width piece, and a
+// row is as high as the smallest height piece.
 // For instance, if we are looking top down at a mosaic, each row and column is of equal size.
 // If we are building a studs up mosaic, the row is equal in height to a single plate, and the column
 // would be equal to the width of a single 1x1. If we are building a studs right mosaic, the row is
@@ -111,7 +111,7 @@ func (g *Grid) Any(s State) bool {
 
 // outOfBounds determines if the given row/col is out of bounds (not a valid index into the data structure).
 func (g *Grid) outOfBounds(row, col int) bool {
-  return row < 0 || row >= g.numRows || col < 0 || col >= g.numCols
+	return row < 0 || row >= g.numRows || col < 0 || col >= g.numCols
 }
 
 // Get returns the state at row, col in the given grid. If the given
@@ -159,7 +159,6 @@ func (g *Grid) Clone() Grid {
 }
 
 // TODO(ndunn): this is the piece that should be an interface
-
 
 // Solve attempts to solve the grid by filling in the missing pieces.
 // The pieces are considered in the order defined in the pieces list.

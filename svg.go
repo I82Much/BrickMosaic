@@ -9,8 +9,7 @@ import (
 	"github.com/ajstarks/svgo"
 )
 
-type SVGRenderer struct {}
-
+type SVGRenderer struct{}
 
 func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
 	// Change aspect ratio
@@ -56,20 +55,19 @@ func BoundingBox(p Piece, origin Location) (minRow, minCol, maxRow, maxCol int) 
 // column to indicate where the canonical piece would fit. This helps builders keep on track if they
 // use the corresponding pieces to lay out the mosaic.
 func canonicalSpacing(o ViewOrientation) (rows, cols int) {
-  var p MosaicPiece
-  switch o {
-    case StudsRight:
-      p = StudsRightPiece(TwoByFour)
-    case StudsTop:
-      p = StudsTopPiece(TwoByFour)
-    case StudsUp:
-      p = StudsUpPiece(TwoByFour)
-    default:
-      panic(fmt.Sprintf("unknown orientation: %v", o))
-  }
-  return p.r.NumRows, p.r.NumCols
+	var p MosaicPiece
+	switch o {
+	case StudsRight:
+		p = StudsRightPiece(TwoByFour)
+	case StudsTop:
+		p = StudsTopPiece(TwoByFour)
+	case StudsUp:
+		p = StudsUpPiece(TwoByFour)
+	default:
+		panic(fmt.Sprintf("unknown orientation: %v", o))
+	}
+	return p.r.NumRows, p.r.NumCols
 }
-
 
 // DoRender writes the plan information to the svg canvas.
 func DoRender(p Plan, canvas *svg.SVG) {
@@ -80,14 +78,14 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	canvas.Gid("blocks")
 	bricksByColor := make(map[BrickColor][]PlacedBrick)
 	for _, b := range p.Pieces() {
-	  bricksByColor[b.Color] = append(bricksByColor[b.Color], b)
+		bricksByColor[b.Color] = append(bricksByColor[b.Color], b)
 	}
 	//Draw the blocks of color
 	// Draw outlines around each piece
 	for color, bricks := range bricksByColor {
 		canvas.Gid(fmt.Sprintf("blocks-%v", color))
-    for _, piece := range bricks {
-      origin := piece.Origin
+		for _, piece := range bricks {
+			origin := piece.Origin
 			for _, loc := range piece.Extent() {
 				translated := origin.Add(loc)
 				startX := translated.Col * brickWidth
@@ -105,7 +103,7 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	canvas.Gid("block_outlines")
 	// Draw outlines around each piece
 	for _, piece := range p.Pieces() {
-	  loc := piece.Origin
+		loc := piece.Origin
 		minRow, minCol, maxRow, maxCol := BoundingBox(piece, loc)
 
 		// Offset by one because we draw to where it ends. e.g. if it takes up only one
@@ -128,7 +126,7 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	canvas.Gid("gridlines")
 	majorOpacity := 0.5
 	minorOpacity := 0.2
-	
+
 	// Draw the grid lines, with darker lines around 'canonical' piece in this orientation.
 	darkRow, darkCol := canonicalSpacing(p.Orig().Orientation())
 	for row := 0; row < p.Orig().NumRows()+1; row++ {
@@ -158,14 +156,14 @@ func DoRender(p Plan, canvas *svg.SVG) {
 }
 
 func (r SVGRenderer) Render(p Plan) string {
-  var buf bytes.Buffer
+	var buf bytes.Buffer
 	canvas := svg.New(&buf)
 	blockWidth, blockHeight := GetDimensionsForBlock(p.Orig().Orientation())
 	width := blockWidth * p.Orig().NumCols()
 	height := blockHeight * p.Orig().NumRows()
 	canvas.Start(width, height)
 	canvas.Title("Grid")
-  DoRender(p, canvas)
+	DoRender(p, canvas)
 	canvas.End()
 	return buf.String()
 }

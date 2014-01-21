@@ -41,7 +41,7 @@ func (inv Inventory) PiecesForColor(c BrickColor) []Brick {
 func (inventory Inventory) UsageForColorMap() map[BrickColor]Usage {
 	usageMap := make(map[BrickColor]Usage)
 	for color, pieces := range inventory.pieces {
-	  usageMap[color] = Usage{len(pieces)}
+		usageMap[color] = Usage{len(pieces)}
 	}
 	return usageMap
 }

@@ -4,35 +4,63 @@ package main
 import (
 	"flag"
 	"fmt"
-	
+
 	"image"
+	"image/color"
+	// Support reading both jpeg and png
 	_ "image/jpeg"
-	//"image/png"
+	_ "image/png"
 	"os"
-	//"strings"
+	"strings"
+
 	"github.com/I82Much/BrickMosaic"
 )
 
 var (
-	rows       = flag.Int("rows", 10, "number of rows")
-	cols       = flag.Int("cols", 25, "number of columns")
+	rows        = flag.Int("rows", 10, "number of rows")
+	cols        = flag.Int("cols", 25, "number of columns")
 	orientation = flag.String("orientation", "STUDS_UP", "how the grid should be oriented. Either STUDS_RIGHT, STUDS_UP, or STUDS_TOP")
-	inputPath  = flag.String("path", "", "path to input file")
-	outputPath = flag.String("output_path", "", "path to output svg file")
+	inputPath   = flag.String("path", "", "path to input file")
+	outputPath  = flag.String("output_path", "", "path to output svg file")
+	palette     = flag.String("palette", "full", "comma separated list of color names, or predefined color palette name")
 
-	orientationMap = map[string]BrickMosaic.ViewOrientation {
-	  "STUDS_RIGHT": BrickMosaic.StudsRight,
-	  "STUDS_UP": BrickMosaic.StudsUp,
-	  "STUDS_TOP": BrickMosaic.StudsTop,
+	orientationMap = map[string]BrickMosaic.ViewOrientation{
+		"STUDS_RIGHT": BrickMosaic.StudsRight,
+		"STUDS_UP":    BrickMosaic.StudsUp,
+		"STUDS_TOP":   BrickMosaic.StudsTop,
+	}
+
+	paletteMap = map[string]color.Palette{
+		"gray":      BrickMosaic.GrayScalePalette,
+		"gray_plus": BrickMosaic.GrayPlusPalette,
+		"basic":     BrickMosaic.LimitedPalette,
+		"full":      BrickMosaic.FullPalette,
+		"primary":   BrickMosaic.Primary,
 	}
 )
 
+func paletteFromArg(p string) color.Palette {
+	if palette, ok := paletteMap[p]; ok {
+		return palette
+	}
+	// Treat this as comma separated list
+	colorStrings := strings.Split(p, ",")
+	var colors []color.Color
+	for _, c := range colorStrings {
+		if color := BrickMosaic.ColorForName(c); color != nil {
+			colors = append(colors, *color)
+		} else {
+			fmt.Printf("Could not find color matching %v", c)
+		}
+	}
+	return color.Palette(colors)
+}
 
 func main() {
-  // Flag handling; fail fast if anything is amiss
+	// Flag handling; fail fast if anything is amiss
 	flag.Parse()
 	if _, ok := orientationMap[*orientation]; !ok {
-	  panic("Must set --orientation to one of STUDS_RIGHT, STUDS_UP, or STUDS_TOP")
+		panic("Must set --orientation to one of STUDS_RIGHT, STUDS_UP, or STUDS_TOP")
 	}
 	if *inputPath == "" {
 		panic("Must set --path, path to the input file")
@@ -65,18 +93,21 @@ func main() {
 		}
 	}()
 
-  // TODO(ndunn): Expose the Palette as a command line option
+	// TODO(ndunn): Expose the Palette as a command line option
 	//palette := BrickMosaic.GrayPlusPalette
-	palette := BrickMosaic.FullPalette
+	palette := paletteFromArg(*palette)
+	if len(palette) == 0 {
+		panic("no color palette set")
+	}
 	viewOrientation := orientationMap[*orientation]
-	
+
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
 	ideal := BrickMosaic.EucPosterize(img, palette, *rows, *cols, viewOrientation)
-  // How are we going to build this mosaic?
-  plan := BrickMosaic.CreateGridMosaic(ideal)
+	// How are we going to build this mosaic?
+	plan := BrickMosaic.CreateGridMosaic(ideal)
 	inventory := plan.Inventory()
 	fmt.Printf("%v", inventory.DescendingUsage())
-	
+
 	renderer := BrickMosaic.SVGRenderer{}
 	if _, err := outputFile.Write([]byte(renderer.Render(plan))); err != nil {
 		panic(err)

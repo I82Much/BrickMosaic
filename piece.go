@@ -10,7 +10,7 @@ package BrickMosaic
 // (0, 0), (0, 1), (0, 2), (0, 3)
 // (1, 0), (1, 1), (1, 2), (1, 3)
 // (2, 0), (2, 1), (2, 2), (2, 3).
-// 
+//
 // In picture form:
 //    +--+   +--+   +--+   +--+
 // +--+--+---+--+---+--+-- +--+--+  +
@@ -21,17 +21,17 @@ package BrickMosaic
 // |                             |  |
 // |                             |  |
 // +-----------------------------+  +
-// 
+//
 // +-----------------------------+
-// 
+//
 //               4 studs wide
 //
 // Say that we instead are looking down on the brick and building our mosaics that way, with the studs facing out
 // towards the viewer. We can orient this in two directions - vertically or horizontally. In the vertical case,
 // we would say that the Piece has 4 rows (4 studs) and 2 columns (2 studs).
 //
-// 
-// 
+//
+//
 //  +--------------+
 //  |              |
 //  | +--+    +--+ |
@@ -81,5 +81,3 @@ func (r RectPiece) Extent() []Location {
 	}
 	return locs
 }
-
-
