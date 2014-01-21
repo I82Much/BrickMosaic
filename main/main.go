@@ -17,17 +17,17 @@ import (
 )
 
 var (
-  maxSizeStuds = flag.Int("studs", 40, "number of studs to have on maximum length side. The number of rows and columns will be automatically calculated")
-	rows        = flag.Int("rows", -1, "number of rows. If set, will be used in preference to --studs")
-	cols        = flag.Int("cols", -1, "number of columns. If set, will be used in preference to --studs")
-	orientation = flag.String("orientation", "STUDS_UP", "how the grid should be oriented. Either STUDS_RIGHT, STUDS_OUT, or STUDS_TOP")
-	inputPath   = flag.String("path", "", "path to input file")
-	outputPath  = flag.String("output_path", "", "path to output svg file")
-	palette     = flag.String("palette", "full", "comma separated list of color names, or predefined color palette name")
+	maxSizeStuds = flag.Int("studs", 40, "number of studs to have on maximum length side. The number of rows and columns will be automatically calculated")
+	rows         = flag.Int("rows", -1, "number of rows. If set, will be used in preference to --studs")
+	cols         = flag.Int("cols", -1, "number of columns. If set, will be used in preference to --studs")
+	orientation  = flag.String("orientation", "STUDS_UP", "how the grid should be oriented. Either STUDS_RIGHT, STUDS_OUT, or STUDS_TOP")
+	inputPath    = flag.String("path", "", "path to input file")
+	outputPath   = flag.String("output_path", "", "path to output svg file")
+	palette      = flag.String("palette", "full", "comma separated list of color names, or predefined color palette name")
 
 	orientationMap = map[string]BrickMosaic.ViewOrientation{
 		"STUDS_RIGHT": BrickMosaic.StudsRight,
-		"STUDS_OUT":    BrickMosaic.StudsOut,
+		"STUDS_OUT":   BrickMosaic.StudsOut,
 		"STUDS_TOP":   BrickMosaic.StudsTop,
 	}
 
@@ -102,18 +102,18 @@ func main() {
 	}
 	viewOrientation := orientationMap[*orientation]
 
-  var numRows, numCols int
-  // Use the command line arguments directly
-  if *rows > 0 && *cols > 0 {
-    numRows = *rows
-    numCols = *cols
-  } else if *maxSizeStuds > 0 {
-    imgWidth := img.Bounds().Size().X
-    imgHeight := img.Bounds().Size().Y
-    numRows, numCols = BrickMosaic.CalculateRowsAndColumns(imgWidth, imgHeight, *maxSizeStuds, viewOrientation)
-  } else {
-    panic("must set (--rows and --colors) or --studs")
-  }
+	var numRows, numCols int
+	// Use the command line arguments directly
+	if *rows > 0 && *cols > 0 {
+		numRows = *rows
+		numCols = *cols
+	} else if *maxSizeStuds > 0 {
+		imgWidth := img.Bounds().Size().X
+		imgHeight := img.Bounds().Size().Y
+		numRows, numCols = BrickMosaic.CalculateRowsAndColumns(imgWidth, imgHeight, *maxSizeStuds, viewOrientation)
+	} else {
+		panic("must set (--rows and --colors) or --studs")
+	}
 
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
 	ideal := BrickMosaic.EucPosterize(img, palette, numRows, numCols, viewOrientation)

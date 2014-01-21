@@ -1,7 +1,7 @@
 package BrickMosaic
 
 import (
-  "fmt"
+	"fmt"
 )
 
 // The LDraw Co-ordinate System
@@ -48,33 +48,33 @@ func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
 }
 
 func CalculateRowsAndColumns(width, height, maxStuds int, orientation ViewOrientation) (rows, cols int) {
-  if width <= 0 {
-    panic(fmt.Sprintf("width must be > 0; was %d", width))
-  }
-  if height <= 0 {
-    panic(fmt.Sprintf("height must be > 0; was %d", height))
-  }
-  // Do the conversion in LDU rather than studs for more precision
-  var heightDim LDU
-  var widthDim LDU
-  // width / height ratio = aspect ratio.
-  aspectRatio := float64(width) / float64(height)
-  // Wider than tall
-  if aspectRatio > 1.0 {
-    widthDim = BrickWidth * LDU(maxStuds)
-    heightDim = LDU((float64)(BrickWidth * LDU(maxStuds)) / aspectRatio)
-  } else {
-    // Taller than wide, or equally tall
-    heightDim = BrickWidth * LDU(maxStuds)
-    widthDim = LDU((float64)(BrickWidth * LDU(maxStuds)) * aspectRatio)
-  }
+	if width <= 0 {
+		panic(fmt.Sprintf("width must be > 0; was %d", width))
+	}
+	if height <= 0 {
+		panic(fmt.Sprintf("height must be > 0; was %d", height))
+	}
+	// Do the conversion in LDU rather than studs for more precision
+	var heightDim LDU
+	var widthDim LDU
+	// width / height ratio = aspect ratio.
+	aspectRatio := float64(width) / float64(height)
+	// Wider than tall
+	if aspectRatio > 1.0 {
+		widthDim = BrickWidth * LDU(maxStuds)
+		heightDim = LDU((float64)(BrickWidth*LDU(maxStuds)) / aspectRatio)
+	} else {
+		// Taller than wide, or equally tall
+		heightDim = BrickWidth * LDU(maxStuds)
+		widthDim = LDU((float64)(BrickWidth*LDU(maxStuds)) * aspectRatio)
+	}
 
-  // How wide and tall is the base brick in the requested orientation?
-  brickWidth, brickHeight := GetDimensionsForBlock(orientation)
-  rows = int(heightDim / LDU(brickHeight))
-  cols = int(widthDim / LDU(brickWidth))
-  
-  fmt.Printf("width %d height %d max studs %d orientation %v height dim %d width dim %d rows %d cols %d\n",
-  width, height, maxStuds, orientation, heightDim, widthDim, rows, cols)
-  return rows, cols
-} 
+	// How wide and tall is the base brick in the requested orientation?
+	brickWidth, brickHeight := GetDimensionsForBlock(orientation)
+	rows = int(heightDim / LDU(brickHeight))
+	cols = int(widthDim / LDU(brickWidth))
+
+	fmt.Printf("width %d height %d max studs %d orientation %v height dim %d width dim %d rows %d cols %d\n",
+		width, height, maxStuds, orientation, heightDim, widthDim, rows, cols)
+	return rows, cols
+}
