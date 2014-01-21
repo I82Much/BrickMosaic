@@ -1,3 +1,4 @@
+// This file is responsible for rendering svg instructions of how to build a given plan.
 package BrickMosaic
 
 import (
@@ -9,6 +10,7 @@ import (
 )
 
 type SVGRenderer struct {}
+
 
 func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
 	// Change aspect ratio
@@ -52,7 +54,7 @@ func BoundingBox(p Piece, origin Location) (minRow, minCol, maxRow, maxCol int) 
 
 // How should the grid be spaced in the different orientations? We darken every X row and every Y
 // column to indicate where the canonical piece would fit. This helps builders keep on track if they
-// use the corresponding pieces to lay out the 
+// use the corresponding pieces to lay out the mosaic.
 func canonicalSpacing(o ViewOrientation) (rows, cols int) {
   var p MosaicPiece
   switch o {
@@ -69,6 +71,7 @@ func canonicalSpacing(o ViewOrientation) (rows, cols int) {
 }
 
 
+// DoRender writes the plan information to the svg canvas.
 func DoRender(p Plan, canvas *svg.SVG) {
 	brickWidth, brickHeight := GetDimensionsForBlock(p.Orig().Orientation())
 	imageWidth := brickWidth * p.Orig().NumCols()
@@ -122,7 +125,6 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	}
 	canvas.Gend()
 
-  // FIXME(ndunn): this only works for studs right mosaic.
 	canvas.Gid("gridlines")
 	majorOpacity := 0.5
 	minorOpacity := 0.2
@@ -131,7 +133,6 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	darkRow, darkCol := canonicalSpacing(p.Orig().Orientation())
 	for row := 0; row < p.Orig().NumRows()+1; row++ {
 		y := int(row * brickHeight)
-		// Every 4th row (corresponding to length of 2x4), draw it darker.
 		alpha := minorOpacity
 		if row > 0 && row%darkRow == 0 {
 			alpha = majorOpacity
@@ -145,7 +146,6 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	// Vertical grid lines
 	for col := 0; col < p.Orig().NumCols()+1; col++ {
 		x := int(col * brickWidth)
-		// Every 3rd column (corresponding to 3 stacked plates), draw it darker.
 		alpha := minorOpacity
 		if col > 0 && col%darkCol == 0 {
 			alpha = majorOpacity

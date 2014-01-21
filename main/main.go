@@ -69,12 +69,13 @@ func main() {
 	//palette := BrickMosaic.GrayPlusPalette
 	palette := BrickMosaic.FullPalette
 	viewOrientation := orientationMap[*orientation]
+	
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
 	ideal := BrickMosaic.EucPosterize(img, palette, *rows, *cols, viewOrientation)
   // How are we going to build this mosaic?
   plan := BrickMosaic.CreateGridMosaic(ideal)
-	//inventory := plan.Inventory()
-	//fmt.Printf("%v", inventory.DescendingUsage())
+	inventory := plan.Inventory()
+	fmt.Printf("%v", inventory.DescendingUsage())
 	
 	renderer := BrickMosaic.SVGRenderer{}
 	if _, err := outputFile.Write([]byte(renderer.Render(plan))); err != nil {

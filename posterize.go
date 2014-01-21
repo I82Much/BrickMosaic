@@ -87,8 +87,6 @@ func (si *BrickImage) Color(row, col int) BrickColor {
 	y1 := row * rowHeight
 	y2 := (row + 1) * rowHeight
 	
-	fmt.Printf("w: %d h: %d colWidth %d rowHeight %d (%d, %d), (%d, %d)", w, h, colWidth, rowHeight, x1, y1, x2, y2)
-
 	bounds := image.Rect(x1, y1, x2, y2)
 	avgColor := AverageColor(&si.img, bounds)
 	bestMatch := si.palette.Convert(avgColor).(BrickColor)
