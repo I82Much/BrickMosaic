@@ -32,7 +32,7 @@ type pieceLocWant struct {
 	want  Piece
 }
 
-func TestStudsUpPiece(t *testing.T) {
+func TestStudsOutPiece(t *testing.T) {
 	for _, test := range []pieceLocWant{
 		{
 			"1x1",
@@ -50,7 +50,7 @@ func TestStudsUpPiece(t *testing.T) {
 			RectPiece{1, 4},
 		},
 	} {
-		if got := StudsUpPiece(test.piece); !reflect.DeepEqual(got.Extent(), test.want.Extent()) {
+		if got := StudsOutPiece(test.piece); !reflect.DeepEqual(got.Extent(), test.want.Extent()) {
 			t.Errorf("%q want %v got %v", test.name, test.want, got)
 		}
 	}

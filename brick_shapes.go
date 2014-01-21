@@ -182,7 +182,7 @@ func (r MosaicPiece) Extent() []Location {
 	return r.locs
 }
 
-func StudsUpPiece(piece Brick) MosaicPiece {
+func StudsOutPiece(piece Brick) MosaicPiece {
 	// Studs up, so rows = width, cols = length
 	r := RectPiece{piece.width, piece.length}
 	return MosaicPiece{
@@ -215,9 +215,9 @@ func StudsRightPiece(piece Brick) MosaicPiece {
 func PiecesForOrientation(o ViewOrientation, pieces []Brick) []MosaicPiece {
 	result := make([]MosaicPiece, len(pieces))
 	switch o {
-	case StudsUp:
+	case StudsOut:
 		for i, p := range pieces {
-			result[i] = StudsUpPiece(p)
+			result[i] = StudsOutPiece(p)
 		}
 	case StudsTop:
 		for i, p := range pieces {

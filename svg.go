@@ -11,22 +11,6 @@ import (
 
 type SVGRenderer struct{}
 
-func GetDimensionsForBlock(o ViewOrientation) (width, height int) {
-	// Change aspect ratio
-	switch o {
-	case StudsUp:
-		height = int(BrickWidth)
-		width = int(BrickWidth)
-	case StudsTop:
-		height = int(PlateHeight)
-		width = int(BrickWidth)
-	case StudsRight:
-		height = int(BrickWidth)
-		width = int(PlateHeight)
-	}
-	return
-}
-
 // Upper left origin
 func BoundingBox(p Piece, origin Location) (minRow, minCol, maxRow, maxCol int) {
 	minRow = 9999999
@@ -61,8 +45,8 @@ func canonicalSpacing(o ViewOrientation) (rows, cols int) {
 		p = StudsRightPiece(TwoByFour)
 	case StudsTop:
 		p = StudsTopPiece(TwoByFour)
-	case StudsUp:
-		p = StudsUpPiece(TwoByFour)
+	case StudsOut:
+		p = StudsOutPiece(TwoByFour)
 	default:
 		panic(fmt.Sprintf("unknown orientation: %v", o))
 	}

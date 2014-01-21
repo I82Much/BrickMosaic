@@ -34,8 +34,8 @@ func (p PlacedBrick) Extent() []Location {
 type ViewOrientation int
 
 const (
-	// StudsUp is a top down view, studs on top. Rows and columns refer to equal distances.
-	StudsUp ViewOrientation = iota
+	// StudsOut is a top down view, studs facing out towards viewer. Rows and columns refer to equal distances.
+	StudsOut ViewOrientation = iota
 	// StudsTop indicates a view from the side - pieces build on top of each other. Rows refer to plate height,
 	// columns are 1x1 width.
 	StudsTop
