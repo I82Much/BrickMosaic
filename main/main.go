@@ -20,7 +20,7 @@ var (
 	maxSizeStuds = flag.Int("studs", 40, "number of studs to have on maximum length side. The number of rows and columns will be automatically calculated")
 	rows         = flag.Int("rows", -1, "number of rows. If set, will be used in preference to --studs")
 	cols         = flag.Int("cols", -1, "number of columns. If set, will be used in preference to --studs")
-	orientation  = flag.String("orientation", "STUDS_UP", "how the grid should be oriented. Either STUDS_RIGHT, STUDS_OUT, or STUDS_TOP")
+	orientation  = flag.String("orientation", "STUDS_RIGHT", "how the grid should be oriented. Either STUDS_RIGHT, STUDS_OUT, or STUDS_TOP")
 	inputPath    = flag.String("path", "", "path to input file")
 	outputPath   = flag.String("output_path", "", "path to output svg file")
 	palette      = flag.String("palette", "full", "comma separated list of color names, or predefined color palette name")
