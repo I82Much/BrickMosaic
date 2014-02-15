@@ -14,9 +14,10 @@ import (
 	"image/color"
 )
 
-// Posterizer is the interface for converting from images into DesiredMosaic objects.
+// Posterize is the interface for converting from images into DesiredMosaic objects.
 type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal
 
+// EucPosterize is a posterization process that uses Euclidean distance.
 func EucPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
 	return NewBrickImage(img, rows, cols, p, o)
 }

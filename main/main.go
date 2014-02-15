@@ -24,6 +24,7 @@ var (
 	inputPath    = flag.String("path", "", "path to input file")
 	outputPath   = flag.String("output_path", "", "path to output svg file")
 	palette      = flag.String("palette", "full", "comma separated list of color names, or predefined color palette name")
+	dither = flag.Bool("dither", true, "If true, use dithering when converting the imagine into a mosaic")
 
 	orientationMap = map[string]BrickMosaic.ViewOrientation{
 		"STUDS_RIGHT": BrickMosaic.StudsRight,
@@ -37,6 +38,7 @@ var (
 		"basic":     BrickMosaic.LimitedPalette,
 		"full":      BrickMosaic.FullPalette,
 		"primary":   BrickMosaic.Primary,
+		"bw": BrickMosaic.BlackAndWhite,
 	}
 )
 
@@ -61,7 +63,7 @@ func main() {
 	// Flag handling; fail fast if anything is amiss
 	flag.Parse()
 	if _, ok := orientationMap[*orientation]; !ok {
-		panic("Must set --orientation to one of STUDS_RIGHT, STUDS_UP, or STUDS_TOP")
+		panic("Must set --orientation to one of STUDS_RIGHT, STUDS_OUT, or STUDS_TOP")
 	}
 	if *inputPath == "" {
 		panic("Must set --path, path to the input file")
@@ -116,7 +118,12 @@ func main() {
 	}
 
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
-	ideal := BrickMosaic.EucPosterize(img, palette, numRows, numCols, viewOrientation)
+  var ideal BrickMosaic.Ideal
+  if *dither {
+    ideal = BrickMosaic.DitherPosterize(img, palette, numRows, numCols, viewOrientation)
+  } else {
+    ideal = BrickMosaic.EucPosterize(img, palette, numRows, numCols, viewOrientation)
+  }
 	// How are we going to build this mosaic?
 	plan := BrickMosaic.CreateGridMosaic(ideal)
 	inventory := plan.Inventory()

@@ -285,6 +285,10 @@ var (
 		BrightRed,
 		BrightBlue,
 	})
+	BlackAndWhite = color.Palette([]color.Color{
+	  White,
+	  Black,
+	})
 	nameMap map[string]BrickColor = buildNameMap()
 )
 
@@ -297,7 +301,7 @@ func buildNameMap() map[string]BrickColor {
 	return nameMap
 }
 
-// ColorForName returns the BrickColor whos name matches n, or nil.
+// ColorForName returns the BrickColor whose name matches n, or nil.
 func ColorForName(n string) *BrickColor {
 	if c, ok := nameMap[n]; ok {
 		return &c
