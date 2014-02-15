@@ -65,6 +65,14 @@ func (si *DitheredBrickImage) At(x, y int) color.Color {
 	return si.Color(gridRow, gridCol)
 }
 
+func (si *DitheredBrickImage) rowToY(row int) int {
+  return int(doMap(float64(row), 0.0, float64(si.rows), float64(si.img.Bounds().Min.Y), float64(si.img.Bounds().Max.Y)))
+}
+
+func (si *DitheredBrickImage) colToX(col int) int {
+  return int(doMap(float64(col), 0.0, float64(si.cols), float64(si.img.Bounds().Min.X), float64(si.img.Bounds().Max.X)))
+}
+
 // Color returns the best palette.BrickColor for the given row/column
 // in the image based on the palette this image was instantiated with.
 func (si *DitheredBrickImage) Color(row, col int) BrickColor {
@@ -83,16 +91,13 @@ func (si *DitheredBrickImage) IdealColor(row, col int) color.Color {
   if c, ok := si.colors[loc]; ok {
     return c
   }
-  
-  w := si.img.Bounds().Max.X - si.img.Bounds().Min.X
-	h := si.img.Bounds().Max.Y - si.img.Bounds().Min.Y
-	colWidth := w / int(si.cols)
-	rowHeight := h / int(si.rows)
 
-	x1 := col * colWidth
-	x2 := (col + 1) * colWidth
-	y1 := row * rowHeight
-	y2 := (row + 1) * rowHeight
+  // Convert rows/columns into x/y coordinates in the image
+	y1 := si.rowToY(row)
+	y2 := si.rowToY(row + 1)
+	
+	x1 := si.colToX(col)
+	x2 := si.colToX(col + 1)
 
 	bounds := image.Rect(x1, y1, x2, y2)
 	avgColor := AverageColor(&si.img, bounds)
@@ -101,13 +106,14 @@ func (si *DitheredBrickImage) IdealColor(row, col int) color.Color {
 
 // RGBA represents a traditional 32-bit alpha-premultiplied color, having 8 bits for each of red, green, blue and alpha.
 
-
+// QuantizationError represents an error between a desired color and the best possible
+// color that we can use to represent it.
 type QuantizationError struct {
   // amount of error in r, g, b, a channels. Assumes 8 bit color.
   r, g, b, a int
 }
 
-// How much error is there from c1 relative to c0? High numbers means c1 has higher in that channel
+// Error returns how much error is there from c1 relative to c0? High numbers means c1 has higher in that channel.
 func Error(c0, c1 color.Color) QuantizationError {
   //return QuantizationError{}
    
@@ -165,7 +171,7 @@ func DitherPosterize(img image.Image, p color.Palette, rows int, cols int, o Vie
 	return NewDitheredBrickImage(img, rows, cols, p, o)
 }
 
-
+// NewDitheredBrickImage returns a DitheredBrickImage based on the given inputs.
 func NewDitheredBrickImage(img image.Image, rows, cols int, palette color.Palette, o ViewOrientation) *DitheredBrickImage {
 	brickImage := &DitheredBrickImage{
 	  img        : img,

@@ -70,6 +70,27 @@ func (si *BrickImage) Orientation() ViewOrientation {
 	return si.orientation
 }
 
+// doMap converts a value from one range [low1, high1] into another [low2, high2].
+func doMap(v, low1, high1, low2, high2 float64) float64 {
+  diff := v - low1
+  proportion := diff / (high1 - low1)
+  return lerp(low2, high2, proportion)
+}
+
+// lerp performs linear interpolation between v1 and v2. If amt == 0, v1 is used. If amt == 1.0,
+// v2 is used. At 0.5, the average of v1, v2 is used, and so on and so forth.
+func lerp(v1, v2, amt float64) float64 {
+  return ((v2 - v1) * amt) + v1
+}
+
+func (si *BrickImage) rowToY(row int) int {
+  return int(doMap(float64(row), 0.0, float64(si.rows), float64(si.img.Bounds().Min.Y), float64(si.img.Bounds().Max.Y)))
+}
+
+func (si *BrickImage) colToX(col int) int {
+  return int(doMap(float64(col), 0.0, float64(si.cols), float64(si.img.Bounds().Min.X), float64(si.img.Bounds().Max.X)))
+}
+
 // Color returns the best palette.BrickColor for the given row/column
 // in the image based on the palette this image was instantiated with.
 func (si *BrickImage) Color(row, col int) BrickColor {
@@ -77,16 +98,14 @@ func (si *BrickImage) Color(row, col int) BrickColor {
 	if c, ok := si.avgColors[loc]; ok {
 		return c
 	}
-	w := si.img.Bounds().Max.X - si.img.Bounds().Min.X
-	h := si.img.Bounds().Max.Y - si.img.Bounds().Min.Y
-	colWidth := w / int(si.cols)
-	rowHeight := h / int(si.rows)
-
-	x1 := col * colWidth
-	x2 := (col + 1) * colWidth
-	y1 := row * rowHeight
-	y2 := (row + 1) * rowHeight
-
+	
+	// Map from row/col coordinates to image coordinates
+	y1 := si.rowToY(row)
+	y2 := si.rowToY(row + 1)
+	
+	x1 := si.colToX(col)
+	x2 := si.colToX(col + 1)
+	
 	bounds := image.Rect(x1, y1, x2, y2)
 	avgColor := AverageColor(&si.img, bounds)
 	bestMatch := si.palette.Convert(avgColor).(BrickColor)
