@@ -114,7 +114,7 @@ func main() {
 		imgHeight := img.Bounds().Size().Y
 		numRows, numCols = BrickMosaic.CalculateRowsAndColumns(imgWidth, imgHeight, *maxSizeStuds, viewOrientation)
 	} else {
-		panic("must set (--rows and --colors) or --studs")
+		panic("must set (--rows and --cols) or --studs")
 	}
 
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
