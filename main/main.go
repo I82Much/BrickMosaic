@@ -10,6 +10,7 @@ import (
 	// Support reading both jpeg and png
 	_ "image/jpeg"
 	_ "image/png"
+	"path/filepath"
 	"image/gif"
 	"os"
 	"strings"
@@ -119,7 +120,7 @@ func main() {
 	}
 
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
-  var ideal BrickMosaic.IdealImage
+  var ideal BrickMosaic.Ideal
   if *dither {
     ideal = BrickMosaic.DitherPosterize(img, palette, numRows, numCols, viewOrientation)
   } else {
@@ -136,33 +137,35 @@ func main() {
 	}
 	
 	// TODO handle this more gracefully
-	gifFile, err := os.Create("output.gif")
-	if err != nil {
-		panic("Couldn't create output file")
+	
+	for _, scalingFactor := range []float32{0.0, 0.25, 0.5, 1.0, 2.0} {
+	  baseName := filepath.Base(*inputPath)
+	  ditheredImg := BrickMosaic.NewDitheredBrickImage(img, numRows, numCols, palette, viewOrientation, scalingFactor)
+	  gifFile, err := os.Create(fmt.Sprintf("%v_%v_%d_rows_%d_cols_%v.gif", baseName, viewOrientation, rows, cols,scalingFactor))
+  	if err != nil {
+  		panic("Couldn't create output file")
+  	}
+  	// close the output file on exit and check for its returned error
+  	defer func() {
+  		if err := gifFile.Close(); err != nil {
+  			panic(err)
+  		}
+  	}()
+  	// TODO fixme
+  	frames := ditheredImg.Frames
+  	var delay []int
+  	for _ = range frames {
+  	  delay = append(delay, 100)
+  	}
+
+    g := &gif.GIF {
+      Image: frames,
+      Delay: delay,
+      LoopCount: -1,
+    }
+    err = gif.EncodeAll(gifFile, g)
+    if err != nil {
+      panic(fmt.Sprintf("Couldn't encode gif: %v", err))
+    }
 	}
-	// close the output file on exit and check for its returned error
-	defer func() {
-		if err := gifFile.Close(); err != nil {
-			panic(err)
-		}
-	}()
-	// TODO fixme
-	frames := ideal.(*BrickMosaic.DitheredBrickImage).Frames
-	var delay []int
-	for _ = range frames {
-	  delay = append(delay, 1)
-	}
-	 
-  g := &gif.GIF {
-    //Image:     []*image.Paletted{ideal.(*BrickMosaic.DitheredBrickImage).Paletted()},
-    Image: frames,
-    Delay: delay,
-    LoopCount: 20,
-    //Delay:     []int{0},             // The successive delay times, one per frame, in 100ths of a second.
-    //LoopCount: 1,
-  }
-  err = gif.EncodeAll(gifFile, g)
-  if err != nil {
-    panic(fmt.Sprintf("Couldn't encode gif: %v", err))
-  }
 }

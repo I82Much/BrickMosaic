@@ -16,13 +16,16 @@ type DitheredBrickImage struct {
 	img        image.Image
 	palette    color.Palette
 	rows, cols int
-	
+
 	colors map[Location]color.Color
 	
 	// Maps each grid cell to its color
 	avgColors   map[Location]BrickColor
 	orientation ViewOrientation
-	
+
+	// 0.0 = no dithering at all
+	// 1.0 = standard amount of dithering
+	errorScalingFactor float32
 	Frames []*image.Paletted
 }
 
@@ -54,29 +57,6 @@ func (si *DitheredBrickImage) Bounds() image.Rectangle {
 	//return image.Rectangle{image.Pt(0, 0), image.Pt(si.cols, si.rows)}
 }
 
-// At returns what color should be rendered at this x, y coordinate.
-func (si *DitheredBrickImage) At(x, y int) color.Color {
-  return si.Color(y, x)
-  /*
-	w := si.img.Bounds().Max.X - si.img.Bounds().Min.X
-	h := si.img.Bounds().Max.Y - si.img.Bounds().Min.Y
-	colWidth := w / int(si.cols)
-	rowHeight := h / int(si.rows)
-	gridCol := x / colWidth
-	gridRow := y / rowHeight
-
-	// FIXME(ndunn): this only works with perfectly oriented pictures.
-	if gridRow >= si.rows {
-		panic(fmt.Sprintf("Too many rows; was rendering row %d; max of %d rows", gridRow, si.rows))
-	}
-
-	// Grid line
-	if x%colWidth == 0 || y%rowHeight == 0 {
-		return Red
-	}
-	return si.Color(gridRow, gridCol)*/
-}
-
 func (si *DitheredBrickImage) rowToY(row int) int {
   return int(doMap(float64(row), 0.0, float64(si.rows), float64(si.img.Bounds().Min.Y), float64(si.img.Bounds().Max.Y)))
 }
@@ -96,17 +76,6 @@ func (si *DitheredBrickImage) Color(row, col int) BrickColor {
 	bestMatch := si.palette.Convert(avgColor).(BrickColor)
 	si.avgColors[loc] = bestMatch
 	return bestMatch
-}
-
-// ColorIndexAt returns the palette index of the pixel at (x, y).
-func (si *DitheredBrickImage) ColorIndexAt(x, y int) uint8 {
-  avg := si.At(x, y)
-  for i, c := range si.palette {
-    if c == avg {
-      return uint8(i)
-    }
-  }
-  return uint8(0)
 }
 
 // FIXME ndunn remove
@@ -221,12 +190,12 @@ func AddError(c color.Color, err QuantizationError) color.Color {
 }
 
 // DitherPosterize is a posterization process that uses Euclidean distance.
-func DitherPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage {
-	return NewDitheredBrickImage(img, rows, cols, p, o)
+func DitherPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
+	return NewDitheredBrickImage(img, rows, cols, p, o, 1.0)
 }
 
 // NewDitheredBrickImage returns a DitheredBrickImage based on the given inputs.
-func NewDitheredBrickImage(img image.Image, rows, cols int, palette color.Palette, o ViewOrientation) *DitheredBrickImage {
+func NewDitheredBrickImage(img image.Image, rows, cols int, palette color.Palette, o ViewOrientation, errorScalingFactor float32) *DitheredBrickImage {
 	brickImage := &DitheredBrickImage{
 	  img        : img,
   	palette    : palette,
@@ -235,6 +204,7 @@ func NewDitheredBrickImage(img image.Image, rows, cols int, palette color.Palett
   	colors: make(map[Location]color.Color),
 	  avgColors: make(map[Location]BrickColor),
 	  orientation: o,
+	  errorScalingFactor: 1.0,
 	  Frames: nil,
 	}
   
@@ -249,7 +219,7 @@ func NewDitheredBrickImage(img image.Image, rows, cols int, palette color.Palett
       }
     } 
 	}
-  brickImage.Frames = append(brickImage.Frames, brickImage.Paletted())
+  //brickImage.Frames = append(brickImage.Frames, brickImage.Paletted())
   
 
 	// Initialize the color map
@@ -287,26 +257,28 @@ func NewDitheredBrickImage(img image.Image, rows, cols int, palette color.Palett
         }*/
         
         // To the right
-        brickImage.colors[Location{row,col+1}] = AddError(brickImage.colors[Location{row,col+1}], err.Scale(7.0/16.0))
+        brickImage.colors[Location{row,col+1}] = AddError(brickImage.colors[Location{row,col+1}], err.Scale(errorScalingFactor*7.0/16.0))
       }
 
       if col != 0 && row != rows - 1 {
         // To Left, below
-        brickImage.colors[Location{row+1,col-1}] = AddError(brickImage.colors[Location{row+1,col-1}], err.Scale(3.0/16.0))
+        brickImage.colors[Location{row+1,col-1}] = AddError(brickImage.colors[Location{row+1,col-1}], err.Scale(errorScalingFactor*3.0/16.0))
       }
 
       if row != rows - 1 {
         // Center, below
-        brickImage.colors[Location{row+1,col}] = AddError(brickImage.colors[Location{row+1,col}], err.Scale(5.0/16.0))
+        brickImage.colors[Location{row+1,col}] = AddError(brickImage.colors[Location{row+1,col}], err.Scale(errorScalingFactor*5.0/16.0))
       }
 
       if row != rows -1 && col != cols -1 {
         // To right, below
-        brickImage.colors[Location{row+1,col+1}] = AddError(brickImage.colors[Location{row+1,col+1}], err.Scale(1.0/16.0))
+        brickImage.colors[Location{row+1,col+1}] = AddError(brickImage.colors[Location{row+1,col+1}], err.Scale(errorScalingFactor*1.0/16.0))
       }
       
-      brickImage.Frames = append(brickImage.Frames, brickImage.Paletted())
+      //brickImage.Frames = append(brickImage.Frames, brickImage.Paletted())
     }
   }
+  // Final version
+  brickImage.Frames = append(brickImage.Frames, brickImage.Paletted())
 	return brickImage
 }
