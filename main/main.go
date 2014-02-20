@@ -141,7 +141,7 @@ func main() {
 	for _, scalingFactor := range []float32{0.0, 0.25, 0.5, 1.0, 2.0} {
 	  baseName := filepath.Base(*inputPath)
 	  ditheredImg := BrickMosaic.NewDitheredBrickImage(img, numRows, numCols, palette, viewOrientation, scalingFactor)
-	  gifFile, err := os.Create(fmt.Sprintf("%v_%v_%d_rows_%d_cols_%v.gif", baseName, viewOrientation, rows, cols,scalingFactor))
+	  gifFile, err := os.Create(fmt.Sprintf("%v_%v_%d_rows_%d_cols_%v.gif", baseName, viewOrientation, numRows, numCols, scalingFactor))
   	if err != nil {
   		panic("Couldn't create output file")
   	}
