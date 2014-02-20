@@ -14,15 +14,21 @@ import (
 	"image/color"
 )
 
+// IdealImage is an object that implements both the Image interface and the Ideal interface
+type IdealImage interface {
+  image.Image
+  Ideal
+}
+
 // Posterize is the interface for converting from images into DesiredMosaic objects.
-type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal
+type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage
 
 // EucPosterize is a posterization process that uses Euclidean distance.
-func EucPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
+func EucPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage {
 	return NewBrickImage(img, rows, cols, p, o)
 }
 
-// BrickImage is an implementation of DesiredMosaic interface. It also implements the image.Image interface
+// BrickImage is an implementation of Ideal interface. It also implements the image.Image interface
 // so that it can be rendered for debugging purposes.
 type BrickImage struct {
 	img        image.Image
@@ -36,12 +42,12 @@ type BrickImage struct {
 // AverageColor determines the 'average' color of the subimage whose coordinates are contained in the
 // given bounds. The average is an arithmetic average in RGB color space.
 // TODO(ndunn): try different color spaces.
-func AverageColor(si *image.Image, bounds image.Rectangle) color.Color {
+func AverageColor(si image.Image, bounds image.Rectangle) color.Color {
 	R, G, B, A := uint64(0), uint64(0), uint64(0), uint64(0)
 	numPixels := uint64(0)
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
 		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-			c := (*si).At(x, y)
+			c := si.At(x, y)
 			r, g, b, a := c.RGBA()
 			R += uint64(r)
 			G += uint64(g)
@@ -58,14 +64,17 @@ func AverageColor(si *image.Image, bounds image.Rectangle) color.Color {
 	return color.RGBA{uint8(R), uint8(G), uint8(B), uint8(A)}
 }
 
+// NumRows returns the number of rows in the piece.
 func (si *BrickImage) NumRows() int {
 	return si.rows
 }
 
+// NumRows returns the number of columns in the piece.
 func (si *BrickImage) NumCols() int {
 	return si.cols
 }
 
+// Orientation returns the way in which the image is oriented.
 func (si *BrickImage) Orientation() ViewOrientation {
 	return si.orientation
 }
@@ -107,7 +116,7 @@ func (si *BrickImage) Color(row, col int) BrickColor {
 	x2 := si.colToX(col + 1)
 	
 	bounds := image.Rect(x1, y1, x2, y2)
-	avgColor := AverageColor(&si.img, bounds)
+	avgColor := AverageColor(si.img, bounds)
 	bestMatch := si.palette.Convert(avgColor).(BrickColor)
 	si.avgColors[loc] = bestMatch
 	return bestMatch

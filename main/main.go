@@ -10,6 +10,7 @@ import (
 	// Support reading both jpeg and png
 	_ "image/jpeg"
 	_ "image/png"
+	"image/gif"
 	"os"
 	"strings"
 
@@ -118,7 +119,7 @@ func main() {
 	}
 
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
-  var ideal BrickMosaic.Ideal
+  var ideal BrickMosaic.IdealImage
   if *dither {
     ideal = BrickMosaic.DitherPosterize(img, palette, numRows, numCols, viewOrientation)
   } else {
@@ -133,4 +134,35 @@ func main() {
 	if _, err := outputFile.Write([]byte(renderer.Render(plan))); err != nil {
 		panic(err)
 	}
+	
+	// TODO handle this more gracefully
+	gifFile, err := os.Create("output.gif")
+	if err != nil {
+		panic("Couldn't create output file")
+	}
+	// close the output file on exit and check for its returned error
+	defer func() {
+		if err := gifFile.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	// TODO fixme
+	frames := ideal.(*BrickMosaic.DitheredBrickImage).Frames
+	var delay []int
+	for _ = range frames {
+	  delay = append(delay, 1)
+	}
+	 
+  g := &gif.GIF {
+    //Image:     []*image.Paletted{ideal.(*BrickMosaic.DitheredBrickImage).Paletted()},
+    Image: frames,
+    Delay: delay,
+    LoopCount: 20,
+    //Delay:     []int{0},             // The successive delay times, one per frame, in 100ths of a second.
+    //LoopCount: 1,
+  }
+  err = gif.EncodeAll(gifFile, g)
+  if err != nil {
+    panic(fmt.Sprintf("Couldn't encode gif: %v", err))
+  }
 }

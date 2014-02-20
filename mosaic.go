@@ -45,7 +45,7 @@ const (
 )
 
 // Plan represents how to build the mosaic. The resulting plan may not match the
-// ideal DesiredMosaic perfectly; for instance, an implementation might decide
+// Ideal perfectly; for instance, an implementation might decide
 // to depart slightly from the desired colors if it leads to enhanced rigidity
 // in the structure.
 type Plan interface {
@@ -57,7 +57,7 @@ type Plan interface {
 
 // Create is the interface by which we convert Ideal mosaics into a plan
 // for building it. As discussed in Plan, different Creators might build Plans
-// that do not perfectly match the DesiredMosaic.
+// that do not perfectly match the Ideal.
 type Create func(i Ideal) Plan
 
 // gridBasedPlan is a basic implementation of the Plan interface

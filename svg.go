@@ -4,7 +4,7 @@ package BrickMosaic
 import (
 	"bytes"
 	"fmt"
-	"strings"
+_	"strings"
 
 	"github.com/ajstarks/svgo"
 )
@@ -56,8 +56,8 @@ func canonicalSpacing(o ViewOrientation) (rows, cols int) {
 // DoRender writes the plan information to the svg canvas.
 func DoRender(p Plan, canvas *svg.SVG) {
 	brickWidth, brickHeight := GetDimensionsForBlock(p.Orig().Orientation())
-	imageWidth := brickWidth * p.Orig().NumCols()
-	imageHeight := brickHeight * p.Orig().NumRows()
+	//imageWidth := brickWidth * p.Orig().NumCols()
+	//imageHeight := brickHeight * p.Orig().NumRows()
 
 	canvas.Gid("blocks")
 	bricksByColor := make(map[BrickColor][]PlacedBrick)
@@ -84,6 +84,7 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	}
 	canvas.Gend()
 
+  /*
 	canvas.Gid("block_outlines")
 	// Draw outlines around each piece
 	for _, piece := range p.Pieces() {
@@ -136,7 +137,7 @@ func DoRender(p Plan, canvas *svg.SVG) {
 		canvas.Line(x, 0, x, imageHeight, style)
 	}
 	canvas.Gend()
-
+  */
 }
 
 func (r SVGRenderer) Render(p Plan) string {
