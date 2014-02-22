@@ -1,5 +1,7 @@
 package BrickMosaic
 
+import "fmt"
+
 // This package is responsible for translating the Extent ([]Location) of pieces relative to
 // different anchor points. E.g. by default the extent is relative to 'upper left' corner
 // of brick. But if we're placing it such that lower right corner is the origin, we need
@@ -8,12 +10,13 @@ package BrickMosaic
 type AnchorPoint int
 const (
   UpperLeft AnchorPoint = iota
-  UpperRight AnchorPoint = iota
-  LowerRight AnchorPoint = iota
-  LowerLeft AnchorPoint = iota
+  UpperRight AnchorPoint = UpperLeft + 1
+  LowerRight AnchorPoint = UpperRight + 1
+  LowerLeft AnchorPoint = LowerRight + 1
 )
 
 func Translate(locs []Location, pt AnchorPoint) []Location {
+  fmt.Printf("got locs %v anchorpoint %v\n", locs, pt)
   if pt == UpperLeft {
     return locs
   }
