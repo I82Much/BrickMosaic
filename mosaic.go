@@ -110,15 +110,13 @@ func CreateGridMosaic(m Ideal, solver GridSolver) Plan {
 		// Now we know where each piece goes. Create PlacedBrick representations of the pieces.
 		counter := 0
 		for loc, piece := range solution.Pieces {
-			// We know that each entry is not just a Piece but a MosaicPiece
 			// TODO(ndunn): do we really need Brick, Piece, MosaicPiece, and PlacedBrick?
-			mp := piece.(MosaicPiece)
 			pb := PlacedBrick{
 				Id:          counter,
 				Origin:      loc,
-				Locs:        mp.Extent(),
+				Locs:        piece.Extent(),
 				Color:       color,
-				Shape:       mp,
+				Shape:       piece,
 				Orientation: m.Orientation(),
 			}
 			placedBricks[loc] = pb

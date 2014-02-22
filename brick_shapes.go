@@ -7,6 +7,9 @@ type Brick interface {
   Width() int
   Length() int
   Height() int
+  // TODO(ndunn): This somehow has to take into account color
+  // Cost in cents.
+  ApproximateCost() int
 }
 
 // brick represents a prototypical piece, not bound to any specific orientation or color.
@@ -21,6 +24,9 @@ type brick struct {
 	length int
 	// height is measured in terms of plates - a standard brick is 3 plates high.
 	height int
+	
+	// Cost in cents
+	cost int
 }
 
 func (b brick) Name() string {
@@ -43,6 +49,10 @@ func (b brick) Height() int {
   return b.height
 }
 
+func (b brick) ApproximateCost() int {
+  return b.cost
+}
+
 var (
 	// OneByFour represents a 1 x 4 brick. See http://lego.wikia.com/wiki/Part_3010.
 	OneByFour = brick{
@@ -51,6 +61,8 @@ var (
 		width:  1,
 		length: 4,
 		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=326&sz=10&searchSort=P
+		cost: 7,
 	}
 	// OneByThree represents a 1 x 3 brick. See http://lego.wikia.com/wiki/Part_3622.
 	OneByThree = brick{
@@ -59,6 +71,8 @@ var (
 		width:  1,
 		length: 3,
 		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=632&sz=10&searchSort=P
+		cost: 7,
 	}
 	// OneByTwo represents a 1 x 2 brick. See http://lego.wikia.com/wiki/Part_3004.
 	OneByTwo = brick{
@@ -67,6 +81,8 @@ var (
 		width:  1,
 		length: 2,
 		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=280&sz=10&searchSort=P
+		cost: 2,
 	}
 	// OneByOne represents a 1 x 1 brick. See http://lego.wikia.com/wiki/Part_3005.
 	OneByOne = brick{
@@ -75,6 +91,8 @@ var (
 		width:  1,
 		length: 1,
 		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=299&sz=10&searchSort=P
+		cost: 4,
 	}
 	// TwoByFour represents a 2 x 4 brick. See http://lego.wikia.com/wiki/Part_3001.
 	TwoByFour = brick{
@@ -83,6 +101,8 @@ var (
 		width:  2,
 		length: 4,
 		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=280&sz=10&searchSort=P
+		cost: 14,
 	}
 	// TwoByThree represents a 2 x 3 brick. See http://lego.wikia.com/wiki/Part_3002.
 	TwoByThree = brick{
@@ -91,6 +111,8 @@ var (
 		width:  2,
 		length: 3,
 		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=266&sz=10&searchSort=P
+		cost: 9,
 	}
 	// TwoByTwo represents a 2 x 2 brick. See http://lego.wikia.com/wiki/Part_3003.
 	TwoByTwo = brick{
@@ -99,6 +121,8 @@ var (
 		width:  2,
 		length: 2,
 		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=272&sz=10&searchSort=P
+		cost: 4,
 	}
 
 	// Plates
@@ -110,6 +134,8 @@ var (
 		width:  1,
 		length: 1,
 		height: 1,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=381&sz=10&searchSort=P
+		cost: 5,
 	}
 	// OneByTwoPlate represents a 1 x 2 plate. See http://lego.wikia.com/wiki/Part_3023.
 	OneByTwoPlate = brick{
@@ -118,6 +144,8 @@ var (
 		width:  1,
 		length: 2,
 		height: 1,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=378&sz=10&searchSort=P
+		cost: 2,
 	}
 	// OneByThreePlate represents a 1 x 3 plate. See http://lego.wikia.com/wiki/Part_3623.
 	OneByThreePlate = brick{
@@ -126,6 +154,8 @@ var (
 		width:  1,
 		length: 3,
 		height: 1,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=634&sz=10&searchSort=P
+		cost: 5,
 	}
 	// OneByFourPlate represents a 1 x 4 plate. See http://lego.wikia.com/wiki/Part_3710.
 	OneByFourPlate = brick{
@@ -134,6 +164,8 @@ var (
 		width:  1,
 		length: 4,
 		height: 1,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=683&sz=10&searchSort=P
+		cost: 3,
 	}
 	// OneBySixPlate represents a 1 x 6 plate. See http://lego.wikia.com/wiki/Part_3666.
 	OneBySixPlate = brick{
@@ -142,6 +174,8 @@ var (
 		width:  1,
 		length: 6,
 		height: 1,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=659&sz=10&searchSort=P
+		cost: 4,
 	}
 	// OneByEightPlate represents a 1 x 8 plate. See http://brickowl.com/catalog/lego-plate-1-x-8-3460.
 	OneByEightPlate = brick{
@@ -150,6 +184,8 @@ var (
 		width:  1,
 		length: 8,
 		height: 1,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=604&sz=10&searchSort=P
+		cost: 8,
 	}
 	// OneByTenPlate represents a 1 x 10 plate. See http://brickowl.com/catalog/lego-plate-1-x-10-4477.
 	OneByTenPlate = brick{
@@ -158,6 +194,8 @@ var (
 		width:  1,
 		length: 10,
 		height: 1,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=908&sz=10&searchSort=P
+		cost: 10,
 	}
 
 	// Bricks represents a slice of all of the bricks (full height, not plates). They are listed in descending
@@ -244,6 +282,11 @@ func (r mosaicPiece) Rows() int {
 func (r mosaicPiece) Cols() int {
   return r.Rect.NumCols
 }
+
+func (r mosaicPiece) ApproximateCost() int {
+  return r.Brick.ApproximateCost()
+}
+
 
 func StudsOutPiece(piece Brick) MosaicPiece {
 	// Studs up, so rows = width, cols = length
