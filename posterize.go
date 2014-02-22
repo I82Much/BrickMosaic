@@ -12,7 +12,6 @@
 package BrickMosaic
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 )
@@ -258,7 +257,7 @@ func NewBrickImage(img image.Image, rows, cols int, palette color.Palette, o Vie
 		colors:             make(map[Location]color.Color),
 		avgColors:          make(map[Location]BrickColor),
 		orientation:        o,
-		errorScalingFactor: 1.0,
+		errorScalingFactor: errorScalingFactor,
 		Frames:             nil,
 	}
 
@@ -267,10 +266,6 @@ func NewBrickImage(img image.Image, rows, cols int, palette color.Palette, o Vie
 		for col := 0; col < cols; col++ {
 			oldPixel := brickImage.IdealColor(row, col)
 			brickImage.colors[Location{row, col}] = oldPixel
-
-			if row == 0 && col < 10 {
-				fmt.Printf("row %d col %d color: %v\n", row, col, oldPixel)
-			}
 		}
 	}
 	//brickImage.Frames = append(brickImage.Frames, brickImage.Paletted())
