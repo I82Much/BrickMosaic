@@ -1,5 +1,15 @@
 package BrickMosaic
 
+// Package image is responsible for manipulating input images into a format that is
+// compatible with the brick colors we have. For instance, it converts from an image
+// of potentially millions of colors into a much smaller color palette.
+//
+// According to Wikipedia:
+//   "Posterization of an image entails conversion of a continuous gradation of tone to several regions of fewer tones, with abrupt changes from one tone to another." (http://en.wikipedia.org/wiki/Posterization, retrieved 2014/01/19)
+//
+// This package is responsible for converting from raw images to the Ideal.
+
+
 // This library does 
 // Dither implements Floyd Steinberg's algorithm for dithering. See  http://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering
 

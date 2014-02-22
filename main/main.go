@@ -10,8 +10,8 @@ import (
 	// Support reading both jpeg and png
 	_ "image/jpeg"
 	_ "image/png"
-	"path/filepath"
-	"image/gif"
+//	"path/filepath"
+//	"image/gif"
 	"os"
 	"strings"
 
@@ -121,11 +121,32 @@ func main() {
 
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
   var ideal BrickMosaic.Ideal
+  var ideal2 BrickMosaic.Ideal
   if *dither {
     ideal = BrickMosaic.DitherPosterize(img, palette, numRows, numCols, viewOrientation)
   } else {
     ideal = BrickMosaic.EucPosterize(img, palette, numRows, numCols, viewOrientation)
+    ideal2 = BrickMosaic.Posterize(img, palette, numRows, numCols, viewOrientation)
   }
+  
+  if ideal.NumRows() != ideal2.NumRows() {
+    panic("mismatch in rows")
+  }
+  if ideal.NumCols() != ideal2.NumCols() {
+    panic("mismatch inc ols")
+  }
+  for row := 0; row < ideal.NumRows(); row++ {
+    for col := 0; col < ideal.NumCols(); col++ {
+      c1 := ideal.Color(row, col)
+      c2 := ideal2.Color(row, col)
+      if c1 != c2 {
+        panic(fmt.Sprintf("Mismatch in color for row %d col %d: c1 %v c2 %v",
+          row, col, c1, c2))
+      }
+    }
+  }
+  
+  
 	// How are we going to build this mosaic?
 	plan := BrickMosaic.CreateGridMosaic(ideal)
 	inventory := plan.Inventory()
@@ -136,6 +157,7 @@ func main() {
 		panic(err)
 	}
 	
+	/*
 	// TODO handle this more gracefully
 	
 	for _, scalingFactor := range []float32{0.0, 0.25, 0.5, 1.0, 2.0} {
@@ -167,5 +189,5 @@ func main() {
     if err != nil {
       panic(fmt.Sprintf("Couldn't encode gif: %v", err))
     }
-	}
+	}*/
 }

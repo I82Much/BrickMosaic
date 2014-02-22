@@ -6,6 +6,9 @@
 //   "Posterization of an image entails conversion of a continuous gradation of tone to several regions of fewer tones, with abrupt changes from one tone to another." (http://en.wikipedia.org/wiki/Posterization, retrieved 2014/01/19)
 //
 // This package is responsible for converting from raw images to the Ideal.
+
+// This implements Floyd Steinberg's algorithm for dithering. See  http://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering
+
 package BrickMosaic
 
 import (
@@ -20,9 +23,8 @@ type IdealImage interface {
   Ideal
 }
 
-/*
 // Posterize is the interface for converting from images into DesiredMosaic objects.
-type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage*/
+type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage
 
 // EucPosterize is a posterization process that uses Euclidean distance.
 func EucPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage {
