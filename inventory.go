@@ -66,11 +66,11 @@ func (inventory *Inventory) Add(c BrickColor, p Brick) {
 // ApproximateCost estimates how much the mosaic will cost to build, given
 // the price information embedded in the pieces. Returns a value in cents.
 func (inventory *Inventory) ApproximateCost() int {
-  cost := 0
-  for _, pieces := range inventory.pieces {
-    for  _, p := range pieces {
-      cost += p.ApproximateCost()
-    }
-  }
-  return cost
+	cost := 0
+	for _, pieces := range inventory.pieces {
+		for _, p := range pieces {
+			cost += p.ApproximateCost()
+		}
+	}
+	return cost
 }

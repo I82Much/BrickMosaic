@@ -54,7 +54,7 @@ func (b brick) ApproximateCost() int {
 }
 
 var (
-  // OneByEight represents a 1 x 8 brick. See http://lego.wikia.com/wiki/Part_3008.
+	// OneByEight represents a 1 x 8 brick. See http://lego.wikia.com/wiki/Part_3008.
 	OneByEight = brick{
 		name:   "1x8 brick",
 		id:     "3008",
@@ -64,7 +64,7 @@ var (
 		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=326&sz=10&searchSort=P
 		cost: 30,
 	}
-	
+
 	// OneBySix represents a 1 x 6 brick. See http://lego.wikia.com/wiki/Part_3009.
 	OneBySix = brick{
 		name:   "1x6 brick",
@@ -72,10 +72,10 @@ var (
 		width:  1,
 		length: 6,
 		height: 3,
-    // http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=316&sz=10&searchSort=P
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=316&sz=10&searchSort=P
 		cost: 18,
 	}
-	
+
 	// OneByFour represents a 1 x 4 brick. See http://lego.wikia.com/wiki/Part_3010.
 	OneByFour = brick{
 		name:   "1x4 brick",
@@ -86,8 +86,8 @@ var (
 		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=326&sz=10&searchSort=P
 		cost: 7,
 	}
-  
-  // OneByThree represents a 1 x 3 brick. See http://lego.wikia.com/wiki/Part_3622.
+
+	// OneByThree represents a 1 x 3 brick. See http://lego.wikia.com/wiki/Part_3622.
 	OneByThree = brick{
 		name:   "1x3 brick",
 		id:     "3622",
@@ -117,29 +117,29 @@ var (
 		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=299&sz=10&searchSort=P
 		cost: 4,
 	}
-	
+
 	// TwoByEight represents a 2 x 8 brick. See http://lego.wikia.com/wiki/Part_3007.
-	TwoByEight = brick {
-	  name: "2x8 brick",
-	  id: "3007",
-	  width: 2,
-	  length: 8,
-	  height: 3,
-	  // http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=306&sz=10&searchSort=P
-	  cost: 27,
+	TwoByEight = brick{
+		name:   "2x8 brick",
+		id:     "3007",
+		width:  2,
+		length: 8,
+		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=306&sz=10&searchSort=P
+		cost: 27,
 	}
-	
+
 	// TwoBySix represents a 2 x 6 brick. See http://lego.wikia.com/wiki/Part_2456.
-	TwoBySix = brick {
-	  name: "2x6 brick",
-	  id: "2456", // AKA 44237
-	  width: 2,
-	  length: 6,
-	  height: 3,
-	  // http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=110&sz=10&searchSort=P
-	  cost: 25,
+	TwoBySix = brick{
+		name:   "2x6 brick",
+		id:     "2456", // AKA 44237
+		width:  2,
+		length: 6,
+		height: 3,
+		// http://www.bricklink.com/search.asp?pg=1&colorID=11&itemID=110&sz=10&searchSort=P
+		cost: 25,
 	}
-	
+
 	// TwoByFour represents a 2 x 4 brick. See http://lego.wikia.com/wiki/Part_3001.
 	TwoByFour = brick{
 		name:   "2x4 brick",
@@ -247,14 +247,14 @@ var (
 	// Bricks represents a slice of all of the bricks (full height, not plates). They are listed in descending
 	// order of area.
 	Bricks = []Brick{
-	  TwoByEight,
-	  TwoBySix,
+		TwoByEight,
+		TwoBySix,
 		TwoByFour,
 		TwoByThree,
 		TwoByTwo,
 
-    OneByEight,
-    OneBySix,
+		OneByEight,
+		OneBySix,
 		OneByFour,
 		OneByThree,
 		OneByTwo,

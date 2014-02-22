@@ -27,7 +27,7 @@ var (
 	outputPath   = flag.String("output_path", "", "path to output svg file")
 	palette      = flag.String("palette", "full", "comma separated list of color names, or predefined color palette name")
 	dither       = flag.Bool("dither", true, "If true, use dithering when converting the imagine into a mosaic")
-	solver = flag.String("solver", "greedy", "The solver to use; either 'greedy' or 'cost'")
+	solver       = flag.String("solver", "greedy", "The solver to use; either 'greedy' or 'cost'")
 
 	orientationMap = map[string]BrickMosaic.ViewOrientation{
 		"STUDS_RIGHT": BrickMosaic.StudsRight,
@@ -43,10 +43,10 @@ var (
 		"primary":   BrickMosaic.Primary,
 		"bw":        BrickMosaic.BlackAndWhite,
 	}
-	
-	solverMap = map[string]BrickMosaic.GridSolver {
-	  "greedy": BrickMosaic.GreedySolve,
-	  "cost": BrickMosaic.GreedyMinCostSolve,
+
+	solverMap = map[string]BrickMosaic.GridSolver{
+		"greedy": BrickMosaic.GreedySolve,
+		"cost":   BrickMosaic.GreedyMinCostSolve,
 	}
 )
 
@@ -133,17 +133,17 @@ func main() {
 		ideal = BrickMosaic.EucPosterize(img, palette, numRows, numCols, viewOrientation)
 	}
 
-  var gridSolver BrickMosaic.GridSolver
-  if s, ok := solverMap[*solver]; ok {
-    gridSolver = s
-  } else {
-    panic(fmt.Sprintf("unknown solver %v; wanted one of %v", *solver, solverMap))    
-  }
+	var gridSolver BrickMosaic.GridSolver
+	if s, ok := solverMap[*solver]; ok {
+		gridSolver = s
+	} else {
+		panic(fmt.Sprintf("unknown solver %v; wanted one of %v", *solver, solverMap))
+	}
 	// How are we going to build this mosaic?
 	plan := BrickMosaic.CreateGridMosaic(ideal, gridSolver)
 	inventory := plan.Inventory()
 	fmt.Printf("%v", inventory.DescendingUsage())
-	fmt.Printf("Will cost approximately %d dollars to build", inventory.ApproximateCost() / 100)
+	fmt.Printf("Will cost approximately %d dollars to build", inventory.ApproximateCost()/100)
 
 	renderer := BrickMosaic.SVGRenderer{}
 	if _, err := outputFile.Write([]byte(renderer.Render(plan))); err != nil {
