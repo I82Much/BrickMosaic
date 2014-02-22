@@ -46,6 +46,7 @@ var (
 
 	solverMap = map[string]BrickMosaic.GridSolver{
 		"greedy": BrickMosaic.GreedySolve,
+		"symmetrical": BrickMosaic.SymmetricalGreedySolve,
 		"cost":   BrickMosaic.GreedyMinCostSolve,
 	}
 )
