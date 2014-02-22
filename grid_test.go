@@ -55,8 +55,8 @@ func TestGet(t *testing.T) {
 		want     State
 	}
 	various := NewGrid(5, 6)
-	various.state[4][3] = ToBeFilled
-	various.state[3][2] = Filled
+	various.State[4][3] = ToBeFilled
+	various.State[3][2] = Filled
 	for _, test := range []getTest{
 		{"empty", NewGrid(0, 0), 0, 0, Empty},
 		{"negative row", NewGrid(0, 0), -1, 0, Empty},
@@ -84,8 +84,8 @@ func TestPieceFits(t *testing.T) {
 	twoByFour := RectPiece{2, 4}
 
 	various := NewGrid(5, 6)
-	various.state[4][3] = ToBeFilled
-	various.state[3][2] = Filled
+	various.State[4][3] = ToBeFilled
+	various.State[3][2] = Filled
 	for _, test := range []fitTest{
 		{"empty - no space", WithState(5, 5, Empty), oneByOne, 0, 0, false},
 		{"filled case", WithState(5, 5, Filled), oneByOne, 0, 0, false},
@@ -104,75 +104,10 @@ func TestPieceFits(t *testing.T) {
 	}
 }
 
-func TestSolve(t *testing.T) {
-	type solveTest struct {
-		name   string
-		g      Grid
-		p      []Piece
-		want   map[Location]Piece
-		hasErr bool
-	}
-	oneByOne := RectPiece{1, 1}
-	oneByFour := RectPiece{1, 4}
-	twoByTwo := RectPiece{2, 2}
-	twoByFour := RectPiece{2, 4}
-	fourByOne := RectPiece{4, 1}
-	for _, test := range []solveTest{
-		{
-			"cannot be solved - no pieces",
-			WithState(1, 1, ToBeFilled),
-			[]Piece{},
-			make(map[Location]Piece),
-			true,
-		},
-		{
-			"trivially solved - one piece",
-			WithState(1, 1, ToBeFilled),
-			[]Piece{oneByOne},
-			map[Location]Piece{
-				Location{0, 0}: oneByOne,
-			},
-			false,
-		},
-		{
-			"trivially solved - one piece, 2x2",
-			WithState(2, 2, ToBeFilled),
-			[]Piece{twoByFour, twoByTwo, oneByOne},
-			map[Location]Piece{
-				Location{0, 0}: twoByTwo,
-			},
-			false,
-		},
-		{
-			"5 x 5 grid - 2 2x4",
-			WithState(5, 5, ToBeFilled),
-			[]Piece{twoByFour, twoByTwo, oneByFour, fourByOne, oneByOne},
-			map[Location]Piece{
-				Location{0, 0}: twoByFour,
-				Location{2, 0}: twoByFour,
-				Location{0, 4}: fourByOne,
-				Location{4, 0}: oneByFour,
-				Location{4, 4}: oneByOne,
-			},
-			false,
-		},
-	} {
-		got, err := test.g.Solve(test.p)
-		if err != nil && !test.hasErr {
-			t.Errorf("for %q wanted no error got %v", test.name, err)
-		} else if err == nil && test.hasErr {
-			t.Errorf("for %q should have had an error", test.name)
-		}
-		if !reflect.DeepEqual(got.Pieces, test.want) {
-			t.Errorf("for %q wanted %v got %v", test.name, test.want, got.Pieces)
-		}
-	}
-}
-
 func TestClone(t *testing.T) {
 	various := NewGrid(5, 6)
-	various.state[4][3] = ToBeFilled
-	various.state[3][2] = Filled
+	various.State[4][3] = ToBeFilled
+	various.State[3][2] = Filled
 
 	cloned := various.Clone()
 	if &cloned == &various {
@@ -182,12 +117,12 @@ func TestClone(t *testing.T) {
 	if !reflect.DeepEqual(various, cloned) {
 		t.Errorf("cloned value was not correctly cloned")
 	}
-	various.state[0][0] = Filled
-	if cloned.state[0][0] != Empty {
+	various.State[0][0] = Filled
+	if cloned.State[0][0] != Empty {
 		t.Errorf("somehow changing original value modifies cloned state")
 	}
-	cloned.state[4][3] = Empty
-	if various.state[4][3] != ToBeFilled {
+	cloned.State[4][3] = Empty
+	if various.State[4][3] != ToBeFilled {
 		t.Errorf("somehow changing cloned value modifies cloned state")
 	}
 

@@ -337,6 +337,8 @@ func (r mosaicPiece) ApproximateCost() int {
 	return r.Brick.ApproximateCost()
 }
 
+// TODO(ndunn): This could either be facing horizontally or vertically. This is not taking
+// that into consideration.
 func StudsOutPiece(piece Brick) MosaicPiece {
 	// Studs up, so rows = width, cols = length
 	r := RectPiece{piece.Width(), piece.Length()}

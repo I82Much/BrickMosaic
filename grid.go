@@ -120,7 +120,7 @@ func (g *Grid) outOfBounds(row, col int) bool {
 }
 
 // Get returns the state at row, col in the given grid. If the given
-// row, col arguments are out of bouns, the method returns Empty.
+// row, col arguments are out of bounsd, the method returns Empty.
 func (g *Grid) Get(row, col int) State {
 	if g.outOfBounds(row, col) {
 		return Empty
