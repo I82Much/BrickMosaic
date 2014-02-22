@@ -1,5 +1,6 @@
 package BrickMosaic
 
+// This library does 
 // Dither implements Floyd Steinberg's algorithm for dithering. See  http://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering
 
 // TODO(ndunn): reduce duplication.
@@ -176,9 +177,15 @@ func AddError(c color.Color, err QuantizationError) color.Color {
   }
 }
 
-// DitherPosterize is a posterization process that uses Euclidean distance.
+// DitherPosterize converts the given image into an Ideal form using a standard amount of
+// dithering (error propagation).
 func DitherPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
 	return NewDitheredBrickImage(img, rows, cols, p, o, 1.0)
+}
+
+// Posterize returns an Ideal representation of the image with no dithering.
+func Posterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) Ideal {
+  return NewDitheredBrickImage(img, rows, cols, p, o, 0.0)
 }
 
 // NewDitheredBrickImage returns a DitheredBrickImage based on the given inputs.

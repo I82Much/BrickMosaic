@@ -20,8 +20,9 @@ type IdealImage interface {
   Ideal
 }
 
+/*
 // Posterize is the interface for converting from images into DesiredMosaic objects.
-type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage
+type Posterize func(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage*/
 
 // EucPosterize is a posterization process that uses Euclidean distance.
 func EucPosterize(img image.Image, p color.Palette, rows int, cols int, o ViewOrientation) IdealImage {

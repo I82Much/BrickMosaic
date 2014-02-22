@@ -1,4 +1,3 @@
-// TODO(ndunn): move to a more appropriate package
 package BrickMosaic
 
 // Brick represents a prototypical piece, not bound to any specific orientation or color.
