@@ -112,7 +112,7 @@ func SymmetricalGreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
 					  upperLeft := TranslateAbsoluteOrigin(loc, p, anchorPoint)
 						locs[upperLeft] = p
 						for _, pieceLoc := range p.Extent() {
-							absLoc := loc.Add(pieceLoc)
+							absLoc := upperLeft.Add(pieceLoc)
 							g.State[absLoc.Row][absLoc.Col] = Filled
 						}
 					}

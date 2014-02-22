@@ -8,9 +8,9 @@ package BrickMosaic
 type AnchorPoint int
 const (
   UpperLeft AnchorPoint = iota
-  UpperRight AnchorPoint = UpperLeft + 1
-  LowerRight AnchorPoint = UpperRight + 1
-  LowerLeft AnchorPoint = LowerRight + 1
+  UpperRight
+  LowerRight
+  LowerLeft
 )
 
 func Translate(locs []Location, pt AnchorPoint) []Location {
