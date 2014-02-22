@@ -131,6 +131,7 @@ func main() {
 	plan := BrickMosaic.CreateGridMosaic(ideal, BrickMosaic.GreedySolve)
 	inventory := plan.Inventory()
 	fmt.Printf("%v", inventory.DescendingUsage())
+	fmt.Printf("Will cost approximately %d dollars to build", inventory.ApproximateCost() / 100)
 
 	renderer := BrickMosaic.SVGRenderer{}
 	if _, err := outputFile.Write([]byte(renderer.Render(plan))); err != nil {
