@@ -53,3 +53,50 @@ func TestTranslate(t *testing.T) {
     }
   }
 }
+
+func TestTranslateAbsoluteOrigin(t *testing.T) {
+  tests := []struct {
+    name string
+    p MosaicPiece
+    absLoc Location
+    pt AnchorPoint
+    want Location
+  } {
+    {
+      name: "lower right",
+      p: StudsTopPiece(TwoByFour),
+      absLoc: loc(5, 6),
+      pt: LowerRight,
+      // Shift up by 3 plates, left by 4
+      want: loc(2, 2),
+    },
+    {
+      name: "lower left",
+      p: StudsTopPiece(TwoByFour),
+      absLoc: loc(5, 6),
+      pt: LowerLeft,
+      // Shift up by 3 plates
+      want: loc(2, 6),
+    },
+    {
+      name: "upper right",
+      p: StudsTopPiece(TwoByFour),
+      absLoc: loc(5, 6),
+      pt: UpperRight,
+      // Shift up by 3 plates
+      want: loc(5, 2),
+    },
+    {
+      name: "upper left",
+      p: StudsTopPiece(TwoByFour),
+      absLoc: loc(5, 6),
+      pt: UpperLeft,
+      want: loc(5, 6),
+    },
+  }
+  for _, test := range tests {
+    if got := TranslateAbsoluteOrigin(test.absLoc, test.p, test.pt); got != test.want {
+      t.Errorf("TranslateAbsoluteOrigin(%q): got %v want %v", test.name, got, test.want)
+    }
+  }
+}
