@@ -286,8 +286,8 @@ var (
 		BrightBlue,
 	})
 	BlackAndWhite = color.Palette([]color.Color{
-	  White,
-	  Black,
+		White,
+		Black,
 	})
 	nameMap map[string]BrickColor = buildNameMap()
 )

@@ -4,7 +4,7 @@ package BrickMosaic
 import (
 	"bytes"
 	"fmt"
-_	"strings"
+	_ "strings"
 
 	"github.com/ajstarks/svgo"
 )
@@ -84,60 +84,60 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	}
 	canvas.Gend()
 
-  /*
-	canvas.Gid("block_outlines")
-	// Draw outlines around each piece
-	for _, piece := range p.Pieces() {
-		loc := piece.Origin
-		minRow, minCol, maxRow, maxCol := BoundingBox(piece, loc)
+	/*
+		canvas.Gid("block_outlines")
+		// Draw outlines around each piece
+		for _, piece := range p.Pieces() {
+			loc := piece.Origin
+			minRow, minCol, maxRow, maxCol := BoundingBox(piece, loc)
 
-		// Offset by one because we draw to where it ends. e.g. if it takes up only one
-		// row or column, we still need to draw it as if it went into right before the
-		// next row or column.
-		startX := minCol * brickWidth
-		endX := (maxCol + 1) * brickWidth
+			// Offset by one because we draw to where it ends. e.g. if it takes up only one
+			// row or column, we still need to draw it as if it went into right before the
+			// next row or column.
+			startX := minCol * brickWidth
+			endX := (maxCol + 1) * brickWidth
 
-		startY := minRow * brickHeight
-		endY := (maxRow + 1) * brickHeight
+			startY := minRow * brickHeight
+			endY := (maxRow + 1) * brickHeight
 
-		width := endX - startX
-		height := endY - startY
+			width := endX - startX
+			height := endY - startY
 
-		style := "fill='none' stroke='gray'"
-		canvas.Rect(startX, startY, width, height, style)
-	}
-	canvas.Gend()
-
-	canvas.Gid("gridlines")
-	majorOpacity := 0.5
-	minorOpacity := 0.2
-
-	// Draw the grid lines, with darker lines around 'canonical' piece in this orientation.
-	darkRow, darkCol := canonicalSpacing(p.Orig().Orientation())
-	for row := 0; row < p.Orig().NumRows()+1; row++ {
-		y := int(row * brickHeight)
-		alpha := minorOpacity
-		if row > 0 && row%darkRow == 0 {
-			alpha = majorOpacity
+			style := "fill='none' stroke='gray'"
+			canvas.Rect(startX, startY, width, height, style)
 		}
-		style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
+		canvas.Gend()
 
-		// Workaround for bug - need stroke- not file
-		canvas.Line(0, y, imageWidth, y, style)
-	}
+		canvas.Gid("gridlines")
+		majorOpacity := 0.5
+		minorOpacity := 0.2
 
-	// Vertical grid lines
-	for col := 0; col < p.Orig().NumCols()+1; col++ {
-		x := int(col * brickWidth)
-		alpha := minorOpacity
-		if col > 0 && col%darkCol == 0 {
-			alpha = majorOpacity
+		// Draw the grid lines, with darker lines around 'canonical' piece in this orientation.
+		darkRow, darkCol := canonicalSpacing(p.Orig().Orientation())
+		for row := 0; row < p.Orig().NumRows()+1; row++ {
+			y := int(row * brickHeight)
+			alpha := minorOpacity
+			if row > 0 && row%darkRow == 0 {
+				alpha = majorOpacity
+			}
+			style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
+
+			// Workaround for bug - need stroke- not file
+			canvas.Line(0, y, imageWidth, y, style)
 		}
-		style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
-		canvas.Line(x, 0, x, imageHeight, style)
-	}
-	canvas.Gend()
-  */
+
+		// Vertical grid lines
+		for col := 0; col < p.Orig().NumCols()+1; col++ {
+			x := int(col * brickWidth)
+			alpha := minorOpacity
+			if col > 0 && col%darkCol == 0 {
+				alpha = majorOpacity
+			}
+			style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
+			canvas.Line(x, 0, x, imageHeight, style)
+		}
+		canvas.Gend()
+	*/
 }
 
 func (r SVGRenderer) Render(p Plan) string {

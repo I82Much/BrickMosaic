@@ -10,8 +10,8 @@ import (
 	// Support reading both jpeg and png
 	_ "image/jpeg"
 	_ "image/png"
-//	"path/filepath"
-//	"image/gif"
+	//	"path/filepath"
+	//	"image/gif"
 	"os"
 	"strings"
 
@@ -26,7 +26,7 @@ var (
 	inputPath    = flag.String("path", "", "path to input file")
 	outputPath   = flag.String("output_path", "", "path to output svg file")
 	palette      = flag.String("palette", "full", "comma separated list of color names, or predefined color palette name")
-	dither = flag.Bool("dither", true, "If true, use dithering when converting the imagine into a mosaic")
+	dither       = flag.Bool("dither", true, "If true, use dithering when converting the imagine into a mosaic")
 
 	orientationMap = map[string]BrickMosaic.ViewOrientation{
 		"STUDS_RIGHT": BrickMosaic.StudsRight,
@@ -40,7 +40,7 @@ var (
 		"basic":     BrickMosaic.LimitedPalette,
 		"full":      BrickMosaic.FullPalette,
 		"primary":   BrickMosaic.Primary,
-		"bw": BrickMosaic.BlackAndWhite,
+		"bw":        BrickMosaic.BlackAndWhite,
 	}
 )
 
@@ -120,13 +120,13 @@ func main() {
 	}
 
 	// What is the ideal representation of the mosaic? Handles downsampling from many colors to few.
-  var ideal BrickMosaic.Ideal
-  if *dither {
-    ideal = BrickMosaic.DitherPosterize(img, palette, numRows, numCols, viewOrientation)
-  } else {
-    ideal = BrickMosaic.EucPosterize(img, palette, numRows, numCols, viewOrientation)
-  }  
-  
+	var ideal BrickMosaic.Ideal
+	if *dither {
+		ideal = BrickMosaic.DitherPosterize(img, palette, numRows, numCols, viewOrientation)
+	} else {
+		ideal = BrickMosaic.EucPosterize(img, palette, numRows, numCols, viewOrientation)
+	}
+
 	// How are we going to build this mosaic?
 	plan := BrickMosaic.CreateGridMosaic(ideal)
 	inventory := plan.Inventory()
@@ -136,38 +136,38 @@ func main() {
 	if _, err := outputFile.Write([]byte(renderer.Render(plan))); err != nil {
 		panic(err)
 	}
-	
-	/*
-	// TODO handle this more gracefully
-	
-	for _, scalingFactor := range []float32{0.0, 0.25, 0.5, 1.0, 2.0} {
-	  baseName := filepath.Base(*inputPath)
-	  ditheredImg := BrickMosaic.NewDitheredBrickImage(img, numRows, numCols, palette, viewOrientation, scalingFactor)
-	  gifFile, err := os.Create(fmt.Sprintf("%v_%v_%d_rows_%d_cols_%v.gif", baseName, viewOrientation, numRows, numCols, scalingFactor))
-  	if err != nil {
-  		panic("Couldn't create output file")
-  	}
-  	// close the output file on exit and check for its returned error
-  	defer func() {
-  		if err := gifFile.Close(); err != nil {
-  			panic(err)
-  		}
-  	}()
-  	// TODO fixme
-  	frames := ditheredImg.Frames
-  	var delay []int
-  	for _ = range frames {
-  	  delay = append(delay, 100)
-  	}
 
-    g := &gif.GIF {
-      Image: frames,
-      Delay: delay,
-      LoopCount: -1,
-    }
-    err = gif.EncodeAll(gifFile, g)
-    if err != nil {
-      panic(fmt.Sprintf("Couldn't encode gif: %v", err))
-    }
-	}*/
+	/*
+			// TODO handle this more gracefully
+
+			for _, scalingFactor := range []float32{0.0, 0.25, 0.5, 1.0, 2.0} {
+			  baseName := filepath.Base(*inputPath)
+			  ditheredImg := BrickMosaic.NewDitheredBrickImage(img, numRows, numCols, palette, viewOrientation, scalingFactor)
+			  gifFile, err := os.Create(fmt.Sprintf("%v_%v_%d_rows_%d_cols_%v.gif", baseName, viewOrientation, numRows, numCols, scalingFactor))
+		  	if err != nil {
+		  		panic("Couldn't create output file")
+		  	}
+		  	// close the output file on exit and check for its returned error
+		  	defer func() {
+		  		if err := gifFile.Close(); err != nil {
+		  			panic(err)
+		  		}
+		  	}()
+		  	// TODO fixme
+		  	frames := ditheredImg.Frames
+		  	var delay []int
+		  	for _ = range frames {
+		  	  delay = append(delay, 100)
+		  	}
+
+		    g := &gif.GIF {
+		      Image: frames,
+		      Delay: delay,
+		      LoopCount: -1,
+		    }
+		    err = gif.EncodeAll(gifFile, g)
+		    if err != nil {
+		      panic(fmt.Sprintf("Couldn't encode gif: %v", err))
+		    }
+			}*/
 }
