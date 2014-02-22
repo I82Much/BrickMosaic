@@ -196,47 +196,79 @@ func allBricks() []Brick {
 	return result
 }
 
-// MosaicPiece represents a given physical brick in a certain orientation, which determines its extent
-// in the 2d grid.
-type MosaicPiece struct {
+// MosaicPiece represents a given physical brick in a certain orientation, which determines 
+// its extent in the 2d grid.
+type MosaicPiece interface {
+  Brick
+  Piece
+  Rows() int
+	Cols() int
+}
+ 
+type mosaicPiece struct { 
 	Brick Brick
-	r     RectPiece
 	// In whatever orientation the mosaic is facing. e.g. a 2x4 brick when viewed above has size 2x4.
 	// When viewed from the side, it has size 3x4 (3 plates high, 4 bricks wide)
-	locs []Location
+	Rect     RectPiece
 }
 
-func (r MosaicPiece) Extent() []Location {
-	return r.locs
+// Extent() fulfills Extent interface
+func (r mosaicPiece) Extent() []Location {
+	return r.Rect.Extent()
+}
+
+func (r mosaicPiece) Name() string {
+  return r.Brick.Name()
+}
+
+func (r mosaicPiece) Id() string {
+  return r.Brick.Id()
+}
+
+func (r mosaicPiece) Width() int {
+  return r.Brick.Width()
+}
+
+func (r mosaicPiece) Length() int {
+  return r.Brick.Length()
+}
+
+func (r mosaicPiece) Height() int {
+  return r.Brick.Height()
+}
+
+func (r mosaicPiece) Rows() int {
+  return r.Rect.NumRows
+}
+
+func (r mosaicPiece) Cols() int {
+  return r.Rect.NumCols
 }
 
 func StudsOutPiece(piece Brick) MosaicPiece {
 	// Studs up, so rows = width, cols = length
 	r := RectPiece{piece.Width(), piece.Length()}
-	return MosaicPiece{
-		piece,
-		r,
-		r.Extent(),
+	return mosaicPiece{
+		Brick: piece,
+		Rect: r,
 	}
 }
 
 func StudsTopPiece(piece Brick) MosaicPiece {
 	// Studs to the top on side, so rows = height, cols = length
 	r := RectPiece{piece.Height(), piece.Length()}
-	return MosaicPiece{
+	return mosaicPiece{
 		piece,
 		r,
-		r.Extent(),
 	}
 }
 
 func StudsRightPiece(piece Brick) MosaicPiece {
 	// Studs to the right on its side, so rows = length, cols = height
 	r := RectPiece{piece.Length(), piece.Height()}
-	return MosaicPiece{
+	return mosaicPiece{
 		piece,
 		r,
-		r.Extent(),
 	}
 }
 

@@ -21,7 +21,7 @@ import (
 )
 
 // GridSolver is the interface for fitting pieces into the given grid.
-type GridSolver func (g *Grid, pieces []Piece) (Solution, error)
+type GridSolver func (g *Grid, pieces []MosaicPiece) (Solution, error)
 
 // Location represents one cell in the grid.
 type Location struct {
@@ -55,7 +55,7 @@ type Grid struct {
 // mapping location to the brick that goes there.
 type Solution struct {
 	Original Grid
-	Pieces   map[Location]Piece
+	Pieces   map[Location]MosaicPiece
 }
 
 // NewGrid returns an empty grid of size numRows by numCols.

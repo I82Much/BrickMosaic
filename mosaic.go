@@ -101,15 +101,10 @@ func CreateGridMosaic(m Ideal, solver GridSolver) Plan {
 
 	// TODO(ndunn): how do I inject which pieces are allowed?
 	allPieces := PiecesForOrientation(m.Orientation(), allBricks())
-	// cast all pieces to Piece rather than MosaicPiece
-	rawPieces := make([]Piece, len(allPieces))
-	for i, d := range allPieces {
-		rawPieces[i] = d
-	}
 	solutions := make(map[BrickColor]Solution)
 	placedBricks := make(map[Location]PlacedBrick)
 	for color, grid := range grids {
-		solution, _ := solver(&grid, rawPieces)
+		solution, _ := solver(&grid, allPieces)
 		solutions[color] = solution
 
 		// Now we know where each piece goes. Create PlacedBrick representations of the pieces.
@@ -123,7 +118,7 @@ func CreateGridMosaic(m Ideal, solver GridSolver) Plan {
 				Origin:      loc,
 				Locs:        mp.Extent(),
 				Color:       color,
-				Shape:       mp.Brick,
+				Shape:       mp,
 				Orientation: m.Orientation(),
 			}
 			placedBricks[loc] = pb

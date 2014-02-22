@@ -50,7 +50,7 @@ func canonicalSpacing(o ViewOrientation) (rows, cols int) {
 	default:
 		panic(fmt.Sprintf("unknown orientation: %v", o))
 	}
-	return p.r.NumRows, p.r.NumCols
+	return p.Rows(), p.Cols()
 }
 
 // DoRender writes the plan information to the svg canvas.
@@ -109,6 +109,7 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	canvas.Gid("gridlines")
 	imageWidth := brickWidth * p.Orig().NumCols()
 	imageHeight := brickHeight * p.Orig().NumRows()
+
 	majorOpacity := 0.5
 	minorOpacity := 0.2
 

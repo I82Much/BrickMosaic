@@ -14,9 +14,9 @@ import (
 // They should be sorted accordingly, with the best entry first in the
 // list (i.e.. least expensive). If the given pieces cannot exactly
 // match the missing pieces, returns a non nil error
-func GreedySolve(g *Grid, pieces []Piece) (Solution, error) {
+func GreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
 	originalGrid := g.Clone()
-	locs := make(map[Location]Piece)
+	locs := make(map[Location]MosaicPiece)
 	// Use a simple greedy strategy where we work
 	// top to bottom, left to right
 	for col := 0; col < g.Cols; col++ {
