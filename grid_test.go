@@ -98,7 +98,7 @@ func TestPieceFits(t *testing.T) {
 		{"2x4 fits in horizontal grid", WithState(2, 4, ToBeFilled), twoByFour, 0, 0, true},
 		{"2x4 does not fit in vertical grid", WithState(4, 2, ToBeFilled), twoByFour, 0, 0, false},
 	} {
-		if got := test.g.PieceFits(test.p, Location{test.row, test.col}); got != test.want {
+		if got := test.g.PieceFits(test.p.Extent(), Location{test.row, test.col}); got != test.want {
 			t.Errorf("for %q wanted %v got %v", test.name, test.want, got)
 		}
 	}

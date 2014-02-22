@@ -141,9 +141,8 @@ func (g *Grid) Set(row, col int, state State) {
 // in the grid, where loc is the upper left hand corner of the piece. Note that
 // orientation is already baked into the Extent() of the piece, which is why it is
 // not an argument to this method.
-func (g *Grid) PieceFits(piece Piece, loc Location) bool {
-	relativeLocations := piece.Extent()
-	for _, relLoc := range relativeLocations {
+func (g *Grid) PieceFits(extent []Location, loc Location) bool {
+	for _, relLoc := range extent {
 		absLoc := relLoc.Add(loc)
 		if gridEntry := g.Get(absLoc.Row, absLoc.Col); gridEntry != ToBeFilled {
 			return false
