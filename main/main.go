@@ -128,7 +128,7 @@ func main() {
 	}
 
 	// How are we going to build this mosaic?
-	plan := BrickMosaic.CreateGridMosaic(ideal)
+	plan := BrickMosaic.CreateGridMosaic(ideal, BrickMosaic.GreedySolve)
 	inventory := plan.Inventory()
 	fmt.Printf("%v", inventory.DescendingUsage())
 

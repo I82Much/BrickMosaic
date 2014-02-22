@@ -20,6 +20,9 @@ import (
 	"strings"
 )
 
+// GridSolver is the interface for fitting pieces into the given grid.
+type GridSolver func (g *Grid, pieces []Piece) (Solution, error)
+
 // Location represents one cell in the grid.
 type Location struct {
 	Row, Col int
@@ -44,8 +47,8 @@ const (
 
 // Grid is an abstract representation of the mosaic to assemble.
 type Grid struct {
-	numRows, numCols int
-	state            [][]State
+	Rows, Cols int
+	State            [][]State
 }
 
 // Solution encapsulates the original requested grid to solve, as well as the solution to that grid,
@@ -62,7 +65,9 @@ func NewGrid(numRows, numCols int) Grid {
 		grid[i] = make([]State, numCols)
 	}
 	return Grid{
-		numRows, numCols, grid,
+		Rows: numRows, 
+		Cols: numCols, 
+		State: grid,
 	}
 }
 
@@ -76,9 +81,9 @@ func WithState(numRows, numCols int, s State) Grid {
 
 // Fill mutates the given grid to be completely filled with state s.
 func (g *Grid) Fill(s State) {
-	for row := 0; row < g.numRows; row++ {
-		for col := 0; col < g.numCols; col++ {
-			g.state[row][col] = s
+	for row := 0; row < g.Rows; row++ {
+		for col := 0; col < g.Cols; col++ {
+			g.State[row][col] = s
 		}
 	}
 }
@@ -87,9 +92,9 @@ func (g *Grid) Fill(s State) {
 // in row major order.
 func (g *Grid) Find(s State) []Location {
 	locs := make([]Location, 0)
-	for row := 0; row < g.numRows; row++ {
-		for col := 0; col < g.numCols; col++ {
-			if g.state[row][col] == s {
+	for row := 0; row < g.Rows; row++ {
+		for col := 0; col < g.Cols; col++ {
+			if g.State[row][col] == s {
 				locs = append(locs, Location{row, col})
 			}
 		}
@@ -99,9 +104,9 @@ func (g *Grid) Find(s State) []Location {
 
 // Any determines whether any entry in the grid has state s.
 func (g *Grid) Any(s State) bool {
-	for row := 0; row < g.numRows; row++ {
-		for col := 0; col < g.numCols; col++ {
-			if g.state[row][col] == s {
+	for row := 0; row < g.Rows; row++ {
+		for col := 0; col < g.Cols; col++ {
+			if g.State[row][col] == s {
 				return true
 			}
 		}
@@ -111,7 +116,7 @@ func (g *Grid) Any(s State) bool {
 
 // outOfBounds determines if the given row/col is out of bounds (not a valid index into the data structure).
 func (g *Grid) outOfBounds(row, col int) bool {
-	return row < 0 || row >= g.numRows || col < 0 || col >= g.numCols
+	return row < 0 || row >= g.Rows || col < 0 || col >= g.Cols
 }
 
 // Get returns the state at row, col in the given grid. If the given
@@ -120,7 +125,7 @@ func (g *Grid) Get(row, col int) State {
 	if g.outOfBounds(row, col) {
 		return Empty
 	}
-	return g.state[row][col]
+	return g.State[row][col]
 }
 
 // Set sets the state at the given (row, column) pair in the grid. If it's out of
@@ -129,7 +134,7 @@ func (g *Grid) Set(row, col int, state State) {
 	if g.outOfBounds(row, col) {
 		return
 	}
-	g.state[row][col] = state
+	g.State[row][col] = state
 }
 
 // PieceFits determines if the given piece can fit at the desired location
@@ -149,58 +154,19 @@ func (g *Grid) PieceFits(piece Piece, loc Location) bool {
 
 // Clone returns a copy of the grid.
 func (g *Grid) Clone() Grid {
-	grid := NewGrid(g.numRows, g.numCols)
-	for row := 0; row < grid.numRows; row++ {
-		for col := 0; col < grid.numCols; col++ {
-			grid.state[row][col] = g.state[row][col]
+	grid := NewGrid(g.Rows, g.Cols)
+	for row := 0; row < grid.Rows; row++ {
+		for col := 0; col < grid.Cols; col++ {
+			grid.State[row][col] = g.State[row][col]
 		}
 	}
 	return grid
 }
 
-// TODO(ndunn): this is the piece that should be an interface
-
-// Solve attempts to solve the grid by filling in the missing pieces.
-// The pieces are considered in the order defined in the pieces list.
-// They should be sorted accordingly, with the best entry first in the
-// list (i.e.. least expensive). If the given pieces cannot exactly
-// match the missing pieces, returns a non nil error
-func (g *Grid) Solve(pieces []Piece) (Solution, error) {
-	originalGrid := g.Clone()
-	locs := make(map[Location]Piece)
-	// Use a simple greedy strategy where we work
-	// top to bottom, left to right
-	for col := 0; col < g.numCols; col++ {
-		for row := 0; row < g.numRows; row++ {
-
-			//for row := 0; row < g.numRows; row++ {
-			//	for col := 0; col < g.numCols; col++ {
-			loc := Location{row, col}
-			if g.Get(row, col) == ToBeFilled {
-				for _, p := range pieces {
-					// We found the best fit! Need to add it to the map, as
-					// well as mark the internal state
-					if g.PieceFits(p, loc) {
-						locs[loc] = p
-						for _, pieceLoc := range p.Extent() {
-							absLoc := loc.Add(pieceLoc)
-							g.state[absLoc.Row][absLoc.Col] = Filled
-						}
-					}
-				}
-			}
-		}
-	}
-	if g.Any(ToBeFilled) {
-		return Solution{originalGrid, locs}, fmt.Errorf("Following locations must still be filled: %v", g.Find(ToBeFilled))
-	}
-	return Solution{originalGrid, locs}, nil
-}
-
 // String returns a string representation of the grid, suitable for display in a terminal.
 func (g Grid) String() string {
 	result := "[\n"
-	for _, row := range g.state {
+	for _, row := range g.State {
 		// Remove spaces
 		result += strings.Replace(fmt.Sprintf("%v\n", row), " ", "", -1)
 	}
@@ -212,10 +178,10 @@ func (g Grid) String() string {
 func (solution Solution) String() string {
 	// TODO(ndunn): support more than 52 pieces
 	alphabet := strings.Split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
-	pieces := make([][]string, solution.Original.numRows)
-	for row := 0; row < solution.Original.numRows; row++ {
-		pieces[row] = make([]string, solution.Original.numCols)
-		for col := 0; col < solution.Original.numCols; col++ {
+	pieces := make([][]string, solution.Original.Rows)
+	for row := 0; row < solution.Original.Rows; row++ {
+		pieces[row] = make([]string, solution.Original.Cols)
+		for col := 0; col < solution.Original.Cols; col++ {
 			pieces[row][col] = "_"
 		}
 	}
@@ -235,7 +201,7 @@ func (solution Solution) String() string {
 
 	result := "  ["
 	// column headers
-	for i := 0; i < solution.Original.numCols; i++ {
+	for i := 0; i < solution.Original.Cols; i++ {
 		if i%3 == 0 {
 			result += "|"
 		} else {

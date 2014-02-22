@@ -93,7 +93,10 @@ func (g *gridBasedPlan) Inventory() Inventory {
 	return i
 }
 
-func CreateGridMosaic(m Ideal) Plan {
+// CreateGridMosaic converts an Ideal representation of the mosaic into a plan for building
+// the mosaic. In other words, it picks the pieces to use and where to place them according
+// to the logic in the GridSolver implementation.
+func CreateGridMosaic(m Ideal, solver GridSolver) Plan {
 	grids := makeGrids(m)
 
 	// TODO(ndunn): how do I inject which pieces are allowed?
@@ -106,7 +109,7 @@ func CreateGridMosaic(m Ideal) Plan {
 	solutions := make(map[BrickColor]Solution)
 	placedBricks := make(map[Location]PlacedBrick)
 	for color, grid := range grids {
-		solution, _ := grid.Solve(rawPieces)
+		solution, _ := solver(&grid, rawPieces)
 		solutions[color] = solution
 
 		// Now we know where each piece goes. Create PlacedBrick representations of the pieces.

@@ -5,16 +5,13 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/I82Much/BrickMosaic/grid"
-	"github.com/I82Much/BrickMosaic/palette"
-
 )
 
 type gridTest struct {
 	name             string
-	input            map[grid.Location]palette.BrickColor
+	input            map[Location]BrickColor
 	numRows, numCols uint
-	want             map[palette.BrickColor]grid.Grid
+	want             map[BrickColor]Grid
 }
 
 func TestMakeGrids(t *testing.T) {
@@ -60,4 +57,5 @@ func TestMakeGrids(t *testing.T) {
 	}
 
 }
+*/
 */
