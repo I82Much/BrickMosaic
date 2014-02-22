@@ -4,7 +4,7 @@ package BrickMosaic
 import (
 	"bytes"
 	"fmt"
-//	"strings"
+	//	"strings"
 
 	"github.com/ajstarks/svgo"
 )
@@ -105,39 +105,39 @@ func DoRender(p Plan, canvas *svg.SVG) {
 	}
 	canvas.Gend()
 
-  /*
-	canvas.Gid("gridlines")
-	imageWidth := brickWidth * p.Orig().NumCols()
-	imageHeight := brickHeight * p.Orig().NumRows()
+	/*
+		canvas.Gid("gridlines")
+		imageWidth := brickWidth * p.Orig().NumCols()
+		imageHeight := brickHeight * p.Orig().NumRows()
 
-	majorOpacity := 0.5
-	minorOpacity := 0.2
+		majorOpacity := 0.5
+		minorOpacity := 0.2
 
-	// Draw the grid lines, with darker lines around 'canonical' piece in this orientation.
-	darkRow, darkCol := canonicalSpacing(p.Orig().Orientation())
-	for row := 0; row < p.Orig().NumRows()+1; row++ {
-		y := int(row * brickHeight)
-		alpha := minorOpacity
-		if row > 0 && row%darkRow == 0 {
-			alpha = majorOpacity
+		// Draw the grid lines, with darker lines around 'canonical' piece in this orientation.
+		darkRow, darkCol := canonicalSpacing(p.Orig().Orientation())
+		for row := 0; row < p.Orig().NumRows()+1; row++ {
+			y := int(row * brickHeight)
+			alpha := minorOpacity
+			if row > 0 && row%darkRow == 0 {
+				alpha = majorOpacity
+			}
+			style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
+
+			// Workaround for bug - need stroke- not file
+			canvas.Line(0, y, imageWidth, y, style)
 		}
-		style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
 
-		// Workaround for bug - need stroke- not file
-		canvas.Line(0, y, imageWidth, y, style)
-	}
-
-	// Vertical grid lines
-	for col := 0; col < p.Orig().NumCols()+1; col++ {
-		x := int(col * brickWidth)
-		alpha := minorOpacity
-		if col > 0 && col%darkCol == 0 {
-			alpha = majorOpacity
+		// Vertical grid lines
+		for col := 0; col < p.Orig().NumCols()+1; col++ {
+			x := int(col * brickWidth)
+			alpha := minorOpacity
+			if col > 0 && col%darkCol == 0 {
+				alpha = majorOpacity
+			}
+			style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
+			canvas.Line(x, 0, x, imageHeight, style)
 		}
-		style := strings.Replace(canvas.RGBA(255, 0, 0, alpha), "fill", "stroke", -1)
-		canvas.Line(x, 0, x, imageHeight, style)
-	}
-	canvas.Gend()*/
+		canvas.Gend()*/
 }
 
 func (r SVGRenderer) Render(p Plan) string {

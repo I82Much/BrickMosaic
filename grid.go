@@ -21,7 +21,7 @@ import (
 )
 
 // GridSolver is the interface for fitting pieces into the given grid.
-type GridSolver func (g *Grid, pieces []MosaicPiece) (Solution, error)
+type GridSolver func(g *Grid, pieces []MosaicPiece) (Solution, error)
 
 // Location represents one cell in the grid.
 type Location struct {
@@ -48,7 +48,7 @@ const (
 // Grid is an abstract representation of the mosaic to assemble.
 type Grid struct {
 	Rows, Cols int
-	State            [][]State
+	State      [][]State
 }
 
 // Solution encapsulates the original requested grid to solve, as well as the solution to that grid,
@@ -65,8 +65,8 @@ func NewGrid(numRows, numCols int) Grid {
 		grid[i] = make([]State, numCols)
 	}
 	return Grid{
-		Rows: numRows, 
-		Cols: numCols, 
+		Rows:  numRows,
+		Cols:  numCols,
 		State: grid,
 	}
 }

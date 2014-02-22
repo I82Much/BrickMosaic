@@ -1,10 +1,10 @@
 package BrickMosaic
 
 import (
-  "fmt"
+	"fmt"
 )
 
-// Greedy implements a greedy algorithm for placing bricks within the mosaic. 
+// Greedy implements a greedy algorithm for placing bricks within the mosaic.
 // It works its way through the grid looking at pieces in descending size order. As soon as
 // it finds a piece that fits, it places it and moves on.
 // TODO(ndunn): this is the piece that should be an interface

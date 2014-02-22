@@ -2,14 +2,14 @@ package BrickMosaic
 
 // Brick represents a prototypical piece, not bound to any specific orientation or color.
 type Brick interface {
-  Name() string
-  Id() string
-  Width() int
-  Length() int
-  Height() int
-  // TODO(ndunn): This somehow has to take into account color
-  // Cost in cents.
-  ApproximateCost() int
+	Name() string
+	Id() string
+	Width() int
+	Length() int
+	Height() int
+	// TODO(ndunn): This somehow has to take into account color
+	// Cost in cents.
+	ApproximateCost() int
 }
 
 // brick represents a prototypical piece, not bound to any specific orientation or color.
@@ -24,33 +24,33 @@ type brick struct {
 	length int
 	// height is measured in terms of plates - a standard brick is 3 plates high.
 	height int
-	
+
 	// Cost in cents
 	cost int
 }
 
 func (b brick) Name() string {
-  return b.name
+	return b.name
 }
 
 func (b brick) Id() string {
-  return b.id
+	return b.id
 }
 
 func (b brick) Width() int {
-  return b.width
+	return b.width
 }
 
 func (b brick) Length() int {
-  return b.length
+	return b.length
 }
 
 func (b brick) Height() int {
-  return b.height
+	return b.height
 }
 
 func (b brick) ApproximateCost() int {
-  return b.cost
+	return b.cost
 }
 
 var (
@@ -234,20 +234,20 @@ func allBricks() []Brick {
 	return result
 }
 
-// MosaicPiece represents a given physical brick in a certain orientation, which determines 
+// MosaicPiece represents a given physical brick in a certain orientation, which determines
 // its extent in the 2d grid.
 type MosaicPiece interface {
-  Brick
-  Piece
-  Rows() int
+	Brick
+	Piece
+	Rows() int
 	Cols() int
 }
- 
-type mosaicPiece struct { 
+
+type mosaicPiece struct {
 	Brick Brick
 	// In whatever orientation the mosaic is facing. e.g. a 2x4 brick when viewed above has size 2x4.
 	// When viewed from the side, it has size 3x4 (3 plates high, 4 bricks wide)
-	Rect     RectPiece
+	Rect RectPiece
 }
 
 // Extent() fulfills Extent interface
@@ -256,44 +256,43 @@ func (r mosaicPiece) Extent() []Location {
 }
 
 func (r mosaicPiece) Name() string {
-  return r.Brick.Name()
+	return r.Brick.Name()
 }
 
 func (r mosaicPiece) Id() string {
-  return r.Brick.Id()
+	return r.Brick.Id()
 }
 
 func (r mosaicPiece) Width() int {
-  return r.Brick.Width()
+	return r.Brick.Width()
 }
 
 func (r mosaicPiece) Length() int {
-  return r.Brick.Length()
+	return r.Brick.Length()
 }
 
 func (r mosaicPiece) Height() int {
-  return r.Brick.Height()
+	return r.Brick.Height()
 }
 
 func (r mosaicPiece) Rows() int {
-  return r.Rect.NumRows
+	return r.Rect.NumRows
 }
 
 func (r mosaicPiece) Cols() int {
-  return r.Rect.NumCols
+	return r.Rect.NumCols
 }
 
 func (r mosaicPiece) ApproximateCost() int {
-  return r.Brick.ApproximateCost()
+	return r.Brick.ApproximateCost()
 }
-
 
 func StudsOutPiece(piece Brick) MosaicPiece {
 	// Studs up, so rows = width, cols = length
 	r := RectPiece{piece.Width(), piece.Length()}
 	return mosaicPiece{
 		Brick: piece,
-		Rect: r,
+		Rect:  r,
 	}
 }
 
