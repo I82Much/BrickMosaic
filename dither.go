@@ -10,8 +10,7 @@ import (
 	"image/color"
 )
 
-// BrickImage is an implementation of DesiredMosaic interface. It also implements the image.Image interface
-// so that it can be rendered for debugging purposes.
+// DitheredBrickImage is an implementation of DesiredMosaic interface.
 type DitheredBrickImage struct {
 	img        image.Image
 	palette    color.Palette
@@ -24,12 +23,15 @@ type DitheredBrickImage struct {
 	orientation ViewOrientation
 
 	// 0.0 = no dithering at all
-	// 1.0 = standard amount of dithering
+	// 1.0 = standard amount of dithering. Scales the quantization error that is propagated
+	// through the image.
 	errorScalingFactor float32
+	
 	Frames []*image.Paletted
 }
 
 const (
+  // Each pixel in image is blown up by this factor in paletted image
   scaleFactor = 5
 )
 
@@ -48,8 +50,6 @@ func (si *DitheredBrickImage) Orientation() ViewOrientation {
 func (si *DitheredBrickImage) ColorModel() color.Model {
 	return si.palette
 }
-
-// image.Image implementation follows
 
 // FIXME ndunn base it on the orientation
 func (si *DitheredBrickImage) Bounds() image.Rectangle {
@@ -78,20 +78,6 @@ func (si *DitheredBrickImage) Color(row, col int) BrickColor {
 	return bestMatch
 }
 
-// FIXME ndunn remove
-func (si *DitheredBrickImage) OriginalIdealColor(row, col int) color.Color {
-  // Convert rows/columns into x/y coordinates in the image
-	y1 := si.rowToY(row)
-	y2 := si.rowToY(row + 1)
-	
-	x1 := si.colToX(col)
-	x2 := si.colToX(col + 1)
-
-	bounds := image.Rect(x1, y1, x2, y2)
-	avgColor := AverageColor(si.img, bounds)
-	return avgColor
-}
-
 func (si *DitheredBrickImage) IdealColor(row, col int) color.Color {
   loc := Location{row, col}
   if c, ok := si.colors[loc]; ok {
@@ -110,7 +96,8 @@ func (si *DitheredBrickImage) IdealColor(row, col int) color.Color {
 	return avgColor
 }
 
-// Paletted renders the current state of the image as a Paletted image.
+// Paletted renders the current state of the image as a Paletted image. Useful for debugging
+// purposes
 func (si *DitheredBrickImage) Paletted() *image.Paletted {
   p := image.NewPaletted(si.Bounds(), si.palette)
   for row := 0; row < si.NumRows(); row++ {
@@ -136,8 +123,6 @@ type QuantizationError struct {
 
 // Error returns how much error is there from c1 relative to c0? High numbers means c1 has higher in that channel.
 func Error(oldC, newC color.Color) QuantizationError {
-  //return QuantizationError{}
-   
 	  r0, g0, b0, a0 := oldC.RGBA()
 	  r1, g1, b1, a1 := newC.RGBA()
 
@@ -146,7 +131,6 @@ func Error(oldC, newC color.Color) QuantizationError {
     gdiff := int(int(g0) - int(g1))
     bdiff := int(int(b0) - int(b1))
     adiff := int(int(a0) - int(a1))
-    //adiff := int8(a1 - a0)
     return QuantizationError{
       r: rdiff / 256,
       g: gdiff / 256,
@@ -154,6 +138,9 @@ func Error(oldC, newC color.Color) QuantizationError {
       a: adiff / 256,
     }
 }
+
+// Scale scales the given error by the given factor. For instance, Scale(2.0) doubles the
+// error, while Scale(.5) halves it. This returns a new object.
 func (e QuantizationError) Scale(factor float32) QuantizationError {
   return QuantizationError {
     r: int(float32(e.r) * factor),
@@ -225,37 +212,11 @@ func NewDitheredBrickImage(img image.Image, rows, cols int, palette color.Palett
 	// Initialize the color map
 	for row := 0; row < rows; row++ {
 		for col := 0; col < cols; col++ {
-		  origIdeal := brickImage.OriginalIdealColor(row, col)
-		  
 		  oldPixel := brickImage.IdealColor(row, col)
 		  bestMatch := brickImage.Color(row, col)
 		  err := Error(oldPixel, bestMatch)
 
-      // row 9 col 42 originalIdeal {44 46 49 255} old {112 15 37 0} best match {21 BrightRed {196 40 27 0}} err {-84 -25 10 0}
-      
-      /*
-      if bestMatch == BrightRed {
-      //if row == 0 && col < 10 {
-        fmt.Printf("row %d col %d originalIdeal %v old %v best match %v err %v\n", row, col, origIdeal, oldPixel, bestMatch, err)
-      }*/
-      
-      // Look at the 3x3 neighborhood around the pixel in question
-      if row >= 7 && row < 9 && col >= 41 && col < 43 {
-        fmt.Printf("row %d col %d originalIdeal %v old %v best match %v err %v\n", row, col, origIdeal, oldPixel, bestMatch, err)
-      }
-
-
       if col != cols - 1 {
-        //existRight := brickImage.colors[Location{row,col+1}]
-        //withErr := AddError(existRight, err.Scale(7.0 / 16.0))
-        
-        //priorBestMatch := brickImage.palette.Convert(existRight).(BrickColor)
-        //newBestMatch := brickImage.palette.Convert(withErr).(BrickColor)
-        
-        /*if row < 10 && col < 10 {
-          fmt.Printf("right: %v with err %v prior best %v new best match %v\n", existRight, withErr, priorBestMatch, newBestMatch)
-        }*/
-        
         // To the right
         brickImage.colors[Location{row,col+1}] = AddError(brickImage.colors[Location{row,col+1}], err.Scale(errorScalingFactor*7.0/16.0))
       }
@@ -274,7 +235,6 @@ func NewDitheredBrickImage(img image.Image, rows, cols int, palette color.Palett
         // To right, below
         brickImage.colors[Location{row+1,col+1}] = AddError(brickImage.colors[Location{row+1,col+1}], err.Scale(errorScalingFactor*1.0/16.0))
       }
-      
       //brickImage.Frames = append(brickImage.Frames, brickImage.Paletted())
     }
   }
