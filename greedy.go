@@ -44,45 +44,45 @@ func GreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
 }
 
 func SymmetricalGreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
-  originalGrid := g.Clone()
+	originalGrid := g.Clone()
 	locs := make(map[Location]MosaicPiece)
-	// Alternate going left and right working towards the middle. 
+	// Alternate going left and right working towards the middle.
 	// Alternate rows from top to bottom
 	for colIndex := 0; colIndex < g.Cols; colIndex++ {
 		for rowIndex := 0; rowIndex < g.Rows; rowIndex++ {
-      // On even calls we'll go left. On odd calls we'll go right
-      colOffset := colIndex / 2
-      var col int
-      if colIndex % 2 == 0 {
-        col = colOffset
-      } else {
-        col = (g.Cols - colOffset) - 1
-      }
-      
-      // {0} - works (0 / 2 = 0)
-      
-      // {0, 1} - works 
-      // 0 / 2 = 0. even, 0
-      // 1 / 2 = 0. odd, 2 - 0 - 1 = 1. works
+			// On even calls we'll go left. On odd calls we'll go right
+			colOffset := colIndex / 2
+			var col int
+			if colIndex%2 == 0 {
+				col = colOffset
+			} else {
+				col = (g.Cols - colOffset) - 1
+			}
 
-      // {0, 1, 2}
-      // 0 / 2 = 0. even, 0
-      // 1 / 2 = 0. odd, 3 - 0 - 1 = 2. right
-      // 2 / 2 = 1. even. 1. right
-      
-      // {0, 1, 2, 3}
-      // 0 / 2 = 0. even, 0
-      // 1 /2 = 0. odd, 4 - 0 - 1 = 3. right
-      // 2 / 2 = 1. even. 1. right.
-      // 3 / 2 = 1. odd. 4 - 1 - 1 = 2. right
-      
-      rowOffset := rowIndex / 2
-      var row int
-      if rowIndex % 2 == 0 {
-        row = rowOffset
-      } else {
-        row = (g.Rows - rowOffset) - 1
-      }
+			// {0} - works (0 / 2 = 0)
+
+			// {0, 1} - works
+			// 0 / 2 = 0. even, 0
+			// 1 / 2 = 0. odd, 2 - 0 - 1 = 1. works
+
+			// {0, 1, 2}
+			// 0 / 2 = 0. even, 0
+			// 1 / 2 = 0. odd, 3 - 0 - 1 = 2. right
+			// 2 / 2 = 1. even. 1. right
+
+			// {0, 1, 2, 3}
+			// 0 / 2 = 0. even, 0
+			// 1 /2 = 0. odd, 4 - 0 - 1 = 3. right
+			// 2 / 2 = 1. even. 1. right.
+			// 3 / 2 = 1. odd. 4 - 1 - 1 = 2. right
+
+			rowOffset := rowIndex / 2
+			var row int
+			if rowIndex%2 == 0 {
+				row = rowOffset
+			} else {
+				row = (g.Rows - rowOffset) - 1
+			}
 			loc := Location{row, col}
 			if g.Get(row, col) == ToBeFilled {
 				for _, p := range pieces {
