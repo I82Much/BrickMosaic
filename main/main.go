@@ -48,6 +48,7 @@ var (
 		"greedy":      BrickMosaic.GreedySolve,
 		"symmetrical": BrickMosaic.SymmetricalGreedySolve,
 		"cost":        BrickMosaic.GreedyMinCostSolve,
+		"symmetricalcost": BrickMosaic.SymmetricalGreedyMinCostSolve,
 	}
 )
 
