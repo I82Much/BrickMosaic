@@ -1,8 +1,8 @@
 package BrickMosaic
 
 import (
-  "reflect"
-  "testing"
+	"reflect"
+	"testing"
 )
 
 func TestSolve(t *testing.T) {
@@ -17,12 +17,12 @@ func TestSolve(t *testing.T) {
 	oneByFour := StudsOutPiece(OneByFour)
 	twoByTwo := StudsOutPiece(TwoByTwo)
 	twoByFour := StudsOutPiece(TwoByFour)
-  r := RectPiece{4, 1}
+	r := RectPiece{4, 1}
 	fourByOne := mosaicPiece{
 		Brick: OneByFour,
 		Rect:  r,
 	}
-	
+
 	for _, test := range []solveTest{
 		{
 			"cannot be solved - no pieces",

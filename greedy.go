@@ -50,20 +50,20 @@ func SymmetricalGreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
 	// Alternate rows from top to bottom
 	for colIndex := 0; colIndex < g.Cols; colIndex++ {
 		for rowIndex := 0; rowIndex < g.Rows; rowIndex++ {
-		  left := colIndex % 2 == 0
-		  top := rowIndex % 2 == 0
-		  var anchorPoint AnchorPoint
-		  if left && top {
-		    anchorPoint = UpperLeft
-		  } else if left && !top {
-		    anchorPoint = LowerLeft		    
-		  } else if !left && top {
-		    anchorPoint = UpperRight		    
-		  } else if !left && !top {
-		    anchorPoint = LowerRight		    
-		  } else {
-		    panic("shouldn't reach here")
-		  }
+			left := colIndex%2 == 0
+			top := rowIndex%2 == 0
+			var anchorPoint AnchorPoint
+			if left && top {
+				anchorPoint = UpperLeft
+			} else if left && !top {
+				anchorPoint = LowerLeft
+			} else if !left && top {
+				anchorPoint = UpperRight
+			} else if !left && !top {
+				anchorPoint = LowerRight
+			} else {
+				panic("shouldn't reach here")
+			}
 
 			// On even calls we'll go left. On odd calls we'll go right
 			colOffset := colIndex / 2
@@ -93,23 +93,25 @@ func SymmetricalGreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
 
 			rowOffset := rowIndex / 2
 			var row int
-			if rowIndex % 2 == 0 {
+			if rowIndex%2 == 0 {
 				row = rowOffset
 			} else {
 				row = (g.Rows - rowOffset) - 1
 			}
+
 			loc := Location{row, col}
+			fmt.Printf("Loc %v AnchorPoint %v\n", loc, anchorPoint)
 			if g.Get(row, col) == ToBeFilled {
 				for _, p := range pieces {
-				  // Based on anchor point, translate the extent accordingly
-				  translated := Translate(p.Extent(), anchorPoint)
-				  
+					// Based on anchor point, translate the extent accordingly
+					translated := Translate(p.Extent(), anchorPoint)
+
 					// We found the best fit! Need to add it to the map, as
 					// well as mark the internal state
 					if g.PieceFits(translated, loc) {
-					  // Translate the absolute location here as to where the absolute location of the
-					  // upper left corner of the piece is located.
-					  upperLeft := TranslateAbsoluteOrigin(loc, p, anchorPoint)
+						// Translate the absolute location here as to where the absolute location of the
+						// upper left corner of the piece is located.
+						upperLeft := TranslateAbsoluteOrigin(loc, p, anchorPoint)
 						locs[upperLeft] = p
 						for _, pieceLoc := range p.Extent() {
 							absLoc := upperLeft.Add(pieceLoc)
