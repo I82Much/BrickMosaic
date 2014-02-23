@@ -112,24 +112,24 @@ func TestStudsRightPiece(t *testing.T) {
 }
 
 func TestRectPieceExtent(t *testing.T) {
-  for _, test := range []struct{
-    name string
-    r RectPiece
-    want []Location
-  } {
-    {
-      name: "2x2",
-      r: RectPiece{2, 2},
-      want: []Location {
-        {0, 0},
-        {0, 1},
-        {1, 0},
-        {1, 1},
-      },
-    },
-  } {
-    if got := test.r.Extent(); !reflect.DeepEqual(got, test.want) {
-      t.Errorf("RectPiece(%q): got %v want %v", test.name, got, test.want)
-    }
-  }
+	for _, test := range []struct {
+		name string
+		r    RectPiece
+		want []Location
+	}{
+		{
+			name: "2x2",
+			r:    RectPiece{2, 2},
+			want: []Location{
+				{0, 0},
+				{0, 1},
+				{1, 0},
+				{1, 1},
+			},
+		},
+	} {
+		if got := test.r.Extent(); !reflect.DeepEqual(got, test.want) {
+			t.Errorf("RectPiece(%q): got %v want %v", test.name, got, test.want)
+		}
+	}
 }

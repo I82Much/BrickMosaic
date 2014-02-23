@@ -64,13 +64,13 @@ func TranslateAbsoluteOrigin(absLoc Location, p MosaicPiece, pt AnchorPoint) Loc
 		return absLoc
 	} else if pt == UpperRight {
 		// Need to translate the point LEFT by the width of the brick
-		return absLoc.Add(Location{Col: -p.Cols()+1})
+		return absLoc.Add(Location{Col: -p.Cols() + 1})
 	} else if pt == LowerRight {
 		// Tranlsate LEFT and UP
-		return absLoc.Add(Location{Row: -p.Rows()+1, Col: -p.Cols()+1})
+		return absLoc.Add(Location{Row: -p.Rows() + 1, Col: -p.Cols() + 1})
 	} else if pt == LowerLeft {
 		// Translate UP
-		return absLoc.Add(Location{Row: -p.Rows()+1})
+		return absLoc.Add(Location{Row: -p.Rows() + 1})
 	}
 	panic("Shouldn't reach here")
 }

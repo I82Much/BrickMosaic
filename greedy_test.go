@@ -14,11 +14,11 @@ type solveTest struct {
 }
 
 var (
-  oneByOne = StudsOutPiece(OneByOne)
+	oneByOne  = StudsOutPiece(OneByOne)
 	oneByFour = StudsOutPiece(OneByFour)
-	twoByTwo = StudsOutPiece(TwoByTwo)
+	twoByTwo  = StudsOutPiece(TwoByTwo)
 	twoByFour = StudsOutPiece(TwoByFour)
-	r = RectPiece{4, 1}
+	r         = RectPiece{4, 1}
 	fourByOne = mosaicPiece{
 		Brick: OneByFour,
 		Rect:  r,

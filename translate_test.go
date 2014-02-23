@@ -83,7 +83,7 @@ func TestTranslateAbsoluteOrigin(t *testing.T) {
 			p:      StudsTopPiece(TwoByFour),
 			absLoc: loc(5, 6),
 			pt:     UpperRight,
-			want: loc(5, 3),
+			want:   loc(5, 3),
 		},
 		{
 			name:   "upper left",
