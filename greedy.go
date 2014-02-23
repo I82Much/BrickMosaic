@@ -51,7 +51,7 @@ func SymmetricalGreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
 	for colIndex := 0; colIndex < g.Cols; colIndex++ {
 		for rowIndex := 0; rowIndex < g.Rows; rowIndex++ {
 			left := colIndex%2 == 0
-			top := rowIndex%2 == 0
+			top := true //rowIndex%2 == 0
 			var anchorPoint AnchorPoint
 			if left && top {
 				anchorPoint = UpperLeft
@@ -90,14 +90,15 @@ func SymmetricalGreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
 			// 1 /2 = 0. odd, 4 - 0 - 1 = 3. right
 			// 2 / 2 = 1. even. 1. right.
 			// 3 / 2 = 1. odd. 4 - 1 - 1 = 2. right
-
+      /*
 			rowOffset := rowIndex / 2
 			var row int
 			if rowIndex%2 == 0 {
 				row = rowOffset
 			} else {
 				row = (g.Rows - rowOffset) - 1
-			}
+			}*/
+			row := rowIndex
 
 			loc := Location{row, col}
 			fmt.Printf("Loc %v AnchorPoint %v\n", loc, anchorPoint)
@@ -109,12 +110,19 @@ func SymmetricalGreedySolve(g *Grid, pieces []MosaicPiece) (Solution, error) {
 					// We found the best fit! Need to add it to the map, as
 					// well as mark the internal state
 					if g.PieceFits(translated, loc) {
+					  fmt.Printf("Piece %v fits \n", p.Name())
+					  
 						// Translate the absolute location here as to where the absolute location of the
 						// upper left corner of the piece is located.
 						upperLeft := TranslateAbsoluteOrigin(loc, p, anchorPoint)
+						fmt.Printf("Upper left %v\n", upperLeft)
 						locs[upperLeft] = p
 						for _, pieceLoc := range p.Extent() {
 							absLoc := upperLeft.Add(pieceLoc)
+							fmt.Printf("Filling %v\n", absLoc)
+							if g.State[absLoc.Row][absLoc.Col] != ToBeFilled {
+							  panic("State was not to be filled!")
+							}
 							g.State[absLoc.Row][absLoc.Col] = Filled
 						}
 					}

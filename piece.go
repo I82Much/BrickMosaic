@@ -73,7 +73,7 @@ type RectPiece struct {
 }
 
 func (r RectPiece) Extent() []Location {
-	locs := make([]Location, r.NumRows*r.NumCols)
+	locs := make([]Location, 0, r.NumRows*r.NumCols)
 	for row := 0; row < r.NumRows; row++ {
 		for col := 0; col < r.NumCols; col++ {
 			locs = append(locs, Location{row, col})

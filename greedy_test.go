@@ -5,24 +5,55 @@ import (
 	"testing"
 )
 
-func TestSolve(t *testing.T) {
-	type solveTest struct {
-		name   string
-		g      Grid
-		p      []MosaicPiece
-		want   map[Location]MosaicPiece
-		hasErr bool
-	}
-	oneByOne := StudsOutPiece(OneByOne)
-	oneByFour := StudsOutPiece(OneByFour)
-	twoByTwo := StudsOutPiece(TwoByTwo)
-	twoByFour := StudsOutPiece(TwoByFour)
-	r := RectPiece{4, 1}
-	fourByOne := mosaicPiece{
+type solveTest struct {
+	name   string
+	g      Grid
+	p      []MosaicPiece
+	want   map[Location]MosaicPiece
+	hasErr bool
+}
+
+var (
+  oneByOne = StudsOutPiece(OneByOne)
+	oneByFour = StudsOutPiece(OneByFour)
+	twoByTwo = StudsOutPiece(TwoByTwo)
+	twoByFour = StudsOutPiece(TwoByFour)
+	r = RectPiece{4, 1}
+	fourByOne = mosaicPiece{
 		Brick: OneByFour,
 		Rect:  r,
 	}
+)
 
+func TestGreedySymmetricalSolve(t *testing.T) {
+	for _, test := range []solveTest{
+		{
+			"5 x 5 grid - 2 2x4",
+			WithState(5, 5, ToBeFilled),
+			[]MosaicPiece{twoByFour, twoByTwo, oneByFour, fourByOne, oneByOne},
+			map[Location]MosaicPiece{
+				Location{0, 0}: twoByFour,
+				Location{2, 0}: twoByFour,
+				Location{4, 0}: oneByFour,
+				Location{0, 4}: fourByOne,
+				Location{4, 4}: oneByOne,
+			},
+			false,
+		},
+	} {
+		got, err := SymmetricalGreedySolve(&test.g, test.p)
+		if err != nil && !test.hasErr {
+			t.Errorf("for %q wanted no error got %v", test.name, err)
+		} else if err == nil && test.hasErr {
+			t.Errorf("for %q should have had an error", test.name)
+		}
+		if !reflect.DeepEqual(got.Pieces, test.want) {
+			t.Errorf("for %q wanted %v got %v", test.name, test.want, got.Pieces)
+		}
+	}
+}
+
+func TestGreedySolve(t *testing.T) {
 	for _, test := range []solveTest{
 		{
 			"cannot be solved - no pieces",

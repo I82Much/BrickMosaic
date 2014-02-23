@@ -68,7 +68,7 @@ func TestTranslateAbsoluteOrigin(t *testing.T) {
 			absLoc: loc(5, 6),
 			pt:     LowerRight,
 			// Shift up by 3 plates, left by 4
-			want: loc(2, 2),
+			want: loc(3, 3),
 		},
 		{
 			name:   "lower left",
@@ -76,15 +76,14 @@ func TestTranslateAbsoluteOrigin(t *testing.T) {
 			absLoc: loc(5, 6),
 			pt:     LowerLeft,
 			// Shift up by 3 plates
-			want: loc(2, 6),
+			want: loc(3, 6),
 		},
 		{
 			name:   "upper right",
 			p:      StudsTopPiece(TwoByFour),
 			absLoc: loc(5, 6),
 			pt:     UpperRight,
-			// Shift up by 3 plates
-			want: loc(5, 2),
+			want: loc(5, 3),
 		},
 		{
 			name:   "upper left",
